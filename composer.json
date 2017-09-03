@@ -22,7 +22,7 @@
             "database/factories"
         ],
         "psr-4": {
-            "App\\": "app/"
+            "Polyglot\\": "app/"
         }
     },
     "autoload-dev": {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions;
+namespace Polyglot\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
