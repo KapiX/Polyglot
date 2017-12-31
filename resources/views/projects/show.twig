@@ -1,0 +1,19 @@
+{% extends "layouts.master" %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+<h1>{{ project.name }}</h1>
+<ul>
+{% for file in project.files %}
+    <li>{{ link_to_route('files.show', file.name, file.id, {}) }} {{ link_to_route('files.edit', 'Edit', file.id, {}) }}</li>
+{% else %}
+<li>This project has no files.</li>
+{% endfor %}
+</ul>
+{{ form_open({url: 'files?project_id=' ~ project.id, method: POST}) }}
+{{ form_label('File name:') }}
+{{ form_text('name', null, ['required']) }}
+{{ form_submit('Add file') }}
+{{ form_close() }}
+{% endblock %}

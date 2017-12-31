@@ -2,10 +2,11 @@
 
 namespace Polyglot\Http\Controllers;
 
-use Polyglot\Project;
+use Polyglot\File;
+use Polyglot\Http\Requests\FileFormRequest;
 use Illuminate\Http\Request;
 
-class ProjectsController extends Controller
+class FilesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +15,7 @@ class ProjectsController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
-        return view('projects.index')->with('projects', $projects);
+        //
     }
 
     /**
@@ -32,31 +32,42 @@ class ProjectsController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $project_id
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(FileFormRequest $request)
     {
-        //
+        $file = new File([
+            'name' => $request->input('name'),
+            'path' => '',
+        ]);
+        $file->checksum = '';
+        $file->project_id = $request->get('project_id');
+
+        $file->save();
+
+        return \Redirect::route('projects.show', [$request->get('project_id')])
+            ->with('message', 'File successfully added.');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \Polyglot\Project  $project
+     * @param  \Polyglot\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function show(Project $project)
+    public function show(File $file)
     {
-        return view('projects.show')->with('project', $project);
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \Polyglot\Project  $project
+     * @param  \Polyglot\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function edit(Project $project)
+    public function edit(File $file)
     {
         //
     }
@@ -65,10 +76,10 @@ class ProjectsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Polyglot\Project  $project
+     * @param  \Polyglot\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Project $project)
+    public function update(Request $request, File $file)
     {
         //
     }
@@ -76,10 +87,10 @@ class ProjectsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Polyglot\Project  $project
+     * @param  \Polyglot\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Project $project)
+    public function destroy(File $file)
     {
         //
     }

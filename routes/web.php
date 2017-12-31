@@ -13,3 +13,4 @@
 
 Route::get('/', 'IndexController@index');
 Route::resource('projects', 'ProjectsController');
+Route::resource('files', 'FilesController');
