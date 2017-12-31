@@ -12,3 +12,4 @@
 */
 
 Route::get('/', 'IndexController@index');
+Route::resource('projects', 'ProjectsController');

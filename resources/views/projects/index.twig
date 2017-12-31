@@ -1,0 +1,14 @@
+{% extends "layouts.master" %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+<h1>Projects</h1>
+<ul>
+{% for project in projects %}
+    <li>{{ link_to_route('projects.show', project.name, project.id, {}) }} {{ link_to_route('projects.edit', 'Edit', project.id, {}) }}</li>
+{% else %}
+    <li>No projects found.</li>
+{% endfor %}
+</ul>
+{% endblock %}
