@@ -6,7 +6,14 @@
 <h1>{{ project.name }}</h1>
 <ul>
 {% for file in project.files %}
-    <li>{{ link_to_route('files.show', file.name, file.id, {}) }} {{ link_to_route('files.edit', 'Edit', file.id, {}) }}</li>
+<li>
+    {{ link_to_route('files.show', file.name, file.id, {}) }} 
+    {{ link_to_route('files.edit', 'Edit', file.id, {}) }}
+    {{ form_open({url: route('files.upload', {id: file.id}), method: POST, files: true}) }}
+    {{ form_file('catkeys', null) }}
+    {{ form_submit('Upload new') }}
+    {{ form_close() }}
+</li>
 {% else %}
 <li>This project has no files.</li>
 {% endfor %}
@@ -16,4 +23,10 @@
 {{ form_text('name', null, ['required']) }}
 {{ form_submit('Add file') }}
 {{ form_close() }}
+<h2>Languages</h2>
+<ul>
+{% for language in project.languages %}
+    <li>{{ language.name }}</li>
+{% endfor %}
+</ul>
 {% endblock %}

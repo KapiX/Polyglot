@@ -12,4 +12,9 @@ class File extends Model
     {
         return $this->belongsTo('Polyglot\Project');
     }
+
+    public function texts()
+    {
+        return $this->hasMany('Polyglot\Text');
+    }
 }

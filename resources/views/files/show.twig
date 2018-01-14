@@ -1,0 +1,21 @@
+{% extends "layouts.master" %}
+
+{% block title %}File{% endblock %}
+
+{% block content %}
+<h1>{{ file.name }}</h1>
+
+<h2>Texts</h2>
+{% for context, texts in file.texts.groupBy('context') %}
+<h3>{{ context }}</h3>
+<table>
+    {% for text in texts %}
+    <tr>
+        <td>{{ text.text }}</td>
+        <td>{{ text.comment }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endfor %}
+
+{% endblock %}

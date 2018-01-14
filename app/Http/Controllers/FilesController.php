@@ -3,8 +3,10 @@
 namespace Polyglot\Http\Controllers;
 
 use Polyglot\File;
+use Polyglot\Text;
 use Polyglot\Http\Requests\FileFormRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FilesController extends Controller
 {
@@ -58,7 +60,7 @@ class FilesController extends Controller
      */
     public function show(File $file)
     {
-        //
+        return view('files.show')->with('file', $file);
     }
 
     /**
@@ -93,5 +95,68 @@ class FilesController extends Controller
     public function destroy(File $file)
     {
         //
+    }
+
+    /**
+     * Upload the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Polyglot\File  $file
+     * @return \Illuminate\Http\Response
+     */
+    public function upload(Request $request, File $file)
+    {
+        $catkeys = file_get_contents($request->file('catkeys')->getRealPath());
+        [$checksum, $catkeys_processed] = $this->processCatkeysFile($catkeys);
+
+        $file->checksum = $checksum;
+        $file->save();
+
+        $textsToInsert = [];
+        foreach($catkeys_processed as $catkey) {
+            $text = $file->texts()
+                ->whereRaw('STRCMP(text, ?) = 0', [$catkey['text']])
+                ->whereRaw('STRCMP(context, ?) = 0', [$catkey['context']])
+                ->whereRaw('STRCMP(comment, ?) = 0', [$catkey['comment']])
+                ->get();
+            if($text->count() == 0) {
+                $textToInsert = [
+                    'file_id' => $file->id,
+                    'text' => $catkey['text'],
+                    'context' => $catkey['context'],
+                    'comment' => $catkey['comment']
+                ];
+                $textsToInsert[] = $textToInsert;
+            }
+        }
+        Text::insert($textsToInsert);
+
+        return view('index.index');
+    }
+
+    public function translate(File $file)
+    {
+    }
+
+    private function processCatkeysFile($contents)
+    {
+        $separator = "\r\n";
+        $line = strtok($contents, $separator);
+
+        $catkeys = [];
+        $checksum = explode("\t", $line)[3];
+        $line = strtok($separator);
+
+        while($line !== false) {
+            $exploded = explode("\t", $line);
+            $catkeys[] = [
+                'text' => $exploded[0],
+                'context' => $exploded[1],
+                'comment' => $exploded[2],
+                'translation' => $exploded[3]
+            ];
+            $line = strtok($separator);
+        }
+        return [$checksum, $catkeys];
     }
 }
