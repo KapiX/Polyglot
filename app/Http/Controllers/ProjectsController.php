@@ -36,7 +36,12 @@ class ProjectsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $project = new Project;
+        $project->name = $request->input('name');
+        $project->github = '';
+        $project->save();
+
+        return \Redirect::route('projects.index')->with('message', 'Project added.');
     }
 
     /**

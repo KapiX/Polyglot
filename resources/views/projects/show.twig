@@ -10,7 +10,9 @@
     <p>{{ link_to_route('files.show', file.name, file.id, {}) }}
     {{ link_to_route('files.edit', 'Edit', file.id, {}) }}</p>
     {% for language in project.languages %}
+    {% if language.iso_code != 'en' %}
         <p>{{ link_to_route('files.translate', language.name, {file: file.id, lang: language.id}, {}) }}</p>
+    {% endif %}
     {% endfor %}
 </li>
 {% else %}
@@ -25,7 +27,9 @@
 <h2>Languages</h2>
 <ul>
 {% for language in project.languages %}
+    {% if language.iso_code != 'en' %}
     <li>{{ language.name }}</li>
+    {% endif %}
 {% endfor %}
 </ul>
 {% endblock %}

@@ -67,9 +67,8 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
-<h1>{{ file.name }}</h1>
-
-<h2>Texts</h2>
+<h1>{{ file.project.name }} - {{ file.name }}</h1>
+<h2>Translations to {{ lang.name }}</h2>
 {% for context, texts in file.texts.groupBy('context') %}
 <h3>{{ context }}</h3>
 <table class="table" id="{{ lang.id }}">
