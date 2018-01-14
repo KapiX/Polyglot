@@ -6,16 +6,3 @@
  */
 
 require('./bootstrap');
-
-$(document).ready(function() {
-    $('tr').click(function() {
-        var translationCell = $(this).find('td#translation');
-        var id = $(this).attr('id');
-        var lang = $(this).parents('table').attr('id');
-        var form = '<textarea>' + translationCell.html() + '</textarea><input type="button" class="send" value="Save">';
-        translationCell.html(form);
-        $(this).unbind('click');
-        $(translationCell).find('input').click(function() { alert('send'); });
-        $(translationCell).find('textarea').prop('disabled', true);
-    });
-});

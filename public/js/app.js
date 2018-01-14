@@ -689,7 +689,7 @@ module.exports = __webpack_require__(35);
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function($) {
+
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -697,22 +697,6 @@ module.exports = __webpack_require__(35);
  */
 
 __webpack_require__(10);
-
-$(document).ready(function () {
-    $('tr').click(function () {
-        var translationCell = $(this).find('td#translation');
-        var id = $(this).attr('id');
-        var lang = $(this).parents('table').attr('id');
-        var form = '<textarea>' + translationCell.html() + '</textarea><input type="button" class="send" value="Save">';
-        translationCell.html(form);
-        $(this).unbind('click');
-        $(translationCell).find('input').click(function () {
-            alert('send');
-        });
-        $(translationCell).find('textarea').prop('disabled', true);
-    });
-});
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 10 */

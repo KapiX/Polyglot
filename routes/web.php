@@ -16,3 +16,5 @@ Route::resource('projects', 'ProjectsController');
 Route::resource('files', 'FilesController');
 Route::post('/files/{file}/upload', 'FilesController@upload')->name('files.upload');
 Route::get('/files/{file}/lang/{lang}', 'FilesController@translate')->name('files.translate');
+Route::get('/texts/{text}/lang/{lang}', 'TextsController@show')->name('texts.show');
+Route::post('/texts/{text}/lang/{lang}', 'TextsController@store')->name('texts.store');

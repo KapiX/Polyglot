@@ -7,6 +7,7 @@
         {{ html_script('js/manifest.js') }}
         {{ html_script('js/vendor.js') }}
         {{ html_script('js/app.js') }}
+        {% block scripts %}{% endblock %}
     </head>
     <body>
         {% block content %}{% endblock %}
