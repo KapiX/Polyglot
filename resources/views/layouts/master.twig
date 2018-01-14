@@ -3,6 +3,10 @@
     <head>
         <meta charset="utf-8">
         <title>{% block title %}{% endblock %}</title>
+        {{ html_style('css/app.css') }}
+        {{ html_script('js/manifest.js') }}
+        {{ html_script('js/vendor.js') }}
+        {{ html_script('js/app.js') }}
     </head>
     <body>
         {% block content %}{% endblock %}

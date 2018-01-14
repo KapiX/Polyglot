@@ -9,6 +9,9 @@
 <li>
     {{ link_to_route('files.show', file.name, file.id, {}) }} 
     {{ link_to_route('files.edit', 'Edit', file.id, {}) }}
+    {% for language in project.languages %}
+        {{ link_to_route('files.translate', language.name, {file: file.id, lang: language.id}, {}) }}
+    {% endfor %}
     {{ form_open({url: route('files.upload', {id: file.id}), method: POST, files: true}) }}
     {{ form_file('catkeys', null) }}
     {{ form_submit('Upload new') }}

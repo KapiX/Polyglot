@@ -10,4 +10,9 @@ class Language extends Model
     {
         return $this->belongsToMany('Polyglot\Project')->withTimestamps();
     }
+
+    public function translations()
+    {
+        return $this->hasMany('Polyglot\Translation');
+    }
 }

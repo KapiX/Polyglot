@@ -3,7 +3,9 @@
 namespace Polyglot\Http\Controllers;
 
 use Polyglot\File;
+use Polyglot\Language;
 use Polyglot\Text;
+use Polyglot\Translation;
 use Polyglot\Http\Requests\FileFormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -134,8 +136,10 @@ class FilesController extends Controller
         return view('index.index');
     }
 
-    public function translate(File $file)
+    public function translate(File $file, Language $lang)
     {
+        $translations = Translation::where('language_id', $lang->id)->get();
+        return view('files.translate')->with('file', $file)->with('lang', $lang)->with('translations', $translations->groupBy('text_id'));
     }
 
     private function processCatkeysFile($contents)
