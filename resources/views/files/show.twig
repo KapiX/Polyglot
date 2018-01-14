@@ -6,6 +6,10 @@
 <h1>{{ file.name }}</h1>
 
 <h2>Texts</h2>
+{{ form_open({url: route('files.upload', {id: file.id}), method: POST, files: true}) }}
+{{ form_file('catkeys', null) }}
+{{ form_submit('Upload new') }}
+{{ form_close() }}
 {% for context, texts in file.texts.groupBy('context') %}
 <h3>{{ context }}</h3>
 <table>

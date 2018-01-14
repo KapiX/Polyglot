@@ -44,16 +44,16 @@ class TextsController extends Controller
             $translation->language_id = $lang->id;
             $translation->author_id = 1; // FIXME
             $translation->translation = $request->post('translation');
-            $translation->needs_work = 0; // FIXME
+            $translation->needs_work = $request->post('needswork') === 'true' ? 1 : 0;
             $translation->save();
         } else {
             $translation = $translation->first();
             $translation->author_id = 1; // FIXME
             $translation->translation = $request->post('translation');
-            $translation->needs_work = 0; // FIXME
+            $translation->needs_work = $request->post('needswork') === 'true' ? 1 : 0;
             $translation->save();
         }
-        return \Response::json(['status' => 'success', 'translation'=>$translation->translation]);
+        return \Response::json(['status' => 'success', 'translation' => $translation->translation, 'needswork' => $translation->needs_work === 1 ? true : false]);
     }
 
     /**
@@ -65,11 +65,13 @@ class TextsController extends Controller
     public function show(Text $text, Language $lang)
     {
         $translation = $text->translations()->where('language_id', $lang->id)->get();
-        $text = '';
+        $text = $text->text;
+        $needswork = true;
         if($translation->count() > 0) {
             $text = $translation->first()->translation;
+            $needswork = $translation->first()->needs_work === 1 ? true : false;
         }
-        $response = ['translation' => $text];
+        $response = ['translation' => $text, 'needswork' => $needswork];
 
         return \Response::json($response);
     }

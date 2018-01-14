@@ -9,19 +9,22 @@ $(document).ready(function() {
         var translationCell = $(this).find('td#translation');
         var id = $(this).attr('id');
         var lang = $(this).parents('table').attr('id');
-        var form = '<textarea>' + translationCell.html() + '</textarea><input type="button" value="Save">';
+        var form = '<div class="container-fluid"><div class="row"><textarea>' + translationCell.html() + '</textarea></div><div class="row"><div class="col-md-4"><input class="btn btn-primary" id="save" type="button" value="Save"></div><div class="col-md-4"><input class="btn" id="cancel" type="button" value="Cancel"></div><div class="col-md-4"><div class="checkbox"><label><input type="checkbox" id="needswork" value="1"> Needs work</label></div></div></div></div>';
         translationCell.html(form);
         $(this).unbind('click');
-        var sendButton = $(translationCell).find('input');
+        var sendButton = $(translationCell).find('input#save');
+        var cancelButton = $(translationCell).find('input#cancel');
+        var needsWorkCheckbox = $(translationCell).find('input#needswork');
         var textarea = $(translationCell).find('textarea');
         var tr = $(this);
         textarea.prop('disabled', true);
         $.ajax({
             type: 'GET',
             dataType: 'json',
-            url: '/texts/' + id + '/lang/' + lang,
+            url: '{{ url('/') }}/texts/' + id + '/lang/' + lang,
             success: function (data) {
                 textarea.val(data.translation);
+                needsWorkCheckbox.prop('checked', data.needswork);
                 textarea.prop('disabled', false);
             }
         });
@@ -29,10 +32,31 @@ $(document).ready(function() {
             textarea.prop('disabled', true);
             $.ajax({
                 type: 'POST',
-                data: { '_token': '{{ csrf_token() }}', 'translation': textarea.val() },
-                url: '/texts/' + id + '/lang/' + lang,
+                data: { '_token': '{{ csrf_token() }}', 'translation': textarea.val(), 'needswork': needsWorkCheckbox.prop('checked') },
+                url: '{{ url('/') }}/texts/' + id + '/lang/' + lang,
                 success: function (data) {
-                    translationCell.html(data.translation);
+                    var cellhtml;
+                    if(data.needswork)
+                        cellhtml = '<i>' + data.translation + '</i>';
+                    else
+                        cellhtml = data.translation;
+                    translationCell.html(cellhtml);
+                    tr.click(trclick);
+                }
+            });
+        });
+        cancelButton.click(function() {
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                url: '{{ url('/') }}/texts/' + id + '/lang/' + lang,
+                success: function (data) {
+                    var cellhtml;
+                    if(data.needswork)
+                        cellhtml = '<i>' + data.translation + '</i>';
+                    else
+                        cellhtml = data.translation;
+                    translationCell.html(cellhtml);
                     tr.click(trclick);
                 }
             });
@@ -51,9 +75,14 @@ $(document).ready(function() {
 <table class="table" id="{{ lang.id }}">
     {% for text in texts %}
     <tr id="{{ text.id }}">
-        <td>{{ text.text }}</td>
-        <td>{{ text.comment }}</td>
-        <td id="translation">{{ translations[text.id][0].translation }}</td>
+        <td><p>{{ text.text }}</p><p><small>{{ text.comment }}</small></p></td>
+        {% set translation = translations[text.id][0] %}
+        {% if translation == null %}
+            <td id="translation"><i>{{ text.text }}</i></td>
+        {% else %}
+            {% set needswork = translation.needs_work == true %}
+            <td id="translation">{% if needswork %}<i>{% endif %}{{ translations[text.id][0].translation }}{% if needswork %}</i>{% endif %}</td>
+        {% endif %}
     </tr>
     {% endfor %}
 </table>
