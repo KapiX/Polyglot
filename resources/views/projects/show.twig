@@ -25,11 +25,8 @@
 {{ form_submit('Add file') }}
 {{ form_close() }}
 <h2>Languages</h2>
-<ul>
-{% for language in project.languages %}
-    {% if language.iso_code != 'en' %}
-    <li>{{ language.name }}</li>
-    {% endif %}
-{% endfor %}
-</ul>
+{{ form_open({url: route('projects.update', project.id), method: 'PUT'}) }}
+{{ form_select('languages', languages, project.languages.pluck('id'), {multiple: 'multiple', name: 'languages[]'}) }}
+{{ form_submit('save') }}
+{{ form_close() }}
 {% endblock %}

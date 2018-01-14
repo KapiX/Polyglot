@@ -2,6 +2,7 @@
 
 namespace Polyglot\Http\Controllers;
 
+use Polyglot\Language;
 use Polyglot\Project;
 use Illuminate\Http\Request;
 
@@ -52,7 +53,8 @@ class ProjectsController extends Controller
      */
     public function show(Project $project)
     {
-        return view('projects.show')->with('project', $project);
+        $languages = Language::pluck('name', 'id')->all();
+        return view('projects.show')->with('project', $project)->with('languages', $languages);
     }
 
     /**
@@ -75,7 +77,11 @@ class ProjectsController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        //
+        if(count($request->get('languages')) > 0) {
+            $project->languages()->sync($request->get('languages'));
+        }
+
+        return \Redirect::route('projects.show', [$project->id])->with('message', 'Languages saved.');
     }
 
     /**
