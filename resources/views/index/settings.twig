@@ -1,0 +1,21 @@
+{% extends "layouts.master" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<h1>Settings</h1>
+<h2>Languages</h2>
+<ul>
+{% for language in languages %}
+<li>{{ language.iso_code }} - {{ language.name }}</li>
+{% endfor %}
+</ul>
+<h2>Add language</h2>
+{{ form_open({url: route('settings.addLanguage'), method: POST}) }}
+{{ form_label('ISO code:') }}
+{{ form_text('iso', null, ['required']) }}
+{{ form_label('Name:') }}
+{{ form_text('name', null, ['required']) }}
+{{ form_submit('Add language') }}
+{{ form_close() }}
+{% endblock %}
