@@ -109,8 +109,9 @@ class FilesController extends Controller
     public function upload(Request $request, File $file)
     {
         $catkeys = file_get_contents($request->file('catkeys')->getRealPath());
-        [$checksum, $catkeys_processed] = $this->processCatkeysFile($catkeys);
+        [$mimetype, $checksum, $catkeys_processed] = $this->processCatkeysFile($catkeys);
 
+        $file->mime_type = $mimetype;
         $file->checksum = $checksum;
         $file->save();
 
@@ -133,7 +134,7 @@ class FilesController extends Controller
         }
         Text::insert($textsToInsert);
 
-        return view('index.index');
+        return \Redirect::route('files.show', [$file->id])->with('message', 'Catkeys uploaded.');
     }
 
     public function translate(File $file, Language $lang)
@@ -148,7 +149,9 @@ class FilesController extends Controller
         $line = strtok($contents, $separator);
 
         $catkeys = [];
-        $checksum = explode("\t", $line)[3];
+        $first = explode("\t", $line);
+        $mimetype = $first[2];
+        $checksum = $first[3];
         $line = strtok($separator);
 
         while($line !== false) {
@@ -161,6 +164,6 @@ class FilesController extends Controller
             ];
             $line = strtok($separator);
         }
-        return [$checksum, $catkeys];
+        return [$mimetype, $checksum, $catkeys];
     }
 }
