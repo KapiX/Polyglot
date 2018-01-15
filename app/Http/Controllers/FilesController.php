@@ -153,8 +153,50 @@ class FilesController extends Controller
 
     public function translate(File $file, Language $lang)
     {
+        // FIXME: when database gets big, it's going to be painful
+        // ideas: whereIn(all ids for file's texts)
         $translations = Translation::where('language_id', $lang->id)->get();
         return view('files.translate')->with('file', $file)->with('lang', $lang)->with('translations', $translations->groupBy('text_id'));
+    }
+
+    public function export(File $file, Language $lang)
+    {
+        // FIXME: if either checksum or mime_type is missing, fail early
+
+        $texts = $file->texts()->get()->groupBy('context');
+        // FIXME: method for getting all translations for current file,
+        //        with optional language filter
+        $translations = Translation::where('language_id', $lang->id)->get()->groupBy('text_id');
+        $lines = [];
+        $lines[] = implode("\t", ['1', $lang->name, $file->mime_type, $file->checksum]);
+        foreach($texts as $context) {
+            foreach($context as $text) {
+                $t = $translations->get($text['id']);
+                if($t !== null)
+                    $translation = $t[0]['translation'];
+                else
+                    $translation = $text['text'];
+                $lines[] = implode("\t", [$text['text'], $text['context'], $text['comment'], $translation]);
+            }
+        }
+        $result = implode("\n", $lines);
+
+        // prepare file
+        $filename = $lang->iso_code . '.catkeys';
+        $headers = [
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Content-type'        => 'text/plain',
+            'Content-Disposition' => 'attachment; filename=' . $filename,
+            'Expires'             => '0',
+            'Pragma'              => 'public',
+        ];
+        $callback = function() use ($result) {
+            $file = fopen('php://output', 'w');
+            fwrite($file, $result);
+            fclose($file);
+        };
+
+        return \Response::stream($callback, 200, $headers);
     }
 
     private function processCatkeysFile($contents)

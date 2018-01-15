@@ -20,3 +20,4 @@ Route::get('/texts/{text}/lang/{lang}', 'TextsController@show')->name('texts.sho
 Route::post('/texts/{text}/lang/{lang}', 'TextsController@store')->name('texts.store');
 Route::get('/settings', 'IndexController@settings')->name('settings');
 Route::post('/settings/language', 'IndexController@addLanguage')->name('settings.addLanguage');
+Route::get('/files/{file}/lang/{lang}/export', 'FilesController@export')->name('files.export');
