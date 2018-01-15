@@ -116,6 +116,7 @@ class FilesController extends Controller
         $file->save();
 
         $textsToInsert = [];
+        $idsProcessed = [];
         foreach($catkeys_processed as $catkey) {
             $text = $file->texts()
                 ->whereRaw('STRCMP(text, ?) = 0', [$catkey['text']])
@@ -127,13 +128,26 @@ class FilesController extends Controller
                     'file_id' => $file->id,
                     'text' => $catkey['text'],
                     'context' => $catkey['context'],
-                    'comment' => $catkey['comment']
+                    'comment' => $catkey['comment'],
+                    'created_at' => new \DateTime(),
+                    'updated_at' => new \DateTime()
                 ];
                 $textsToInsert[] = $textToInsert;
+            } else {
+                // if it is in the table, remember it
+                // later we can pull all ids and diff with them to see which
+                // catkeys disappeared from the file
+                $idsProcessed[] = $text->first()->id;
             }
         }
-        Text::insert($textsToInsert);
+        $allIds = $file->texts()->pluck('id')->toArray();
+        $deleteIds = array_values(array_diff($allIds, $idsProcessed));
+        if(!empty($deleteIds))
+            Text::whereIn('id', $deleteIds)->delete();
+        if(!empty($textsToInsert))
+            Text::insert($textsToInsert);
 
+        // TODO: how many added and deleted
         return \Redirect::route('files.show', [$file->id])->with('message', 'Catkeys uploaded.');
     }
 
