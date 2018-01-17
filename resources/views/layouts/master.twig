@@ -3,10 +3,10 @@
     <head>
         <meta charset="utf-8">
         <title>{% block title %}{% endblock %}</title>
-        {{ html_style('css/app.css') }}
-        {{ html_script('js/manifest.js') }}
-        {{ html_script('js/vendor.js') }}
-        {{ html_script('js/app.js') }}
+        {{ html_style('css/bootstrap.min.css') }}
+        {{ html_style('css/style.css') }}
+        {{ html_script('js/jquery-3.2.1.min.js') }}
+        {{ html_script('js/bootstrap.min.js') }}
         {% block scripts %}{% endblock %}
     </head>
     <body>

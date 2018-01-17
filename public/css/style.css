@@ -1,0 +1,11 @@
+td#translation {
+  width: 50%;
+}
+
+td#translation textarea {
+  width: 100%;
+}
+
+td#translation input[type="button"] {
+  width: 100%;
+}
