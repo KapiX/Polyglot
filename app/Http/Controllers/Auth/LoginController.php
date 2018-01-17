@@ -3,6 +3,9 @@
 namespace Polyglot\Http\Controllers\Auth;
 
 use Polyglot\Http\Controllers\Controller;
+use Polyglot\User;
+use Socialite;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -25,7 +28,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/projects';
 
     /**
      * Create a new controller instance.
@@ -35,5 +38,32 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function redirectToProvider($provider)
+    {
+        return Socialite::driver($provider)->redirect();
+    }
+
+    public function handleProviderCallback($provider)
+    {
+        $user = Socialite::driver($provider)->user();
+        $authUser = $this->findOrCreateUser($user, $provider);
+        Auth::login($authUser, true);
+        return redirect($this->redirectTo);
+    }
+
+    public function findOrCreateUser($user, $provider)
+    {
+        $authUser = User::where('provider_id', $user->id)->first();
+        if($authUser) {
+            return $authUser;
+        }
+        return User::create([
+            'name' => $user->name,
+            'email' => $user->email,
+            'provider' => $provider,
+            'provider_id' => $user->id
+        ]);
     }
 }
