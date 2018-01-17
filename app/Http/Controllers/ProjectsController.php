@@ -39,7 +39,7 @@ class ProjectsController extends Controller
     {
         $project = new Project;
         $project->name = $request->input('name');
-        $project->github = '';
+        $project->url = '';
         $project->save();
 
         return \Redirect::route('projects.index')->with('message', 'Project added.');

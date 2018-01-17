@@ -46,6 +46,7 @@ class FilesController extends Controller
             'path' => '',
         ]);
         $file->checksum = '';
+        $file->mime_type = '';
         $file->project_id = $request->get('project_id');
 
         $file->save();
