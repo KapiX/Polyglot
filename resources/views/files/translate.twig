@@ -68,6 +68,11 @@ $(document).ready(function() {
 
 {% block content %}
 <h1>{{ file.project.name }} - {{ file.name }}</h1>
+<h2>Upload updates</h2>
+{{ form_open({url: route('files.import', {file: file.id, lang: lang.id}), method: POST, files: true}) }}
+{{ form_file('catkeys', null) }}
+{{ form_submit('Upload new') }}
+{{ form_close() }}
 <h2>Translations to {{ lang.name }}</h2>
 {% for context, texts in file.texts.groupBy('context') %}
 <h3>{{ context }}</h3>

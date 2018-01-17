@@ -151,6 +151,44 @@ class FilesController extends Controller
         return \Redirect::route('files.show', [$file->id])->with('message', 'Catkeys uploaded.');
     }
 
+    public function import(Request $request, File $file, Language $lang)
+    {
+        $catkeys = file_get_contents($request->file('catkeys')->getRealPath());
+        [$mimetype, $checksum, $catkeys_processed] = $this->processCatkeysFile($catkeys);
+
+        // TODO: verify checksum and mimetype and fail if they don't match
+
+        foreach($catkeys_processed as $catkey) {
+            $text = $file->texts()
+                ->whereRaw('STRCMP(text, ?) = 0', [$catkey['text']])
+                ->whereRaw('STRCMP(context, ?) = 0', [$catkey['context']])
+                ->whereRaw('STRCMP(comment, ?) = 0', [$catkey['comment']])
+                ->get();
+            if($text->count() == 0) {
+                // TODO: report stray texts?
+            } else {
+                // TODO: update in batches?
+                $t = $text->first()
+                    ->translations()->where('language_id', $lang->id)->get();
+                if($t->count() == 0) {
+                    $translation = new Translation;
+                    $translation->text_id = $text->first()->id;
+                    $translation->language_id = $lang->id;
+                    $translation->author_id = 1; // FIXME
+                    $translation->translation = $catkey['translation'];
+                    $translation->needs_work = 0;
+                    $translation->save();
+                } else {
+                    $translation = $t->first();
+                    $translation->translation = $catkey['translation'];
+                    $translation->save();
+                }
+            }
+        }
+
+        return \Redirect::route('files.translate', [$file->id, $lang->id])->with('message', 'Translations uploaded.');
+    }
+
     public function translate(File $file, Language $lang)
     {
         // FIXME: when database gets big, it's going to be painful
