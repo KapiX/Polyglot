@@ -68,7 +68,7 @@ $(document).ready(function() {
 
 {% block content %}
 <h1>{{ file.project.name }} - {{ file.name }}</h1>
-<h2>Upload updates</h2>
+<h2>Upload {{ lang.iso_code }}.catkeys</h2>
 {{ form_open({url: route('files.import', {file: file.id, lang: lang.id}), method: POST, files: true}) }}
 {{ form_file('catkeys', null) }}
 {{ form_submit('Upload new') }}

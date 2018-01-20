@@ -3,6 +3,9 @@
 {% block title %}Welcome to Polyglot{% endblock %}
 
 {% block content %}
-    <a href="{{ url('projects') }}">Projects</a>
+<div class="jumbotron">
+    <h1>Welcome to Polyglot!</h1>
+    <p>We're translating Haiku 3rd-party applications here.</p>
+    <p>{{ link_to_route('auth.provider', 'Sign in with GitHub to join', {provider: 'github'}, {'class': 'btn btn-primary btn-lg', 'role': 'button'}) }}</p>
 {% endblock %}
 

@@ -16,10 +16,12 @@
                         <a class="navbar-brand" href="#">Polyglot</a>
                     </div>
                     <div class="collapse navbar-collapse">
+                        {% if auth_check() %}
                         <ul class="nav navbar-nav">
                             <li>{{ link_to_route('projects.index', 'Projects') }}</li>
                             <li>{{ link_to_route('settings', 'Settings') }}</li>
                         </ul>
+                        {% endif %}
                         <ul class="nav navbar-nav navbar-right">
                             {% if auth_check() %}
                                 <li class="dropdown">
