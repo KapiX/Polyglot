@@ -4,11 +4,13 @@
 
 {% block content %}
 <h1>{{ file.name }}</h1>
+{% if auth_user().can('modify-file', file) %}
 <h2>Upload en.catkeys</h2>
 {{ form_open({url: route('files.upload', {id: file.id}), method: POST, files: true}) }}
 {{ form_file('catkeys', null) }}
 {{ form_submit('Upload new') }}
 {{ form_close() }}
+{% endif %}
 <h2>Texts</h2>
 {% for context, texts in file.texts.groupBy('context') %}
 <h3>{{ context }}</h3>

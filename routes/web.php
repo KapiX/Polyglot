@@ -12,7 +12,11 @@
 */
 
 Route::get('/', 'IndexController@index');
-Route::resource('projects', 'ProjectsController');
+Route::get('/projects', 'ProjectsController@index')->name('projects.index');
+Route::post('/projects', 'ProjectsController@store')->name('projects.store');
+Route::get('/projects/{project}', 'ProjectsController@show')->name('projects.show');
+Route::get('/projects/{project}/edit', 'ProjectsController@edit')->name('projects.edit')->middleware('can:modify-project,project');
+Route::put('/projects/{project}', 'ProjectsController@update')->name('projects.update')->middleware('can:modify-project,project');
 Route::post('/projects/{project}/file', 'FilesController@store')->name('files.store')->middleware('can:modify-project,project');
 Route::get('/files/{file}', 'FilesController@show')->name('files.show');
 Route::get('/files/{file}/edit', 'FilesController@edit')->name('files.edit')->middleware('can:modify-file,file');
