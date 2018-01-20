@@ -3,7 +3,11 @@
 {% block title %}{{ project.name }} - Edit{% endblock %}
 
 {% block content %}
-<h1>{{ project.name }} - Edit</h1>
+<ol class="breadcrumb">
+    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li>{{ link_to_route('projects.show', project.name, {project: project}) }}</li>
+    <li class="active">Edit</li>
+</ol>
 <h2>Languages</h2>
 {{ form_open({url: route('projects.update', project.id), method: 'PUT'}) }}
 {{ form_select('languages', languages, project.languages.pluck('id'), {multiple: 'multiple', name: 'languages[]'}) }}

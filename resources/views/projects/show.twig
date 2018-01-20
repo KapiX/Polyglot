@@ -1,9 +1,13 @@
 {% extends "layouts.master" %}
 
-{% block title %}Projects{% endblock %}
+{% block title %}{{ project.name }}{% endblock %}
 
 {% block content %}
-<h1>{{ project.name }}</h1>
+<ol class="breadcrumb">
+    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li>{{ link_to_route('projects.show', project.name, {project: project}) }}</li>
+    <li class="active">Files</li>
+</ol>
 {% for file in project.files %}
 <table class="table">
 <tr>

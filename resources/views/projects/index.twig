@@ -3,7 +3,10 @@
 {% block title %}Projects{% endblock %}
 
 {% block content %}
-<h1>Projects</h1>
+<ol class="breadcrumb">
+    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li class="active">Projects</li>
+</ol>
 <ul>
 {% for project in projects %}
     <li>

@@ -3,7 +3,10 @@
 {% block title %}Settings{% endblock %}
 
 {% block content %}
-<h1>Settings</h1>
+<ol class="breadcrumb">
+    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li class="active">Settings</li>
+</ol>
 <h2>Languages</h2>
 <ul>
 {% for language in languages %}

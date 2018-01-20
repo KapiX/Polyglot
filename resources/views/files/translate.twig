@@ -1,6 +1,6 @@
 {% extends "layouts.master" %}
 
-{% block title %}File{% endblock %}
+{% block title %}{{ file.project.name }} - {{ file.name }} - {{ lang.name }}{% endblock %}
 
 {% block scripts %}
 <script type="text/javascript">
@@ -69,7 +69,12 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
-<h1>{{ file.project.name }} - {{ file.name }}</h1>
+<ol class="breadcrumb">
+    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li>{{ link_to_route('projects.show', file.project.name, {project: file.project}) }}</li>
+    <li>{{ link_to_route('projects.show', file.name, {project: file.project}) }}</li>
+    <li class="active">{{ lang.name }}</li>
+</ol>
 <h2>Upload {{ lang.iso_code }}.catkeys</h2>
 {{ form_open({url: route('files.import', {file: file.id, lang: lang.id}), method: POST, files: true}) }}
 {{ form_file('catkeys', null) }}
