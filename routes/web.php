@@ -54,6 +54,9 @@ Route::get('/settings', 'IndexController@settings')
 Route::post('/settings/language', 'IndexController@addLanguage')
     ->name('settings.addLanguage')
     ->middleware('can:global-settings');
+Route::post('/settings/role/{user}', 'IndexController@changeRole')
+    ->name('settings.changeRole')
+    ->middleware('can:global-settings');
 
 Route::get('/auth/{provider}', 'Auth\LoginController@redirectToProvider')
     ->name('auth.provider');

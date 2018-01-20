@@ -18,4 +18,24 @@
 {{ form_text('name', null, ['required']) }}
 {{ form_submit('Add language') }}
 {{ form_close() }}
+<h2>Users</h2>
+<table class="table">
+{% for user in users %}
+<tr>
+    <td>{{ user.name }}</td>
+    <td>{{ user.email }}</td>
+    <td>
+        {% if user.id != auth_user().id %}
+        {{ form_open({url: route('settings.changeRole', user.id), method: POST}) }}
+        {{ form_select('role', roles, user.role, {name: 'role[]'}) }}
+        {{ form_submit('Save') }}
+        {{ form_close() }}
+        {% else %}
+        {{ roles[user.role] }}
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+</table>
+{{ users.links() }}
 {% endblock %}
