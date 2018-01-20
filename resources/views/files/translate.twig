@@ -64,6 +64,15 @@ $(document).ready(function() {
             });
         });
     });
+    $('#upload-form').submit(function(e) {
+        if(confirm("This will overwrite all translations. Are you sure?")) {
+            return true;
+        }
+        else {
+            e.preventDefault();
+            return false;
+        }
+    });
 });
 </script>
 {% endblock %}
@@ -76,7 +85,7 @@ $(document).ready(function() {
     <li class="active">{{ lang.name }}</li>
 </ol>
 <h2>Upload {{ lang.iso_code }}.catkeys</h2>
-{{ form_open({url: route('files.import', {file: file.id, lang: lang.id}), method: POST, files: true}) }}
+{{ form_open({url: route('files.import', {file: file.id, lang: lang.id}), method: POST, files: true, 'id': 'upload-form'}) }}
 {{ form_file('catkeys', null) }}
 {{ form_submit('Upload new') }}
 {{ form_close() }}
