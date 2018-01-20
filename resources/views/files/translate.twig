@@ -11,6 +11,7 @@ $(document).ready(function() {
         var lang = $(this).parents('table').attr('id');
         var form = '<div class="container-fluid"><div class="row"><textarea>' + translationCell.html() + '</textarea></div><div class="row"><div class="col-md-4"><input class="btn btn-primary" id="save" type="button" value="Save"></div><div class="col-md-4"><input class="btn" id="cancel" type="button" value="Cancel"></div><div class="col-md-4"><div class="checkbox"><label><input type="checkbox" id="needswork" value="1"> Needs work</label></div></div></div></div>';
         translationCell.html(form);
+        translationCell.removeClass('needs-work');
         $(this).unbind('click');
         var sendButton = $(translationCell).find('input#save');
         var cancelButton = $(translationCell).find('input#cancel');
@@ -35,12 +36,11 @@ $(document).ready(function() {
                 data: { '_token': '{{ csrf_token() }}', 'translation': textarea.val(), 'needswork': needsWorkCheckbox.prop('checked') },
                 url: '{{ url('/') }}/texts/' + id + '/lang/' + lang,
                 success: function (data) {
-                    var cellhtml;
                     if(data.needswork)
-                        cellhtml = '<i>' + data.translation + '</i>';
+                        translationCell.addClass('needs-work');
                     else
-                        cellhtml = data.translation;
-                    translationCell.html(cellhtml);
+                        translationCell.removeClass('needs-work');
+                    translationCell.html(data.translation);
                     tr.click(trclick);
                 }
             });
@@ -51,12 +51,11 @@ $(document).ready(function() {
                 dataType: 'json',
                 url: '{{ url('/') }}/texts/' + id + '/lang/' + lang,
                 success: function (data) {
-                    var cellhtml;
                     if(data.needswork)
-                        cellhtml = '<i>' + data.translation + '</i>';
+                        translationCell.addClass('needs-work');
                     else
-                        cellhtml = data.translation;
-                    translationCell.html(cellhtml);
+                        translationCell.removeClass('needs-work');
+                    translationCell.html(data.translation);
                     tr.click(trclick);
                 }
             });
@@ -82,10 +81,10 @@ $(document).ready(function() {
         <td><p>{{ text.text }}</p><p><small>{{ text.comment }}</small></p></td>
         {% set translation = translations[text.id][0] %}
         {% if translation == null %}
-            <td id="translation"><i>{{ text.text }}</i></td>
+            <td id="translation" class="needs-work">{{ text.text }}</td>
         {% else %}
             {% set needswork = translation.needs_work == true %}
-            <td id="translation">{% if needswork %}<i>{% endif %}{{ translations[text.id][0].translation }}{% if needswork %}</i>{% endif %}</td>
+            <td id="translation"{% if needswork %} class="needs-work"{% endif %}>{{ translations[text.id][0].translation }}</td>
         {% endif %}
     </tr>
     {% endfor %}

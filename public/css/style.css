@@ -1,11 +1,15 @@
 td#translation {
-  width: 50%;
+    width: 50%;
 }
 
 td#translation textarea {
-  width: 100%;
+    width: 100%;
 }
 
 td#translation input[type="button"] {
-  width: 100%;
+    width: 100%;
+}
+
+.needs-work {
+    font-style: italic;
 }
