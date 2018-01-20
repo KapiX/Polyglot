@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', 'IndexController@index');
+Route::get('/', 'IndexController@index')->middleware('guest');
 
 Route::get('/projects', 'ProjectsController@index')
     ->name('projects.index');
