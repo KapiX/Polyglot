@@ -27,6 +27,8 @@ $(document).ready(function() {
                 textarea.val(data.translation);
                 needsWorkCheckbox.prop('checked', data.needswork);
                 textarea.prop('disabled', false);
+                textarea.focus();
+                textarea.select();
             }
         });
         sendButton.click(function() {
@@ -42,6 +44,7 @@ $(document).ready(function() {
                         translationCell.removeClass('needs-work');
                     translationCell.html(data.translation);
                     tr.click(trclick);
+                    tr.next().click();
                 }
             });
         });
