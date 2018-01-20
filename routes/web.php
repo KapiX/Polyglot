@@ -13,13 +13,15 @@
 
 Route::get('/', 'IndexController@index');
 Route::resource('projects', 'ProjectsController');
-Route::resource('files', 'FilesController');
-Route::post('/files/{file}/upload', 'FilesController@upload')->name('files.upload');
+Route::post('/projects/{project}/file', 'FilesController@store')->name('files.store')->middleware('can:modify-project,project');
+Route::get('/files/{file}', 'FilesController@show')->name('files.show');
+Route::get('/files/{file}/edit', 'FilesController@edit')->name('files.edit')->middleware('can:modify-file,file');
+Route::post('/files/{file}/upload', 'FilesController@upload')->name('files.upload')->middleware('can:modify-file,file');
 Route::get('/files/{file}/lang/{lang}', 'FilesController@translate')->name('files.translate');
 Route::get('/texts/{text}/lang/{lang}', 'TextsController@show')->name('texts.show');
 Route::post('/texts/{text}/lang/{lang}', 'TextsController@store')->name('texts.store');
-Route::get('/settings', 'IndexController@settings')->name('settings')->middleware('auth');
-Route::post('/settings/language', 'IndexController@addLanguage')->name('settings.addLanguage')->middleware('auth');
+Route::get('/settings', 'IndexController@settings')->name('settings')->middleware('can:global-settings');
+Route::post('/settings/language', 'IndexController@addLanguage')->name('settings.addLanguage')->middleware('can:global-settings');
 Route::get('/files/{file}/lang/{lang}/export', 'FilesController@export')->name('files.export');
 Route::post('/files/{file}/lang/{lang}/import', 'FilesController@import')->name('files.import');
 Route::get('/auth/{provider}', 'Auth\LoginController@redirectToProvider')->name('auth.provider');

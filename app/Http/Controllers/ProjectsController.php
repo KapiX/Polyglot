@@ -48,6 +48,8 @@ class ProjectsController extends Controller
         $project->url = '';
         $project->save();
 
+        $project->users()->attach(Auth::id(), ['role' => 2]);
+
         return \Redirect::route('projects.index')->with('message', 'Project added.');
     }
 

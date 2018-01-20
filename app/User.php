@@ -26,4 +26,8 @@ class User extends Authenticatable
     protected $hidden = [
         'remember_token',
     ];
+
+    public function projects() {
+        return $this->belongsToMany('Polyglot\Project')->withPivot('role')->withTimestamps();
+    }
 }

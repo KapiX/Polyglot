@@ -15,4 +15,9 @@ class Project extends Model
     {
         return $this->belongsToMany('Polyglot\Language')->withTimestamps();
     }
+
+    public function users()
+    {
+        return $this->belongsToMany('Polyglot\User')->withPivot('role')->withTimestamps();
+    }
 }

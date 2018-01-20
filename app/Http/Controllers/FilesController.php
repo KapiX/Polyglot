@@ -4,6 +4,7 @@ namespace Polyglot\Http\Controllers;
 
 use Polyglot\File;
 use Polyglot\Language;
+use Polyglot\Project;
 use Polyglot\Text;
 use Polyglot\Translation;
 use Polyglot\Http\Requests\FileFormRequest;
@@ -45,7 +46,7 @@ class FilesController extends Controller
      * @param  int                       $project_id
      * @return \Illuminate\Http\Response
      */
-    public function store(FileFormRequest $request)
+    public function store(FileFormRequest $request, Project $project)
     {
         $file = new File([
             'name' => $request->input('name'),
@@ -53,11 +54,11 @@ class FilesController extends Controller
         ]);
         $file->checksum = '';
         $file->mime_type = '';
-        $file->project_id = $request->get('project_id');
+        $file->project_id = $project->id;
 
         $file->save();
 
-        return \Redirect::route('projects.show', [$request->get('project_id')])
+        return \Redirect::route('projects.show', [$project->id])
             ->with('message', 'File successfully added.');
     }
 
