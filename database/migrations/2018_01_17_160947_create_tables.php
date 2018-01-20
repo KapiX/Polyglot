@@ -19,7 +19,7 @@ class CreateTables extends Migration
             $table->string('email')->nullable();
             $table->string('provider');
             $table->string('provider_id');
-            $table->smallint('role')->default(0);
+            $table->smallInteger('role')->unsigned()->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
