@@ -6,7 +6,12 @@
 <h1>Projects</h1>
 <ul>
 {% for project in projects %}
-    <li>{{ link_to_route('projects.show', project.name, project.id, {}) }} {{ link_to_route('projects.edit', 'Edit', project.id, {}) }}</li>
+    <li>
+        {{ link_to_route('projects.show', project.name, project.id, {}) }}
+        {% if auth_user().can('modify-project', project) %}
+            {{ link_to_route('projects.edit', 'Edit', project.id, {}) }}
+        {% endif %}
+    </li>
 {% else %}
     <li>No projects found.</li>
 {% endfor %}
