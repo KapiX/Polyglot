@@ -157,7 +157,9 @@ class FilesController extends Controller
                     $translation->save();
                 } else {
                     $translation = $t->first();
+                    $translation->author_id = Auth::id();
                     $translation->translation = $catkey['translation'];
+                    $translation->needs_work = 0;
                     $translation->save();
                 }
             }
