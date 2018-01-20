@@ -76,10 +76,10 @@ $(document).ready(function() {
 {{ form_submit('Upload new') }}
 {{ form_close() }}
 <h2>Translations to {{ lang.name }}</h2>
-{% for context, texts in file.texts.groupBy('context') %}
+{% for context, textsGrouped in texts.groupBy('context') %}
 <h3>{{ context }}</h3>
 <table class="table" id="{{ lang.id }}">
-    {% for text in texts %}
+    {% for text in textsGrouped %}
     <tr id="{{ text.id }}">
         <td><p>{{ text.text }}</p><p><small>{{ text.comment }}</small></p></td>
         {% set translation = translations[text.id][0] %}
@@ -93,5 +93,6 @@ $(document).ready(function() {
     {% endfor %}
 </table>
 {% endfor %}
+{{ texts.links() | raw }}
 
 {% endblock %}
