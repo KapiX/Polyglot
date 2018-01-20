@@ -6,9 +6,15 @@ use Polyglot\Language;
 use Polyglot\Text;
 use Polyglot\Translation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TextsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -42,13 +48,13 @@ class TextsController extends Controller
             $translation = new Translation();
             $translation->text_id = $text->id;
             $translation->language_id = $lang->id;
-            $translation->author_id = 1; // FIXME
+            $translation->author_id = Auth::id();
             $translation->translation = $request->post('translation');
             $translation->needs_work = $request->post('needswork') === 'true' ? 1 : 0;
             $translation->save();
         } else {
             $translation = $translation->first();
-            $translation->author_id = 1; // FIXME
+            $translation->author_id = Auth::id();
             $translation->translation = $request->post('translation');
             $translation->needs_work = $request->post('needswork') === 'true' ? 1 : 0;
             $translation->save();

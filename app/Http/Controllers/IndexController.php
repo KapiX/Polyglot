@@ -11,6 +11,10 @@ class IndexController extends Controller
         return view('index.index');
     }
 
+    function login() {
+        return view('index.login');
+    }
+
     function settings() {
         $languages = Language::all();
         return view('index.settings')->with('languages', $languages);

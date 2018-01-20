@@ -9,9 +9,15 @@ use Polyglot\Translation;
 use Polyglot\Http\Requests\FileFormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class FilesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -175,7 +181,7 @@ class FilesController extends Controller
                     $translation = new Translation;
                     $translation->text_id = $text->first()->id;
                     $translation->language_id = $lang->id;
-                    $translation->author_id = 1; // FIXME
+                    $translation->author_id = Auth::id();
                     $translation->translation = $catkey['translation'];
                     $translation->needs_work = 0;
                     $translation->save();
