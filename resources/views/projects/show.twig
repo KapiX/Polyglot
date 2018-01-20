@@ -8,7 +8,7 @@
 <table class="table">
 <tr>
     <th>
-        {{ link_to_route('files.show', file.name, file.id, {}) }}
+        {{ file.name }}
         {% if auth_user().can('modify-file', file) %}
             {{ link_to_route('files.edit', 'Edit', file.id, {}) }}
         {% endif %}
@@ -32,11 +32,6 @@
 {{ form_label('File name:') }}
 {{ form_text('name', null, {'placeholder': 'Application, libone, etc.'}) }}
 {{ form_submit('Add file') }}
-{{ form_close() }}
-<h2>Languages</h2>
-{{ form_open({url: route('projects.update', project.id), method: 'PUT'}) }}
-{{ form_select('languages', languages, project.languages.pluck('id'), {multiple: 'multiple', name: 'languages[]'}) }}
-{{ form_submit('save') }}
 {{ form_close() }}
 {% endif %}
 {% endblock %}

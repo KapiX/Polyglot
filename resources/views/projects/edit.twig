@@ -1,0 +1,12 @@
+{% extends "layouts.master" %}
+
+{% block title %}{{ project.name }} - Edit{% endblock %}
+
+{% block content %}
+<h1>{{ project.name }} - Edit</h1>
+<h2>Languages</h2>
+{{ form_open({url: route('projects.update', project.id), method: 'PUT'}) }}
+{{ form_select('languages', languages, project.languages.pluck('id'), {multiple: 'multiple', name: 'languages[]'}) }}
+{{ form_submit('save') }}
+{{ form_close() }}
+{% endblock %}

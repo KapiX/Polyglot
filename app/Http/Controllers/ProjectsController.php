@@ -51,8 +51,7 @@ class ProjectsController extends Controller
      */
     public function show(Project $project)
     {
-        $languages = Language::pluck('name', 'id')->all();
-        return view('projects.show')->with('project', $project)->with('languages', $languages);
+        return view('projects.show')->with('project', $project);
     }
 
     /**
@@ -63,7 +62,10 @@ class ProjectsController extends Controller
      */
     public function edit(Project $project)
     {
-        //
+        $languages = Language::pluck('name', 'id')->all();
+        return view('projects.edit')
+            ->with('project', $project)
+            ->with('languages', $languages);
     }
 
     /**

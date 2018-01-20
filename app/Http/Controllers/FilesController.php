@@ -43,17 +43,6 @@ class FilesController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \Polyglot\File  $file
-     * @return \Illuminate\Http\Response
-     */
-    public function show(File $file)
-    {
-        return view('files.show')->with('file', $file);
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  \Polyglot\File  $file
@@ -61,7 +50,7 @@ class FilesController extends Controller
      */
     public function edit(File $file)
     {
-        //
+        return view('files.edit')->with('file', $file);
     }
 
     /**

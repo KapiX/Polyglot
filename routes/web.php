@@ -18,7 +18,6 @@ Route::get('/projects/{project}', 'ProjectsController@show')->name('projects.sho
 Route::get('/projects/{project}/edit', 'ProjectsController@edit')->name('projects.edit')->middleware('can:modify-project,project');
 Route::put('/projects/{project}', 'ProjectsController@update')->name('projects.update')->middleware('can:modify-project,project');
 Route::post('/projects/{project}/file', 'FilesController@store')->name('files.store')->middleware('can:modify-project,project');
-Route::get('/files/{file}', 'FilesController@show')->name('files.show');
 Route::get('/files/{file}/edit', 'FilesController@edit')->name('files.edit')->middleware('can:modify-file,file');
 Route::post('/files/{file}/upload', 'FilesController@upload')->name('files.upload')->middleware('can:modify-file,file');
 Route::get('/files/{file}/lang/{lang}', 'FilesController@translate')->name('files.translate');
