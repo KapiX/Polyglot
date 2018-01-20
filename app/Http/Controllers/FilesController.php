@@ -125,7 +125,7 @@ class FilesController extends Controller
             Text::insert($textsToInsert);
 
         // TODO: how many added and deleted
-        return \Redirect::route('files.show', [$file->id])->with('message', 'Catkeys uploaded.');
+        return \Redirect::route('files.edit', [$file->id])->with('message', 'Catkeys uploaded.');
     }
 
     public function import(Request $request, File $file, Language $lang)
