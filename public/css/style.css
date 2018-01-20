@@ -1,12 +1,17 @@
-td#translation {
+td.translation {
     width: 50%;
+    cursor: pointer;
 }
 
-td#translation textarea {
+td.translation.translation-active {
+    cursor: default;
+}
+
+td.translation textarea {
     width: 100%;
 }
 
-td#translation input[type="button"] {
+td.translation input[type="button"] {
     width: 100%;
 }
 

@@ -6,7 +6,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $('tr').click(function trclick() {
-        var translationCell = $(this).find('td#translation');
+        var translationCell = $(this).find('td.translation');
         var id = $(this).attr('id');
         var lang = $(this).parents('table').attr('id');
         var form = '<div class="container-fluid"><div class="row"><textarea>' + translationCell.html() + '</textarea></div><div class="row"><div class="col-md-4"><input class="btn btn-primary" id="save" type="button" value="Save"></div><div class="col-md-4"><input class="btn" id="cancel" type="button" value="Cancel"></div><div class="col-md-4"><div class="checkbox"><label><input type="checkbox" id="needswork" value="1"> Needs work</label></div></div></div></div>';
@@ -29,6 +29,7 @@ $(document).ready(function() {
                 textarea.prop('disabled', false);
                 textarea.focus();
                 textarea.select();
+                translationCell.addClass('translation-active');
             }
         });
         sendButton.click(function() {
@@ -43,6 +44,7 @@ $(document).ready(function() {
                     else
                         translationCell.removeClass('needs-work');
                     translationCell.html(data.translation);
+                    translationCell.removeClass('translation-active');
                     tr.click(trclick);
                     tr.next().click();
                 }
@@ -60,6 +62,7 @@ $(document).ready(function() {
                         translationCell.removeClass('needs-work');
                     translationCell.html(data.translation);
                     tr.click(trclick);
+                    translationCell.removeClass('translation-active');
                 }
             });
         });
@@ -92,16 +95,16 @@ $(document).ready(function() {
 <h2>Translations to {{ lang.name }}</h2>
 {% for context, textsGrouped in texts.groupBy('context') %}
 <h3>{{ context }}</h3>
-<table class="table" id="{{ lang.id }}">
+<table class="table table-hover" id="{{ lang.id }}">
     {% for text in textsGrouped %}
     <tr id="{{ text.id }}">
         <td><p>{{ text.text }}</p><p><small>{{ text.comment }}</small></p></td>
         {% set translation = translations[text.id][0] %}
         {% if translation == null %}
-            <td id="translation" class="needs-work">{{ text.text }}</td>
+            <td class="translation needs-work">{{ text.text }}</td>
         {% else %}
             {% set needswork = translation.needs_work == true %}
-            <td id="translation"{% if needswork %} class="needs-work"{% endif %}>{{ translations[text.id][0].translation }}</td>
+            <td class="translation{% if needswork %} needs-work{% endif %}">{{ translations[text.id][0].translation }}</td>
         {% endif %}
     </tr>
     {% endfor %}
