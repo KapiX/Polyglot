@@ -11,10 +11,12 @@
     <li>No projects found.</li>
 {% endfor %}
 </ul>
+{% if auth_user().can('add-project') %}
 <h2>Add project</h2>
 {{ form_open({url: route('projects.store'), method: POST}) }}
 {{ form_label('Project name:') }}
 {{ form_text('name', null, ['required']) }}
 {{ form_submit('Add project') }}
 {{ form_close() }}
+{% endif %}
 {% endblock %}

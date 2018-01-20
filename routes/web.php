@@ -13,7 +13,7 @@
 
 Route::get('/', 'IndexController@index');
 Route::get('/projects', 'ProjectsController@index')->name('projects.index');
-Route::post('/projects', 'ProjectsController@store')->name('projects.store');
+Route::post('/projects', 'ProjectsController@store')->name('projects.store')->middleware('can:add-project');
 Route::get('/projects/{project}', 'ProjectsController@show')->name('projects.show');
 Route::get('/projects/{project}/edit', 'ProjectsController@edit')->name('projects.edit')->middleware('can:modify-project,project');
 Route::put('/projects/{project}', 'ProjectsController@update')->name('projects.update')->middleware('can:modify-project,project');

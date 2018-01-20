@@ -29,7 +29,10 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('global-settings', function($user) {
-            return $user->id === 1;
+            return $user->role === 2; // global admin
+        });
+        Gate::define('add-project', function($user) {
+            return $user->role === 1 || $user->role === 2; // developer
         });
         Gate::define('modify-project', function($user, Project $project) {
             $u = $project->users()->where('users.id', $user->id);
