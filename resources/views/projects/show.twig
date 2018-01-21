@@ -8,28 +8,53 @@
     <li>{{ link_to_route('projects.show', project.name, {project: project}) }}</li>
     <li class="active">Files</li>
 </ol>
-{% for file in project.files %}
-<table class="table">
+{% if project.files.count() > 0 %}
+<table class="table table-striped">
+<thead>
 <tr>
+    <th></th>
+{% for file in project.files %}
     <th>
         {{ file.name }}
         {% if auth_user().can('modify-file', file) %}
             {{ link_to_route('files.edit', 'Edit', file.id, {}) }}
         {% endif %}
     </th>
+{% endfor %}
 </tr>
+</thead>
+<tbody>
 {% for language in project.languages %}
     {% if language.iso_code != 'en' %}
     <tr>
-        <td>{{ link_to_route('files.translate', language.name, {file: file.id, lang: language.id}, {}) }}
-        {{ link_to_route('files.export', 'Export', {file: file.id, lang: language.id}, {}) }}</td>
+        <td>{{ language.name }}</td>
+        {% for file in project.files %}
+        <td>
+            {% set lang_stat = status[file.id][language.id] %}
+            <div class="progress progress-translation">
+                <div class="progress-bar progress-bar-success"
+                     style="width: {{ lang_stat['translated'] }}%">
+                    {% if lang_stat['translated'] > 24 %}
+                        {{ lang_stat['translated'] }}%
+                    {% endif %}
+                </div>
+                <div class="progress-bar progress-bar-warning"
+                     style="width: {{ lang_stat['needs_work'] }}%"></div>
+            </div>
+            {{ link_to_route('files.translate', 'Translate',
+                {file: file.id, lang: language.id}, {}) }}
+            {{ link_to_route('files.export', 'Export',
+                {file: file.id, lang: language.id}, {}) }}
+        </td>
+        {% endfor %}
     </tr>
     {% endif %}
 {% endfor %}
+</tbody>
 </table>
 {% else %}
 <p>This project has no files.</p>
-{% endfor %}
+{% endif %}
 {% if auth_user().can('modify-project', project) %}
 <h2>Add files</h2>
 {{ form_open({url: route('files.store', {project: project.id}), method: POST}) }}

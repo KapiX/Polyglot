@@ -18,3 +18,11 @@ td.translation input[type="button"] {
 .needs-work {
     font-style: italic;
 }
+
+.progress-translation {
+    display: inline-block;
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 100px;
+    vertical-align: middle;
+}

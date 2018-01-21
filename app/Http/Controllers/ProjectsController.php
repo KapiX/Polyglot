@@ -4,6 +4,7 @@ namespace Polyglot\Http\Controllers;
 
 use Polyglot\Language;
 use Polyglot\Project;
+use Polyglot\Translation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -51,7 +52,34 @@ class ProjectsController extends Controller
      */
     public function show(Project $project)
     {
-        return view('projects.show')->with('project', $project);
+        // count progress
+        $languages = Language::all();
+        $status = [];
+        foreach($project->files as $file) {
+            $status[$file->id] = [];
+            $texts = $file->texts()->get(['id']);
+            $count = $texts->count();
+            foreach($languages as $language) {
+                // FIXME: this can be optimized
+                $translated = Translation::whereIn('text_id', $texts)
+                    ->where('language_id', $language->id)
+                    ->groupBy('needs_work')
+                    ->selectRaw('needs_work, count(id)')
+                    ->get()
+                    ->mapWithKeys(function($item) use ($count) {
+                        return [$item['needs_work'] =>
+                            round($item['count(id)'] / $count * 100)];
+                    })->toArray();
+                if(!array_key_exists(0, $translated)) $translated[0] = 0;
+                if(!array_key_exists(1, $translated)) $translated[1] = 0;
+                $keys = ['translated', 'needs_work'];
+                $status[$file->id][$language->id] =
+                    array_combine($keys, $translated);
+            }
+        }
+        return view('projects.show')
+            ->with('project', $project)
+            ->with('status', $status);
     }
 
     /**
