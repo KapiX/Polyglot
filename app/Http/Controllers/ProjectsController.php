@@ -79,7 +79,8 @@ class ProjectsController extends Controller
         }
         return view('projects.show')
             ->with('project', $project)
-            ->with('status', $status);
+            ->with('status', $status)
+            ->with('languages', $languages);
     }
 
     /**
