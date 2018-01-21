@@ -149,13 +149,15 @@ class FilesController extends Controller
                     ->translations()->where('language_id', $lang->id)->get();
                 $needswork = $catkey['text'] === $catkey['translation'] ? 1 : 0;
                 if($t->count() == 0) {
-                    $translation = new Translation;
-                    $translation->text_id = $text->first()->id;
-                    $translation->language_id = $lang->id;
-                    $translation->author_id = Auth::id();
-                    $translation->translation = $catkey['translation'];
-                    $translation->needs_work = $needswork;
-                    $translation->save();
+                    if($needswork == 0) {
+                        $translation = new Translation;
+                        $translation->text_id = $text->first()->id;
+                        $translation->language_id = $lang->id;
+                        $translation->author_id = Auth::id();
+                        $translation->translation = $catkey['translation'];
+                        $translation->needs_work = $needswork;
+                        $translation->save();
+                    }
                 } else {
                     $translation = $t->first();
                     $translation->author_id = Auth::id();
