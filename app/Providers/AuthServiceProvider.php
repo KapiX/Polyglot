@@ -35,6 +35,9 @@ class AuthServiceProvider extends ServiceProvider
             return $user->role === 1 || $user->role === 2; // developer
         });
         Gate::define('modify-project', function($user, Project $project) {
+            if($user->role === 2) // global admin
+                return true;
+
             $u = $project->users()->where('users.id', $user->id);
             if($u->count() > 0) {
                 return $u->first()->pivot->role === 2;
@@ -42,6 +45,9 @@ class AuthServiceProvider extends ServiceProvider
             return false;
         });
         Gate::define('modify-file', function($user, File $file) {
+            if($user->role === 2) // global admin
+                return true;
+
             $u = $file->project->users()->where('users.id', $user->id);
             if($u->count() > 0) {
                 return $u->first()->pivot->role === 2;
