@@ -59,6 +59,16 @@ class TextsController extends Controller
             $translation->needs_work = $request->post('needswork') === 'true' ? 1 : 0;
             $translation->save();
         }
+
+        $users = $text->file->project->users();
+        $isInDb = $users->wherePivot('role', 2)
+                        ->orWherePivot('language_id', $lang->id)
+                        ->get();
+        if($isInDb->count() == 0) {
+            $users->attach([
+                Auth::id() => ['language_id' => $lang->id, 'role' => 1]
+            ]);
+        }
         return \Response::json(['status' => 'success', 'translation' => $translation->translation, 'needswork' => $translation->needs_work === 1 ? true : false]);
     }
 

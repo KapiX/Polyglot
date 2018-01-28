@@ -18,6 +18,8 @@ class Project extends Model
 
     public function users()
     {
-        return $this->belongsToMany('Polyglot\User')->withPivot('role')->withTimestamps();
+        return $this->belongsToMany('Polyglot\User')
+            ->withPivot('language_id', 'role')
+            ->withTimestamps();
     }
 }

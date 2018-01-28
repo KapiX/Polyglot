@@ -28,6 +28,8 @@ class User extends Authenticatable
     ];
 
     public function projects() {
-        return $this->belongsToMany('Polyglot\Project')->withPivot('role')->withTimestamps();
+        return $this->belongsToMany('Polyglot\Project')
+            ->withPivot('language_id', 'role')
+            ->withTimestamps();
     }
 }
