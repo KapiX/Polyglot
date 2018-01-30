@@ -30,3 +30,7 @@ td.translation input[type="button"] {
 span.admin {
     font-weight: bold;
 }
+
+p.message {
+    padding: 15px;
+}

@@ -8,32 +8,6 @@
     <li>{{ link_to_route('projects.show', project.name, {project: project}) }}</li>
     <li class="active">Files</li>
 </ol>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">Administrators</div>
-                <div class="panel-body">
-                    {% for admin in project.administrators %}
-                    {{ admin.name }}{% if loop.last == false %}, {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">Contributors</div>
-                <div class="panel-body">
-                    {% for contributor in contributors %}
-                    <span class="{{ roleClass[contributor[0].role] }}">
-                        {{ contributor[0].user.name }} {{ contributor.language }}
-                        ({% for language in contributor %}{{ language.language.iso_code }}{% if loop.last == false %}, {% endif %}{% endfor %})</span>{% if loop.last == false %}, {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 {% if project.files.count() > 0 %}
 <table class="table table-striped">
 <thead>
@@ -81,12 +55,58 @@
 {% else %}
 <p>This project has no files.</p>
 {% endif %}
-{% if auth_user().can('modify-project', project) %}
-<h2>Add files</h2>
+{{ block('panels') }}
+{% endblock %}
+
+{% block panels %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Administrators</div>
+                <div class="panel-body">
+                    {% for admin in project.administrators %}
+                    {{ admin.name }}{% if loop.last == false %}, {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Contributors</div>
+                <div class="panel-body">
+                    {% for contributor in contributors %}
+                    <span class="{{ roleClass[contributor[0].role] }}">
+                        {{ contributor[0].user.name }} {{ contributor.language }}
+                        ({% for language in contributor %}{{ language.language.iso_code }}{% if loop.last == false %}, {% endif %}{% endfor %})</span>{% if loop.last == false %}, {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% if auth_user().can('modify-project', project) %}
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Add file</div>
+                <div class="panel-body">
+                    {{ block('add_file_panel') }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block add_file_panel %}
+<p class="message bg-info">
+Some apps have several catkeys for different parts of the software, like for the main "Application", a "Library" or "Tracker-addon". Here you can add those different sub-projects. Normal, "single-projects", should be named "Application".
+</p>
 {{ form_open({url: route('files.store', {project: project.id}), method: POST}) }}
-{{ form_label('File name:') }}
-{{ form_text('name', null, {'placeholder': 'Application, libone, etc.'}) }}
-{{ form_submit('Add file') }}
+<div class="input-group">
+    {{ form_text('name', null, {'placeholder': 'Name', 'class': 'form-control'}) }}
+    <span class="input-group-btn">
+        {{ form_submit('Add', {'class': 'btn btn-default'}) }}
+    </span>
+</div>
 {{ form_close() }}
-{% endif %}
 {% endblock %}
