@@ -19,7 +19,22 @@ class Project extends Model
     public function users()
     {
         return $this->belongsToMany('Polyglot\User')
+            ->using('Polyglot\ProjectUser')
             ->withPivot('language_id', 'role')
             ->withTimestamps();
+    }
+
+    public function administrators()
+    {
+        return $this->users()
+            ->wherePivot('role', 2)
+            ->orderBy('name');
+    }
+
+    public function contributors()
+    {
+        return $this->users()
+            ->wherePivot('role', '<>', 2)
+            ->orderBy('name');
     }
 }

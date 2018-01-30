@@ -8,6 +8,32 @@
     <li>{{ link_to_route('projects.show', project.name, {project: project}) }}</li>
     <li class="active">Files</li>
 </ol>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Administrators</div>
+                <div class="panel-body">
+                    {% for admin in project.administrators %}
+                    {{ admin.name }}{% if loop.last == false %}, {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Contributors</div>
+                <div class="panel-body">
+                    {% for contributor in contributors %}
+                    <span class="{{ roleClass[contributor[0].role] }}">
+                        {{ contributor[0].user.name }} {{ contributor.language }}
+                        ({% for language in contributor %}{{ language.language.iso_code }}{% if loop.last == false %}, {% endif %}{% endfor %})</span>{% if loop.last == false %}, {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% if project.files.count() > 0 %}
 <table class="table table-striped">
 <thead>

@@ -15,7 +15,7 @@ td.translation input[type="button"] {
     width: 100%;
 }
 
-.needs-work {
+.needs-work, span.past-translator {
     font-style: italic;
 }
 
@@ -25,4 +25,8 @@ td.translation input[type="button"] {
     margin-bottom: auto;
     width: 100px;
     vertical-align: middle;
+}
+
+span.admin {
+    font-weight: bold;
 }

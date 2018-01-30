@@ -29,6 +29,7 @@ class User extends Authenticatable
 
     public function projects() {
         return $this->belongsToMany('Polyglot\Project')
+            ->using('Polyglot\ProjectUser')
             ->withPivot('language_id', 'role')
             ->withTimestamps();
     }

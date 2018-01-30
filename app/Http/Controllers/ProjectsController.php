@@ -4,6 +4,7 @@ namespace Polyglot\Http\Controllers;
 
 use Polyglot\Language;
 use Polyglot\Project;
+use Polyglot\ProjectUser;
 use Polyglot\Translation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -77,10 +78,23 @@ class ProjectsController extends Controller
                     array_combine($keys, $translated);
             }
         }
+        $contributorRoles = [
+            0 => 'past-translator',
+            1 => 'translator',
+            2 => 'admin'
+        ];
+        $contributors = ProjectUser::contributors($project->id)
+            ->with('user')
+            ->with('language')
+            ->get()->groupBy('user_id')->sortBy(function($c) {
+                return strtolower($c[0]->user->name);
+            });
         return view('projects.show')
             ->with('project', $project)
             ->with('status', $status)
-            ->with('languages', $languages);
+            ->with('languages', $languages)
+            ->with('roleClass', $contributorRoles)
+            ->with('contributors', $contributors);
     }
 
     /**
