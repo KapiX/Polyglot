@@ -98,7 +98,7 @@
 {% endblock %}
 
 {% block add_file_panel %}
-<p class="message bg-info">
+<p class="message bg-info text-info">
 Some apps have several catkeys for different parts of the software, like for the main "Application", a "Library" or "Tracker-addon". Here you can add those different sub-projects. Normal, "single-projects", should be named "Application".
 </p>
 {{ form_open({url: route('files.store', {project: project.id}), method: POST}) }}
