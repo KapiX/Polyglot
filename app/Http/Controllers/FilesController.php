@@ -168,6 +168,18 @@ class FilesController extends Controller
             }
         }
 
+        $users = $file->project->users();
+        $isInDb = $users->where('user_id', Auth::id())
+                        ->where(function($query) use ($lang) {
+            $query->where('project_user.role', 2)
+                  ->orWhere('project_user.language_id', $lang->id);
+        })->get();
+        if($isInDb->count() == 0) {
+            $users->attach([
+                Auth::id() => ['language_id' => $lang->id, 'role' => 1]
+            ]);
+        }
+
         return \Redirect::route('files.translate', [$file->id, $lang->id])->with('message', 'Translations uploaded.');
     }
 
