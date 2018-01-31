@@ -34,3 +34,7 @@ span.admin {
 p.message {
     padding: 15px;
 }
+
+a.navbar-brand {
+    padding: 5px 10px;
+}

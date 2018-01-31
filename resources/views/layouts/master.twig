@@ -3,17 +3,20 @@
     <head>
         <meta charset="utf-8">
         <title>{% block title %}{% endblock %}</title>
+        {% spaceless %}
+        {{ html_favicon('favicon.ico') }}
         {{ html_style('css/bootstrap.min.css') }}
         {{ html_style('css/style.css') }}
         {{ html_script('js/jquery-3.2.1.min.js') }}
         {{ html_script('js/bootstrap.min.js') }}
+        {% endspaceless %}
         {% block scripts %}{% endblock %}
     </head>
     <body>
             <nav class="navbar navbar-default navbar-static-top">
                 <div class="container">
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="{{ url('/') }}">Polyglot</a>
+                        <a class="navbar-brand" href="{{ url('/') }}">{{ html_image('images/Polyglot_40px.png') }}</a>
                     </div>
                     <div class="collapse navbar-collapse">
                         {% if auth_check() %}
