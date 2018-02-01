@@ -16,7 +16,7 @@
 {{ form_submit('Upload new') }}
 {{ form_close() }}
 {% endif %}
-<h2>Texts</h2>
+<h2>Current catkeys <small>{{ file.mime_type ?? '' }} {{ file.checksum ?? '' }}</small></h2>
 {% for context, texts in file.texts.groupBy('context') %}
 <h3>{{ context }}</h3>
 <table>
