@@ -9,9 +9,9 @@ $(document).ready(function() {
         var translationCell = $(this).find('td.translation');
         var id = $(this).attr('id');
         var lang = $(this).parents('table').attr('id');
-        var form = '<div class="container-fluid"><div class="row"><textarea>' + translationCell.html() + '</textarea></div><div class="row"><div class="col-md-4"><input class="btn btn-primary" id="save" type="button" value="Save"></div><div class="col-md-4"><input class="btn" id="cancel" type="button" value="Cancel"></div><div class="col-md-4"><div class="checkbox"><label><input type="checkbox" id="needswork" value="1"> Needs work</label></div></div></div></div>';
+        var form = '<div class="container-fluid"><div class="row"><textarea>' + translationCell.html() + '</textarea></div><div class="row"><div class="col-md-4"><div class="checkbox"><label><input type="checkbox" id="needswork" value="1"> Needs work</label></div></div><div class="col-md-4"><input class="btn btn-primary" id="save" type="button" value="Save"></div><div class="col-md-4"><input class="btn" id="cancel" type="button" value="Cancel"></div></div></div>';
         translationCell.html(form);
-        translationCell.removeClass('needs-work');
+        $(this).removeClass('warning');
         $(this).unbind('click');
         var sendButton = $(translationCell).find('input#save');
         var cancelButton = $(translationCell).find('input#cancel');
@@ -40,9 +40,9 @@ $(document).ready(function() {
                 url: '{{ url('/') }}/texts/' + id + '/lang/' + lang,
                 success: function (data) {
                     if(data.needswork)
-                        translationCell.addClass('needs-work');
+                        tr.addClass('warning');
                     else
-                        translationCell.removeClass('needs-work');
+                        tr.removeClass('warning');
                     translationCell.html(data.translation);
                     translationCell.removeClass('translation-active');
                     tr.click(trclick);
@@ -57,9 +57,9 @@ $(document).ready(function() {
                 url: '{{ url('/') }}/texts/' + id + '/lang/' + lang,
                 success: function (data) {
                     if(data.needswork)
-                        translationCell.addClass('needs-work');
+                        tr.addClass('warning');
                     else
-                        translationCell.removeClass('needs-work');
+                        tr.removeClass('warning');
                     translationCell.html(data.translation);
                     tr.click(trclick);
                     translationCell.removeClass('translation-active');
@@ -93,18 +93,20 @@ $(document).ready(function() {
 {{ form_submit('Upload new') }}
 {{ form_close() }}
 <h2>Translations to {{ lang.name }}</h2>
+<p class="message bg-info text-info">
+For strings that don't need translation, because they are the same as the English original, the "Needs work" checkbox should be unmarked. Otherwise the percentage display on the overview page doesn't reach 100%.
+</p>
 {% for context, textsGrouped in texts.groupBy('context') %}
 <h3>{{ context }}</h3>
 <table class="table table-hover" id="{{ lang.id }}">
     {% for text in textsGrouped %}
-    <tr id="{{ text.id }}">
-        <td><p>{{ text.text }}</p><p><small>{{ text.comment }}</small></p></td>
-        {% set translation = translations[text.id][0] %}
+    {% set translation = translations[text.id][0] %}
+    <tr id="{{ text.id }}"{{ translation == null or translation.needs_work == true ? ' class="warning"' }}>
+        <td><p>{{ text.text }}</p><p class="comment">{{ text.comment }}</p></td>
         {% if translation == null %}
-            <td class="translation needs-work">{{ text.text }}</td>
+            <td class="translation">{{ text.text }}</td>
         {% else %}
-            {% set needswork = translation.needs_work == true %}
-            <td class="translation{% if needswork %} needs-work{% endif %}">{{ translations[text.id][0].translation }}</td>
+            <td class="translation">{{ translation.translation }}</td>
         {% endif %}
     </tr>
     {% endfor %}

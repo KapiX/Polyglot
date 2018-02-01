@@ -15,10 +15,6 @@ td.translation input[type="button"] {
     width: 100%;
 }
 
-.needs-work, span.past-translator {
-    font-style: italic;
-}
-
 .progress-translation {
     display: inline-block;
     margin-top: auto;
@@ -27,12 +23,21 @@ td.translation input[type="button"] {
     vertical-align: middle;
 }
 
+span.past-translator {
+    font-style: italic;
+}
+
 span.admin {
     font-weight: bold;
 }
 
 p.message {
     padding: 15px;
+}
+
+p.comment {
+    font-size: 85%;
+    font-style: italic;
 }
 
 a.navbar-brand {
