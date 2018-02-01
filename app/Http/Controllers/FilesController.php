@@ -36,10 +36,13 @@ class FilesController extends Controller
         $file->mime_type = '';
         $file->project_id = $project->id;
 
-        $file->save();
-
-        return \Redirect::route('projects.show', [$project->id])
-            ->with('message', 'File successfully added.');
+        if($file->save()) {
+            return \Redirect::route('files.edit', [$file->id])
+                ->with('message', 'File successfully added.');
+        } else {
+            return \Redirect::route('projects.show', [$project->id])
+                ->with('message', 'Something went wrong.');
+        }
     }
 
     /**
