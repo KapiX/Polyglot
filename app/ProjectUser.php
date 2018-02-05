@@ -23,6 +23,7 @@ class ProjectUser extends Pivot
 
     public function scopeContributors($query, $projectId)
     {
-        return $query->where('project_id', $projectId);
+        return $query->where('project_id', $projectId)
+                     ->where('role', '<>', 2);
     }
 }
