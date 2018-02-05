@@ -54,7 +54,7 @@ class ProjectsController extends Controller
     public function show(Project $project)
     {
         // count progress
-        $languages = Language::orderBy('name')->get();
+        $languages = Language::orderBy('iso_code')->get();
         $status = [];
         foreach($project->files as $file) {
             $status[$file->id] = [];

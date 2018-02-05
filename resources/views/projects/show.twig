@@ -27,7 +27,8 @@
 {% for language in languages %}
     {% if language.iso_code != 'en' %}
     <tr>
-        <td>{{ language.name }}</td>
+        <td>{{ html_image('images/flags/' ~ language.iso_code ~ '-flag_32.png') }}
+            {{ language.name }}</td>
         {% for file in project.files %}
         <td>
             {% set lang_stat = status[file.id][language.id] %}
