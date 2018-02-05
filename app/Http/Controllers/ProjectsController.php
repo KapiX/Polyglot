@@ -51,11 +51,12 @@ class ProjectsController extends Controller
      * @param  \Polyglot\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function show(Project $project)
+    public function show(Project $project, $display = 'active')
     {
         // count progress
         $languages = Language::orderBy('iso_code')->get();
         $status = [];
+        $modified = [];
         foreach($project->files as $file) {
             $status[$file->id] = [];
             $texts = $file->texts()->get(['id']);
@@ -76,6 +77,9 @@ class ProjectsController extends Controller
                 $keys = ['translated', 'needs_work'];
                 $status[$file->id][$language->id] =
                     array_combine($keys, $translated);
+                if(array_key_exists($language->id, $modified) === false)
+                    $modified[$language->id] = 0;
+                $modified[$language->id] += array_sum($translated);
             }
         }
         $contributorRoles = [
@@ -89,9 +93,14 @@ class ProjectsController extends Controller
             ->get()->groupBy('user_id')->sortBy(function($c) {
                 return strtolower($c[0]->user->name);
             });
+        $displayLinkLabel = sprintf('Show %s languages',
+                                    ($display == 'all' ? 'only active' : 'all'));
         return view('projects.show')
+            ->with('display', $display)
             ->with('project', $project)
             ->with('status', $status)
+            ->with('modifiedKeys', $modified)
+            ->with('displayLinkLabel', $displayLinkLabel)
             ->with('languages', $languages)
             ->with('roleClass', $contributorRoles)
             ->with('contributors', $contributors);

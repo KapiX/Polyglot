@@ -12,44 +12,47 @@
 <table class="table table-striped">
 <thead>
 <tr>
-    <th></th>
-{% for file in project.files %}
+    <th>
+        {{ link_to_route('projects.show', displayLinkLabel,
+            { 'project': project.id, 'display': display == 'active' ? 'all' : '' }) }}
+    </th>
+    {% for file in project.files %}
     <th>
         {{ file.name }}
         {% if auth_user().can('modify-file', file) %}
             {{ link_to_route('files.edit', 'Edit', file.id, {}) }}
         {% endif %}
     </th>
-{% endfor %}
+    {% endfor %}
 </tr>
 </thead>
 <tbody>
-{% for language in languages %}
-    {% if language.iso_code != 'en' %}
-    <tr>
-        <td>{{ html_image('images/flags/' ~ language.iso_code ~ '-flag_32.png') }}
-            {{ language.name }}</td>
-        {% for file in project.files %}
-        <td>
-            {% set lang_stat = status[file.id][language.id] %}
-            <div class="progress progress-translation">
-                <div class="progress-bar progress-bar-success"
-                     style="width: {{ lang_stat['translated'] }}%">
-                    {% if lang_stat['translated'] > 24 %}
-                        {{ lang_stat['translated'] }}%
-                    {% endif %}
-                </div>
-                <div class="progress-bar progress-bar-warning"
-                     style="width: {{ lang_stat['needs_work'] }}%"></div>
+{% for language in languages
+    if language.iso_code != 'en' and
+        (display == 'active' and modifiedKeys[language.id] > 0) or (display == 'all') %}
+<tr>
+    <td>{{ html_image('images/flags/' ~ language.iso_code ~ '-flag_32.png') }}
+        {{ language.name }}</td>
+    {% for file in project.files %}
+    <td>
+        {% set lang_stat = status[file.id][language.id] %}
+        <div class="progress progress-translation">
+            <div class="progress-bar progress-bar-success"
+                 style="width: {{ lang_stat['translated'] }}%">
+                {% if lang_stat['translated'] > 24 %}
+                    {{ lang_stat['translated'] }}%
+                {% endif %}
             </div>
-            {{ link_to_route('files.translate', 'Translate',
-                {file: file.id, lang: language.id}, {}) }}
-            {{ link_to_route('files.export', 'Export',
-                {file: file.id, lang: language.id}, {}) }}
-        </td>
-        {% endfor %}
-    </tr>
-    {% endif %}
+            <div class="progress-bar progress-bar-warning"
+                 style="width: {{ lang_stat['needs_work'] }}%"></div>
+        </div>
+        {{ link_to_route('files.translate', 'Translate',
+            {file: file.id, lang: language.id}, {}) }}
+        {{ link_to_route('files.export', 'Export',
+            {file: file.id, lang: language.id}, {}) }}
+    </td>
+    {% endfor %}
+</tr>
 {% endfor %}
 </tbody>
 </table>

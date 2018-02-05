@@ -18,7 +18,8 @@ Route::get('/projects', 'ProjectsController@index')
 Route::post('/projects', 'ProjectsController@store')
     ->name('projects.store')
     ->middleware('can:add-project');
-Route::get('/projects/{project}', 'ProjectsController@show')
+Route::get('/projects/{project}/{display?}', 'ProjectsController@show')
+    ->where('display', 'all|active')
     ->name('projects.show');
 Route::get('/projects/{project}/edit', 'ProjectsController@edit')
     ->name('projects.edit')
