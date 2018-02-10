@@ -54,11 +54,18 @@ Route::post('/texts/{text}/lang/{lang}', 'TextsController@store')
 Route::get('/settings', 'IndexController@settings')
     ->name('settings')
     ->middleware('can:global-settings');
-Route::post('/settings/language', 'IndexController@addLanguage')
-    ->name('settings.addLanguage')
-    ->middleware('can:global-settings');
 Route::post('/settings/role/{user}', 'IndexController@changeRole')
     ->name('settings.changeRole')
+    ->middleware('can:global-settings');
+
+Route::get('/languages', 'LanguagesController@index')
+    ->name('languages.index')
+    ->middleware('can:global-settings');
+Route::post('/languages', 'LanguagesController@store')
+    ->name('languages.store')
+    ->middleware('can:global-settings');
+Route::put('/languages/{language}', 'LanguagesController@update')
+    ->name('languages.update')
     ->middleware('can:global-settings');
 
 Route::get('/auth/{provider}', 'Auth\LoginController@redirectToProvider')

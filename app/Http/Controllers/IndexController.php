@@ -28,23 +28,11 @@ class IndexController extends Controller
     }
 
     function settings() {
-        $languages = Language::all();
         $users = User::paginate(10);
         $roles = [ 0 => 'User', 1 => 'Developer', 2 => 'Admin' ];
         return view('index.settings')
-            ->with('languages', $languages)
             ->with('users', $users)
             ->with('roles', $roles);
-    }
-
-    function addLanguage(Request $request) {
-        $language = new Language;
-        $language->iso_code = $request->input('iso');
-        $language->name = $request->input('name');
-        $language->save();
-
-        return \Redirect::route('settings')
-            ->with('message', 'Language added.');
     }
 
     function changeRole(Request $request, User $user) {

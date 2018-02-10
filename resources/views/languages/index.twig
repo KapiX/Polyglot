@@ -1,0 +1,41 @@
+{% extends "layouts.master" %}
+
+{% block title %}Languages{% endblock %}
+
+{% block content %}
+<ol class="breadcrumb">
+    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li class="active">Languages</li>
+</ol>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Language</th>
+        <th>ISO code</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        {{ form_open({url: route('languages.store'), method: 'POST'}) }}
+        <td></td>
+        <td>{{ form_text('name', null, {'class': 'form-control'}) }}</td>
+        <td>{{ form_text('iso_code', null, {'class': 'form-control'}) }}</td>
+        <td>{{ form_submit('Add', {'class': 'btn btn-default'}) }}</td>
+        {{ form_close() }}
+    </tr>
+    {% for language in languages %}
+    <tr>
+        {{ form_open({url: route('languages.update', language.id), method: 'PUT'}) }}
+        <td>{{ html_image('images/flags/' ~ language.iso_code ~ '-flag_32.png') }}</td>
+        <td>{{ form_text('name', language.name, {'class': 'form-control'}) }}</td>
+        <td>{{ form_text('iso_code', language.iso_code, {'class': 'form-control'}) }}</td>
+        <td>{{ form_submit('Save', {'class': 'btn btn-default'}) }}</td>
+        {{ form_close() }}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
