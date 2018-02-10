@@ -22,6 +22,7 @@
                         {% if auth_check() %}
                         <ul class="nav navbar-nav">
                             {% if auth_user().can('global-settings') %}<li>{{ link_to_route('settings', 'Settings') }}</li>{% endif %}
+                            <li>{{ link_to_route('help', 'Help') }}</li>
                         </ul>
                         {% endif %}
                         <ul class="nav navbar-nav navbar-right">

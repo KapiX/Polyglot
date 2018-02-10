@@ -16,6 +16,17 @@ class IndexController extends Controller
         return view('index.login');
     }
 
+    function help($article = 'index') {
+        $allowed = [
+            'index',
+            'user',
+            'developer',
+        ];
+        if(!in_array($article, $allowed))
+            $article = 'index';
+        return view('help.' . $article);
+    }
+
     function settings() {
         $languages = Language::all();
         $users = User::paginate(10);
