@@ -43,6 +43,9 @@ Route::get('/files/{file}/lang/{lang}', 'FilesController@translate')
     ->name('files.translate');
 Route::get('/files/{file}/lang/{lang}/export', 'FilesController@export')
     ->name('files.export');
+Route::get('/files/{file}/export', 'FilesController@exportAll')
+    ->name('files.exportAll')
+    ->middleware('can:modify-file,file');
 Route::post('/files/{file}/lang/{lang}/import', 'FilesController@import')
     ->name('files.import');
 

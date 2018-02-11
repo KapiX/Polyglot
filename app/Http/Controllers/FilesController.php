@@ -2,6 +2,7 @@
 
 namespace Polyglot\Http\Controllers;
 
+use ZipArchive;
 use Polyglot\File;
 use Polyglot\Language;
 use Polyglot\Project;
@@ -223,6 +224,36 @@ class FilesController extends Controller
         };
 
         return \Response::stream($callback, 200, $headers);
+    }
+
+    public function exportAll(File $file)
+    {
+        if($file->checksum == null || $file->mime_type == null)
+            return null;
+
+        $files = [];
+        $languages = $file->project->languages()->get();
+        foreach($languages as $lang) {
+            $files[$lang->iso_code] = $this->getCatkeysFile($file, $lang);
+        }
+
+        $filename = sprintf('%s_%s_%s.zip', $file->project->name, $file->name, $file->checksum);
+        $headers = [
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Content-type'        => 'application/zip',
+            'Content-Disposition' => 'attachment; filename=' . $filename,
+            'Expires'             => '0',
+            'Pragma'              => 'public',
+        ];
+        $tmpfile = tempnam(storage_path('app'), 'zip');
+        $zip = new ZipArchive();
+        $zip->open($tmpfile, ZipArchive::CREATE);
+        foreach($files as $name => $file) {
+            $zip->addFile(storage_path('app/' . $file), $name . '.catkeys');
+        }
+        $zip->close();
+
+        return response()->download($tmpfile, $filename, $headers)->deleteFileAfterSend(true);
     }
 
     private function getCatkeysFile(File $file, Language $lang)
