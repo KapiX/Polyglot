@@ -43,3 +43,7 @@ p.comment {
 a.navbar-brand {
     padding: 5px 10px;
 }
+
+select#languages {
+    height: 30em;
+}

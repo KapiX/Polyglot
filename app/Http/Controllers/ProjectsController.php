@@ -114,7 +114,7 @@ class ProjectsController extends Controller
      */
     public function edit(Project $project)
     {
-        $languages = Language::pluck('name', 'id')->all();
+        $languages = Language::orderBy('iso_code')->pluck('name', 'id');
         return view('projects.edit')
             ->with('project', $project)
             ->with('languages', $languages);

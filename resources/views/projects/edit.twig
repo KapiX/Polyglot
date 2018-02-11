@@ -8,9 +8,15 @@
     <li>{{ link_to_route('projects.show', project.name, {project: project}) }}</li>
     <li class="active">Edit</li>
 </ol>
-<h2>Languages</h2>
-{{ form_open({url: route('projects.update', project.id), method: 'PUT'}) }}
-{{ form_select('languages', languages, project.languages.pluck('id'), {multiple: 'multiple', name: 'languages[]'}) }}
-{{ form_submit('save') }}
+{{ form_open({url: route('projects.update', project.id), method: 'PUT'},
+    {class: 'form-horizontal'}) }}
+<div class="form-group">
+    {{ form_label('languages', 'Languages') }}
+    {{ form_select('languages', languages, project.languages.pluck('id'),
+        {class: 'form-control', multiple: 'multiple', name: 'languages[]'}) }}
+</div>
+<div class="form-group">
+    {{ form_submit('Save', {class: 'btn btn-default'}) }}
+</div>
 {{ form_close() }}
 {% endblock %}
