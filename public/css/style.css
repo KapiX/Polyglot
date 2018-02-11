@@ -47,3 +47,8 @@ a.navbar-brand {
 select#languages {
     height: 30em;
 }
+
+img.go-up {
+	border: none;
+	float: right;
+}

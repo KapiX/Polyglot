@@ -9,8 +9,18 @@
 </ol>
 {{ html_image('images/Polyglot_100px.png', 'Polyglot logo', {'class': 'center-block'}) }}
 
+<p><br /></p>
+
 <p>Polyglot was conceived and implemented by Kacper Kasper.</p>
 <p>It aims to be a very quick and easy tool for Haiku application developers to publish new and updated catkeys of their projects. Polyglot allows users to browse these projects and quickly localize the strings still missing from their native language.</p>
 <p>If you find bugs, have feature requests, or would like to request adding another language for translation, please file a <a href="https://github.com/KapiX/Polyglot/issues">ticket at the issue tracker</a>.</p>
-<p>Thanks to Humdinger for providing ideas and artwork.</p>
+<p>Thanks to Humdinger for providing ideas, documentation and artwork.</p>
+
+<h2 class="help">Help</h2>
+
+<ol type="A">
+	<li>{{ link_to_route('help', 'For the translators', {article: 'user'}) }} - Read up on using Polyglot and some tips on localization in general.</li>
+
+	<li>{{ link_to_route('help', 'For the developers', {article: 'developer'}) }} - How to use Polyglot: add projects, upload and update catkeys, and export the localized results.</li>
+</ol>
 {% endblock %}

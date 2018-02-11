@@ -1,0 +1,76 @@
+{% extends "layouts.master" %}
+
+{% block title %}Help for translators{% endblock %}
+
+{% block content %}
+<ol class="breadcrumb">
+    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li>{{ link_to_route('help', 'Help') }}</li>
+    <li class="active">Translators</li>
+</ol>
+
+<p>For translators, Polyglot should be pretty much self-explanatory with only very few things that need explaining.</p>
+
+<p>{{ html_image('images/help/user-startpage.png', 'The start page with a list of all projects') }}</p>
+
+<p>After logging into Polyglot, just click on a project from the start page, and see if your language needs attention (i.e. its status is below 100%):</p>
+
+<p>{{ html_image('images/help/user-project-files.png', 'The "Files" page of a project, with the status of all translations') }}</p>
+
+<p>Most projects have only one <i>catkeys</i> file per language, i.e. there's only one column with the language progress for the main application. If the software, however, includes for example a Tracker add-on or a library or consists of several applications, you'll see more columns that you'll have to get to 100%.</p>
+
+<p><i>Export</i> lets you download the catkeys of a particular language. The downloaded file can then be edited in a text editor or <a href="https://depot.haiku-os.org/#!/pkg/catkeyseditor/haikuports/0/1/2/-/3/x86_gcc2">CatKeysEditor</a>, if you prefer that.<br />
+The <i>Translate</i> link takes you to the actual translation page:</p>
+
+<p>{{ html_image('images/help/user-translation-upload.png', 'Upload translated catkeys at the top of the "Translation" page') }}</p>
+
+<p>At the top, you can upload a previously exported and edited catkeys file of your language. Be aware: if the developer has updated the original English catkeys of his project, they take precedence. If it has changed, more or fewer text blocks, only the ones of yours that still match will be imported.<br />
+So everthing's safe, but you may want to prefer leaving the exporting/uploading to the developer and stick to the Polyglot web interface...</p>
+
+<p>Below the catkeys upload, there's a table with all the GUI texts that need localization. Clicking in a row expands it to the editing mode (last row in this example):</p>
+
+<p>{{ html_image('images/help/user-translation-edit.png', 'A translation block while editing with a legend of its elements') }}</p>
+
+<p>Yet untouched rows are highlighted yellow and have an active checkmark <i>Needs work</i>. As long as it's set, the text isn't counted as being translated and the percentage status won't increase.<br />
+If you are not sure about your translation yet, keep the checkmark set until you are.<br />
+On the other hand: Some texts may be the same in the English original and your language; <i>OK</i> buttons are a good example. <i>Don't forget to go into editing mode and unset the checkmark in that case!</i></p>
+
+<h2 class="help">Tips</h2>
+
+<p>A few points on localization in general, and Haiku specifics in particular:
+</p>
+
+<ul>
+	<li><p>If you find a typo in the English original, let the developer know. You can quickly reach the issue tracker of the project by clicking the bug icon after the project name at the top of the page.</p>
+	</li>
+
+	<li><p>It's highly recommended to install and make yourself familiar with the application first. Best to have it open while translating and see where and when some text appears. Your translation will be more accurate and you can judge, if e.g. the length of the translated text may become a problem.</p>
+	</li>
+
+	<li><p>Use the <a href="https://dev.haiku-os.org/wiki/i18n">"Terminology" and "Style" documents of your language</a> which are maintained by the localization teams of Haiku. A good way to stay consistent over apps and the OS itself.<br />
+If it's not in the "Terminology", see how the standard buttons, menus etc. are named in Haiku's applications and preferences.</p>
+	</li>
+
+	<li><p>Variables: Don't translate variables like "<tt>%s</tt>" or "<tt>%something%</tt>"! Those variables are replaced at runtime. If you change those, the code won't find them anymore and you'll have your translated variable in there, %-characters included...</p>
+	</li>
+
+	<li><p>Some languages use more specific plural forms than English, for example special plural forms for 2 or 3 to 5 items. To account for that you may find constructions to translate like:</p>
+
+	<pre>{0, plural,
+	one{There is # new message}
+	other{There are # new messages}
+}</pre>
+
+	<p>You only translate the text in the deepest level of braces, i.e. <i>There is # new message</i> and <i>There are # new messages</i>.<br />
+The "#" is a variable that is replaced at runtime by a number. If your target language has additional plural forms, you can add additional rules besides <i>one</i> and <i>other</i>, see <a href="http://cldr.unicode.org/index/cldr-spec/plural-rules">the spec</a> and <a href="http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html">this language table</a>.<br />
+For example:</p>
+
+	<pre>{0, plural,
+	zero{There are no new messages}
+	one{There is # new message}
+	few{There are # new messages}
+	other{There are # new messages}
+}</pre>
+	</li>
+</ul>
+{% endblock %}
