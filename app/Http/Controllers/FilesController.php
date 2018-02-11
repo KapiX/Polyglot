@@ -9,8 +9,9 @@ use Polyglot\Text;
 use Polyglot\Translation;
 use Polyglot\Http\Requests\FileFormRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class FilesController extends Controller
 {
@@ -201,24 +202,10 @@ class FilesController extends Controller
     public function export(File $file, Language $lang)
     {
         // FIXME: if either checksum or mime_type is missing, fail early
-
-        $texts = $file->texts()->get()->groupBy('context');
-        // FIXME: method for getting all translations for current file,
-        //        with optional language filter
-        $translations = Translation::where('language_id', $lang->id)->get()->groupBy('text_id');
-        $lines = [];
-        $lines[] = implode("\t", ['1', $lang->name, $file->mime_type, $file->checksum]);
-        foreach($texts as $context) {
-            foreach($context as $text) {
-                $t = $translations->get($text['id']);
-                if($t !== null)
-                    $translation = $t[0]['translation'];
-                else
-                    $translation = $text['text'];
-                $lines[] = implode("\t", [$text['text'], $text['context'], $text['comment'], $translation]);
-            }
-        }
-        $result = implode("\n", $lines);
+        $catkeys = $this->getCatkeysFile($file, $lang);
+        if($catkeys === null)
+            return \Redirect::route('projects.show', [$file->project_id])
+                ->with('message', 'Checksum or MIME type are missing.');
 
         // prepare file
         $filename = $lang->iso_code . '.catkeys';
@@ -229,13 +216,50 @@ class FilesController extends Controller
             'Expires'             => '0',
             'Pragma'              => 'public',
         ];
-        $callback = function() use ($result) {
+        $callback = function() use($catkeys) {
             $file = fopen('php://output', 'w');
-            fwrite($file, $result);
+            fwrite($file, Storage::get($catkeys));
             fclose($file);
         };
 
         return \Response::stream($callback, 200, $headers);
+    }
+
+    private function getCatkeysFile(File $file, Language $lang)
+    {
+        if($file->checksum == null || $file->mime_type == null)
+            return null;
+
+        $lastUpdated = Translation::lastUpdatedAt($file->id, $lang->id);
+        if($lastUpdated === null) $lastUpdated = '1970-01-01 00:00:01';
+        else $lastUpdated = $lastUpdated->updated_at;
+
+        // see if we have a cached copy
+        $directory = sprintf('exported/%u/%u', $file->id, $lang->id);
+        $escapedMIME = str_replace('/', '_', $file->mime_type);
+        $filename = sprintf('%s/%s_%s_%s.catkeys', $directory, $file->checksum, $escapedMIME, $lastUpdated);
+        if(Storage::exists($filename) == false) {
+            // we don't, delete old ones and generate new
+            Storage::delete(Storage::files($directory));
+
+            $texts = $file->texts()->get()->groupBy('context');
+            $translations = Translation::where('language_id', $lang->id)->get()->groupBy('text_id');
+            $lines = [];
+            $lines[] = implode("\t", ['1', $lang->name, $file->mime_type, $file->checksum]);
+            foreach($texts as $context) {
+                foreach($context as $text) {
+                    $t = $translations->get($text['id']);
+                    if($t !== null)
+                        $translation = $t[0]['translation'];
+                    else
+                        $translation = $text['text'];
+                    $lines[] = implode("\t", [$text['text'], $text['context'], $text['comment'], $translation]);
+                }
+            }
+            $result = implode("\n", $lines);
+            Storage::put($filename, $result);
+        }
+        return $filename;
     }
 
     private function processCatkeysFile($contents)
