@@ -287,7 +287,7 @@ class FilesController extends Controller
                     $lines[] = implode("\t", [$text['text'], $text['context'], $text['comment'], $translation]);
                 }
             }
-            $result = implode("\n", $lines);
+            $result = implode("\n", $lines) . "\n";
             Storage::put($filename, $result);
         }
         return $filename;
