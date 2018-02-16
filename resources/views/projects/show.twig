@@ -46,7 +46,9 @@
             <div class="progress-bar progress-bar-warning"
                  style="width: {{ lang_stat['needs_work'] }}%"></div>
         </div>
-        {{ link_to_route('files.translate', 'Translate',
+        {% set link_label = can('translate-file', [file, language]) ?
+            'Translate' : 'View' %}
+        {{ link_to_route('files.translate', link_label,
             {file: file.id, lang: language.id}, {}) }}
         {{ link_to_route('files.export', 'Export',
             {file: file.id, lang: language.id}, {}) }}

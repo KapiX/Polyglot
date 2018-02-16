@@ -23,10 +23,6 @@ td.translation input[type="button"] {
     vertical-align: middle;
 }
 
-span.past-translator {
-    font-style: italic;
-}
-
 span.admin {
     font-weight: bold;
 }

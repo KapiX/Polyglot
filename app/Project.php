@@ -31,10 +31,20 @@ class Project extends Model
             ->orderBy('name');
     }
 
+    // all people who have contributed at some point
     public function contributors()
     {
         return $this->users()
             ->wherePivot('role', '<>', 2)
+            ->orderBy('name');
+    }
+
+    // active permissions
+    public function translators($language_id)
+    {
+        return $this->users()
+            ->wherePivot('role', 1)
+            ->wherePivot('language_id', $language_id)
             ->orderBy('name');
     }
 }

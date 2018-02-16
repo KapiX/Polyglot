@@ -60,6 +60,7 @@ class TextsController extends Controller
             $translation->save();
         }
 
+        // remember a contributor
         $users = $text->file->project->users();
         $isInDb = $users->where('user_id', Auth::id())
                         ->where(function($query) use ($lang) {
@@ -68,7 +69,7 @@ class TextsController extends Controller
         })->get();
         if($isInDb->count() == 0) {
             $users->attach([
-                Auth::id() => ['language_id' => $lang->id, 'role' => 1]
+                Auth::id() => ['language_id' => $lang->id, 'role' => 0]
             ]);
         }
         return \Response::json(['status' => 'success', 'translation' => $translation->translation, 'needswork' => $translation->needs_work === 1 ? true : false]);

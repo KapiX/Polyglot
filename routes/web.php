@@ -47,12 +47,15 @@ Route::get('/files/{file}/export', 'FilesController@exportAll')
     ->name('files.exportAll')
     ->middleware('can:modify-file,file');
 Route::post('/files/{file}/lang/{lang}/import', 'FilesController@import')
-    ->name('files.import');
+    ->name('files.import')
+    ->middleware('can:translate-file,file,lang');
 
 Route::get('/texts/{text}/lang/{lang}', 'TextsController@show')
-    ->name('texts.show');
+    ->name('texts.show')
+    ->middleware('can:translate-text,text,lang');
 Route::post('/texts/{text}/lang/{lang}', 'TextsController@store')
-    ->name('texts.store');
+    ->name('texts.store')
+    ->middleware('can:translate-text,text,lang');
 
 Route::get('/languages', 'LanguagesController@index')
     ->name('languages.index')
