@@ -98,7 +98,7 @@ For strings that don't need translation, because they are the same as the Englis
 </p>
 {% for context, textsGrouped in texts.groupBy('context') %}
 <h3>{{ context }}</h3>
-<table class="table table-hover" id="{{ lang.id }}">
+<table class="table table-hover table-translations" id="{{ lang.id }}">
     {% for text in textsGrouped %}
     {% set translation = translations[text.id][0] %}
     <tr id="{{ text.id }}"{{ translation == null or translation.needs_work == true ? ' class="warning"' }}>
