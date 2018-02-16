@@ -1,0 +1,41 @@
+{% extends "layouts.master" %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+<ol class="breadcrumb">
+    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li class="active">Users</li>
+</ol>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>E-mail</th>
+        <th>Role</th>
+        <th>Language proficiency</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ roles[user.role] }}</td>
+        <td>
+            {% for language in user.languages %}
+            {{ language.iso_code }}{% if loop.last == false %}, {% endif %}
+            {% endfor %}
+        </td>
+        <td>
+            {{ link_to_route('users.edit', 'Edit', user.id,
+                {class: 'btn btn-default' ~ (user.id == auth_user().id ? ' disabled') }) }}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{{ users.links() | raw }}
+{% endblock %}

@@ -33,4 +33,9 @@ class User extends Authenticatable
             ->withPivot('language_id', 'role')
             ->withTimestamps();
     }
+
+    public function languages() {
+        return $this->belongsToMany('Polyglot\Language')
+            ->withTimestamps();
+    }
 }

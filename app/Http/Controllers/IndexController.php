@@ -26,20 +26,4 @@ class IndexController extends Controller
             $article = 'index';
         return view('help.' . $article);
     }
-
-    function settings() {
-        $users = User::paginate(10);
-        $roles = [ 0 => 'User', 1 => 'Developer', 2 => 'Admin' ];
-        return view('index.settings')
-            ->with('users', $users)
-            ->with('roles', $roles);
-    }
-
-    function changeRole(Request $request, User $user) {
-        $user->role = (integer) $request->get('role')[0];
-        $user->save();
-
-        return \Redirect::route('settings')
-            ->with('message', 'Role updated.');
-    }
 }

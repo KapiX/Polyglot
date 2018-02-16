@@ -1,0 +1,36 @@
+{% extends "layouts.master" %}
+
+{% block title %}{{ user.name }} - Edit{% endblock %}
+
+{% block content %}
+<ol class="breadcrumb">
+    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li>{{ link_to_route('users.index', 'Users') }}</li>
+    <li>{{ user.name }}</li>
+    <li class="active">Edit</li>
+</ol>
+{{ form_open({url: route('users.update', user.id), method: 'PUT'},
+    {class: 'form-horizontal'}) }}
+<div class="form-group">
+    {{ form_label('name', 'Name') }}
+    {{ form_text('name', user.name, {class: 'form-control'}) }}
+</div>
+<div class="form-group">
+    {{ form_label('email', 'E-mail') }}
+    {{ form_text('email', user.email, {class: 'form-control'}) }}
+</div>
+<div class="form-group">
+    {{ form_label('role', 'Role') }}
+    {{ form_select('role', roles, user.role,
+        {class: 'form-control', name: 'role[]'}) }}
+</div>
+<div class="form-group">
+    {{ form_label('languages', 'Language proficiency') }}
+    {{ form_select('languages', languages, user.languages.pluck('id'),
+        {class: 'form-control', multiple: 'multiple', name: 'languages[]'}) }}
+</div>
+<div class="form-group">
+    {{ form_submit('Save', {class: 'btn btn-default'}) }}
+</div>
+{{ form_close() }}
+{% endblock %}

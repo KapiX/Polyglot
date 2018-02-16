@@ -8,11 +8,18 @@ class Language extends Model
 {
     public function projects()
     {
-        return $this->belongsToMany('Polyglot\Project')->withTimestamps();
+        return $this->belongsToMany('Polyglot\Project')
+            ->withTimestamps();
     }
 
     public function translations()
     {
         return $this->hasMany('Polyglot\Translation');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany('Polyglot\User')
+            ->withTimestamps();
     }
 }

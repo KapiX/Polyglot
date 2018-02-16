@@ -54,13 +54,6 @@ Route::get('/texts/{text}/lang/{lang}', 'TextsController@show')
 Route::post('/texts/{text}/lang/{lang}', 'TextsController@store')
     ->name('texts.store');
 
-Route::get('/settings', 'IndexController@settings')
-    ->name('settings')
-    ->middleware('can:global-settings');
-Route::post('/settings/role/{user}', 'IndexController@changeRole')
-    ->name('settings.changeRole')
-    ->middleware('can:global-settings');
-
 Route::get('/languages', 'LanguagesController@index')
     ->name('languages.index')
     ->middleware('can:global-settings');
@@ -69,6 +62,16 @@ Route::post('/languages', 'LanguagesController@store')
     ->middleware('can:global-settings');
 Route::put('/languages/{language}', 'LanguagesController@update')
     ->name('languages.update')
+    ->middleware('can:global-settings');
+
+Route::get('/users', 'UsersController@index')
+    ->name('users.index')
+    ->middleware('can:global-settings');
+Route::get('/users/{user}/edit', 'UsersController@edit')
+    ->name('users.edit')
+    ->middleware('can:global-settings');
+Route::put('/users/{user}', 'UsersController@update')
+    ->name('users.update')
     ->middleware('can:global-settings');
 
 Route::get('/auth/{provider}', 'Auth\LoginController@redirectToProvider')
