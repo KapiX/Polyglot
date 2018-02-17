@@ -6,7 +6,7 @@
 <ol class="breadcrumb">
     <li>{{ link_to_route('projects.index', 'Home') }}</li>
     <li>{{ link_to_route('projects.show', project.name, {project: project}) }}</li>
-    <li class="active">Files</li>
+    <li class="active">Translation modules</li>
 </ol>
 {% if project.files.count() > 0 %}
 <table class="table table-striped">
@@ -71,7 +71,7 @@
 </tbody>
 </table>
 {% else %}
-<p>This project has no files.</p>
+<p>This project has no translation modules yet.</p>
 {% endif %}
 {{ block('panels') }}
 {% endblock %}
@@ -104,7 +104,7 @@
         {% if auth_user().can('modify-project', project) %}
         <div class="col-md-4">
             <div class="panel panel-default">
-                <div class="panel-heading">Add file</div>
+                <div class="panel-heading">Add translation module</div>
                 <div class="panel-body">
                     {{ block('add_file_panel') }}
                 </div>
@@ -117,11 +117,12 @@
 
 {% block add_file_panel %}
 <p class="message bg-info text-info">
-Some apps have several catkeys for different parts of the software, like for the main "Application", a "Library" or "Tracker-addon". Here you can add those different sub-projects. Normal, "single-projects", should be named "Application".
+Some apps generate several catkeys files, one for each "module" of the software, like for the "Main app", a "Preference panel", a "Library" or "Tracker-addon" it comes with.<br />
+Here you can add those different translation modules and their catkeys. Normal "single-catkeys" projects should be named "Main app" for consistency.
 </p>
 {{ form_open({url: route('files.store', {project: project.id}), method: POST}) }}
 <div class="input-group">
-    {{ form_text('name', null, {'placeholder': 'Name', 'class': 'form-control'}) }}
+    {{ form_text('name', null, {'placeholder': 'Module name', 'class': 'form-control'}) }}
     <span class="input-group-btn">
         {{ form_submit('Add', {'class': 'btn btn-default'}) }}
     </span>

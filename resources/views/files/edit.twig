@@ -11,12 +11,16 @@
 </ol>
 {% if auth_user().can('modify-file', file) %}
 <h2>Upload en.catkeys</h2>
+<p class="message bg-info text-info">
+Note when uploading an upated en.catkeys file:<br />
+When an updated en.catkeys file is uploaded, the unchanged strings are kept in the database (along with their translations) and all new strings are added (with no translations yet, of course). Strings that aren't in the new en.catkeys anymore get removed (together with all their attached translations: just fixing a typo is then very costly, because the whole string has to be re-translated!).
+</p>
 {{ form_open({url: route('files.upload', {id: file.id}), method: POST, files: true}) }}
 {{ form_file('catkeys', null) }}
-{{ form_submit('Upload new') }}
+{{ form_submit('Upload') }}
 {{ form_close() }}
 {% endif %}
-<h2>Current catkeys <small>{{ file.mime_type ?? '' }} {{ file.checksum ?? '' }}</small></h2>
+<h2>Current catkeys: <small>{{ file.mime_type ?? '' }} - {{ file.checksum ?? '' }}</small></h2>
 {% for context, texts in file.texts.groupBy('context') %}
 <h3>{{ context }}</h3>
 <table>
