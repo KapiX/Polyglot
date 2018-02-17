@@ -43,22 +43,17 @@ class AuthServiceProvider extends ServiceProvider
             if($user->role === 2) // global admin
                 return true;
 
-            $u = $project->users()->where('users.id', $user->id);
-            if($u->count() > 0) {
-                return $u->first()->pivot->role === 2;
+            if($user->role === 1) {
+                $admins = $project->administrators->pluck('id')->toArray();
+                if(in_array($user->id, $admins)) {
+                    return true;
+                }
             }
             return false;
         });
 
         Gate::define('modify-file', function($user, File $file) {
-            if($user->role === 2) // global admin
-                return true;
-
-            $u = $file->project->users()->where('users.id', $user->id);
-            if($u->count() > 0) {
-                return $u->first()->pivot->role === 2;
-            }
-            return false;
+            return Gate::forUser($user)->allows('modify-project', $file->project);
         });
 
         Gate::define('translate-text', function($user, Text $text, Language $language) {
@@ -70,7 +65,7 @@ class AuthServiceProvider extends ServiceProvider
                 return true;
 
             if($user->role === 1) { // developer
-                $admins = $file->project->administrators()->pluck('users.id')->toArray();
+                $admins = $file->project->administrators->pluck('id')->toArray();
                 if(in_array($user->id, $admins)) {
                     return true;
                 }
@@ -79,9 +74,10 @@ class AuthServiceProvider extends ServiceProvider
             $languages = $user->languages->pluck('id')->toArray();
             if(in_array($language->id, $languages)) return true;
 
-            $translators = $file->project->translators($language->id)->pluck('users.id')
-                ->toArray();
-            if(in_array($user->id, $translators)) {
+            $translators = $file->project->translators->mapToGroups(function ($item, $key) {
+                return [$item['pivot']['language_id'] => $item['id']];
+            })->toArray();
+            if(in_array($user->id, $translators[$language->id] ?? [])) {
                 return true;
             }
             return false;

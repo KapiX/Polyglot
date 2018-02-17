@@ -40,11 +40,10 @@ class Project extends Model
     }
 
     // active permissions
-    public function translators($language_id)
+    public function translators()
     {
         return $this->users()
             ->wherePivot('role', 1)
-            ->wherePivot('language_id', $language_id)
             ->orderBy('name');
     }
 }
