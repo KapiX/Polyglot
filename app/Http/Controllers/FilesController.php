@@ -190,13 +190,14 @@ class FilesController extends Controller
 
     public function translate(File $file, Language $lang)
     {
-        // FIXME: when database gets big, it's going to be painful
-        // ideas: whereIn(all ids for file's texts)
-        $translations = Translation::where('language_id', $lang->id)->get();
+        $texts = $file->texts()->paginate(30);
+        $translations = Translation::where('language_id', $lang->id)
+            ->whereIn('text_id', $texts->pluck('id'))
+            ->get();
         return view('files.translate')
             ->with('file', $file)
             ->with('lang', $lang)
-            ->with('texts', $file->texts()->paginate(30))
+            ->with('texts', $texts)
             ->with('translations', $translations->groupBy('text_id'));
     }
 
