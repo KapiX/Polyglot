@@ -1,9 +1,10 @@
 {% extends "layouts.master" %}
 
+{% set canTranslate = can('translate-file', [file, lang]) %}
 {% block title %}{{ file.project.name }} - {{ file.name }} - {{ lang.name }}{% endblock %}
 
 {% block scripts %}
-{% if can('translate-file', [file, lang]) %}
+{% if canTranslate %}
 <script type="text/javascript">
 $(document).ready(function() {
     $('tr').click(function trclick() {
@@ -89,7 +90,7 @@ $(document).ready(function() {
     <li>{{ link_to_route('projects.show', file.name, {project: file.project}) }}</li>
     <li class="active">{{ lang.name }}</li>
 </ol>
-{% if can('translate-file', [file, lang]) %}
+{% if canTranslate %}
 <h2>Upload {{ lang.iso_code }}.catkeys</h2>
 {{ form_open({url: route('files.import', {file: file.id, lang: lang.id}), method: POST, files: true, 'id': 'upload-form'}) }}
 {{ form_file('catkeys', null) }}
@@ -107,12 +108,8 @@ For strings that don't need translation, because they are the same as the Englis
     {% set translation = translations[text.id][0] %}
     <tr id="{{ text.id }}"{{ translation == null or translation.needs_work == true ? ' class="warning"' }}>
         <td><p>{{ text.text }}</p><p class="comment">{{ text.comment }}</p></td>
-        <td{{ can('translate-file', [file, lang]) ? ' class="translation"' }}>
-        {% if translation == null %}
-            {{ text.text }}
-        {% else %}
-            {{ translation.translation }}
-        {% endif %}
+        <td{{ canTranslate ? ' class="translation"' }}>
+            {{ translation == null ? text.text : translation.translation }}
         </td>
     </tr>
     {% endfor %}
