@@ -203,7 +203,6 @@ class FilesController extends Controller
 
     public function export(File $file, Language $lang)
     {
-        // FIXME: if either checksum or mime_type is missing, fail early
         $catkeys = $this->getCatkeysFile($file, $lang);
         if($catkeys === null)
             return \Redirect::route('projects.show', [$file->project_id])
