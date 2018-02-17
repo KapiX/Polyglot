@@ -8,7 +8,9 @@ use Polyglot\ProjectUser;
 use Polyglot\Translation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 class ProjectsController extends Controller
 {
@@ -60,27 +62,37 @@ class ProjectsController extends Controller
         $modified = [];
         foreach($project->files as $file) {
             $status[$file->id] = [];
-            $texts = $file->texts()->get(['id']);
+            $texts = $file->texts()->select('id');
             $count = $texts->count();
+            $translations = Translation::whereIn('text_id', $texts->getQuery())
+                ->select('language_id', 'needs_work')
+                ->selectRaw('count(id) as count')
+                ->groupBy('language_id', 'needs_work');
+            $file_status = DB::table(DB::raw("({$translations->toSql()}) as temp"))
+                ->mergeBindings($translations->getQuery())
+                ->select('language_id')
+                ->selectRaw('max(case when needs_work = 0 then temp.count else 0 end) translated')
+                ->selectRaw('max(case when needs_work = 1 then temp.count else 0 end) needs_work')
+                ->groupBy('language_id')
+                ->get()
+                ->mapWithKeys(function($item) use ($count) {
+                    return [
+                        $item->language_id => [
+                            'needs_work' => round($item->needs_work / $count * 100),
+                            'translated' => round($item->translated / $count * 100)
+                        ]
+                    ];
+                })->toArray();
             foreach($languages as $language) {
-                // FIXME: this can be optimized
-                $translated = Translation::whereIn('text_id', $texts)
-                    ->where('language_id', $language->id)
-                    ->groupBy('needs_work')
-                    ->selectRaw('needs_work, count(id)')
-                    ->get()
-                    ->mapWithKeys(function($item) use ($count) {
-                        return [$item['needs_work'] =>
-                            round($item['count(id)'] / $count * 100)];
-                    })->toArray();
-                if(!array_key_exists(0, $translated)) $translated[0] = 0;
-                if(!array_key_exists(1, $translated)) $translated[1] = 0;
-                $keys = ['translated', 'needs_work'];
-                $status[$file->id][$language->id] =
-                    array_combine($keys, $translated);
+                $lang_status = ['needs_work' => 0, 'translated' => 0];
+                if(array_key_exists($language->id, $file_status))
+                    $lang_status = $file_status[$language->id];
+
+                $status[$file->id][$language->id] = $lang_status;
+
                 if(array_key_exists($language->id, $modified) === false)
                     $modified[$language->id] = 0;
-                $modified[$language->id] += array_sum($translated);
+                $modified[$language->id] += array_sum($lang_status);
             }
         }
         $contributorRoles = [
