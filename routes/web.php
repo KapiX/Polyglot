@@ -14,6 +14,10 @@
 Route::get('/', 'IndexController@index')->middleware('guest');
 Route::get('/help/{article?}', 'IndexController@help')
     ->name('help');
+Route::get('/profile', 'IndexController@profile')
+    ->name('profile');
+Route::put('/profile', 'IndexController@updateProfile')
+    ->name('profile.update');
 
 Route::get('/projects', 'ProjectsController@index')
     ->name('projects.index');
