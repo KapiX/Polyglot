@@ -11,9 +11,8 @@
 {{ form_open({url: route('projects.update', project.id), method: 'PUT'},
     {class: 'form-horizontal'}) }}
 <div class="form-group">
-    {{ form_label('languages', 'Languages') }}
-    {{ form_select('languages', languages, project.languages.pluck('id'),
-        {class: 'form-control', multiple: 'multiple', name: 'languages[]'}) }}
+    {{ form_label('name', 'Name') }}
+    {{ form_text('name', project.name, {class: 'form-control'}) }}
 </div>
 <div class="form-group">
     {{ form_submit('Save', {class: 'btn btn-default'}) }}

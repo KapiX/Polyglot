@@ -127,10 +127,8 @@ class ProjectsController extends Controller
      */
     public function edit(Project $project)
     {
-        $languages = Language::orderBy('iso_code')->pluck('name', 'id');
         return view('projects.edit')
-            ->with('project', $project)
-            ->with('languages', $languages);
+            ->with('project', $project);
     }
 
     /**
@@ -142,11 +140,11 @@ class ProjectsController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        if(count($request->get('languages')) > 0) {
-            $project->languages()->sync($request->get('languages'));
-        }
+        $project->name = $request->input('name');
+        $project->save();
 
-        return \Redirect::route('projects.show', [$project->id])->with('message', 'Languages saved.');
+        return \Redirect::route('projects.show', [$project->id])
+            ->with('message', 'Project saved.');
     }
 
     /**

@@ -232,7 +232,10 @@ class FilesController extends Controller
             return null;
 
         $files = [];
-        $languages = $file->project->languages()->get();
+        $languages = Language::whereIn('id',
+            Translation::whereIn('text_id', $file->texts()->select('id')->getQuery())
+                ->distinct()->select('language_id')->getQuery()
+        )->get();
         foreach($languages as $lang) {
             $files[$lang->iso_code] = $this->getCatkeysFile($file, $lang);
         }
@@ -274,7 +277,9 @@ class FilesController extends Controller
             Storage::delete(Storage::files($directory));
 
             $texts = $file->texts()->get()->groupBy('context');
-            $translations = Translation::where('language_id', $lang->id)->get()->groupBy('text_id');
+            $translations = Translation::where('language_id', $lang->id)
+                ->whereIn('text_id', $file->texts()->select('id')->getQuery())
+                ->get()->groupBy('text_id');
             $lines = [];
             $lines[] = implode("\t", ['1', $lang->name, $file->mime_type, $file->checksum]);
             foreach($texts as $context) {

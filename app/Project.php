@@ -11,11 +11,6 @@ class Project extends Model
         return $this->hasMany('Polyglot\File');
     }
 
-    public function languages()
-    {
-        return $this->belongsToMany('Polyglot\Language')->withTimestamps();
-    }
-
     public function users()
     {
         return $this->belongsToMany('Polyglot\User')
