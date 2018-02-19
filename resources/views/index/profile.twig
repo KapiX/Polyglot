@@ -7,7 +7,7 @@
     <li>{{ link_to_route('projects.index', 'Home') }}</li>
     <li class="active">Edit profile</li>
 </ol>
-{{ form_open({url: route('profile.update', project.id), method: 'PUT'},
+{{ form_open({url: route('profile.update'), method: 'PUT'},
     {class: 'form-horizontal'}) }}
 <div class="form-group{{ errors.has('name') ? ' has-error' }}">
     {{ form_label('name', 'Name', {class: 'control-label'}) }}
