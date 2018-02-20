@@ -7,24 +7,67 @@
     <li>{{ link_to_route('projects.index', 'Home') }}</li>
     <li class="active">Projects</li>
 </ol>
-<ul>
-{% for project in projects %}
-    <li>
-        {{ link_to_route('projects.show', project.name, project.id, {}) }}
-        {% if auth_user().can('modify-project', project) %}
-            {{ link_to_route('projects.edit', 'Edit', project.id, {}) }}
+<div class="container-fluid">
+    <div class="row">
+        {% if auth_user().can('add-project') %}
+        <div class="col-md-6 col-md-push-6">
+            {{ form_open({url: route('projects.store'), method: POST}) }}
+            <div class="form-group {{ errors.has('name') ? ' has-error' }}">
+                {{ form_label('name', 'Add project') }}
+                <div class="input-group">
+                    {{ form_text('name', null, {placeholder: 'Name', class: 'form-control'}) }}
+                    <span class="input-group-btn">
+                        {{ form_submit('Add', {class: 'btn btn-default'}) }}
+                    </span>
+                </div>
+                {% for error in errors.get('name') %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            </div>
+            {{ form_close() }}
+        </div>
         {% endif %}
-    </li>
+        <div class="col-md-6 col-md-pull-6">
+            <p>Polyglot allows developers to upload the GUI strings ("catkeys") of their applications and have their users translate them into their native language.</p>
+            <p><strong>These projects are currently available:</strong></p>
+        </div>
+    </div>
+</div>
+{% if projects.count != 0 %}
+<table class="table table-striped">
+    <tbody>
+    {% for project in projects %}
+    <tr>
+        <td class="project">
+            {{ html_image(project.icon) }}
+            {{ link_to_route('projects.show', project.name, project.id, {}) }}
+            {% if project.url %}
+                <a href="{{ project.url }}" title="Website">
+                    <span class="glyphicon glyphicon-globe" aria-hidden="true"></span></a>
+            {% endif %}
+            {% if project.bugtracker_url %}
+                <a href="{{ project.bugtracker_url }}" title="Bugtracker">
+                    <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
+            {% endif %}
+            {% if project.prerelease_url %}
+                <a href="{{ project.prerelease_url }}" title="Download prerelease">
+                    <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
+            {% endif %}
+            {% if project.release_date %}
+                <span class="label label-info">Release: {{ project.release_date }}</span>
+            {% endif %}
+        </td>
+        <td>
+            {% if auth_user().can('modify-project', project) %}
+                {{ link_to_route('projects.edit', 'Edit', project.id,
+                    {class: 'btn btn-default'}) }}
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 {% else %}
-    <li>No projects found.</li>
-{% endfor %}
-</ul>
-{% if auth_user().can('add-project') %}
-<h2>Add project</h2>
-{{ form_open({url: route('projects.store'), method: POST}) }}
-{{ form_label('Project name:') }}
-{{ form_text('name', null, ['required']) }}
-{{ form_submit('Add project') }}
-{{ form_close() }}
+<p>No projects found.</p>
 {% endif %}
 {% endblock %}

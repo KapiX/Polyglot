@@ -8,11 +8,53 @@
     <li>{{ link_to_route('projects.show', project.name, {project: project}) }}</li>
     <li class="active">Edit</li>
 </ol>
-{{ form_open({url: route('projects.update', project.id), method: 'PUT'},
+{{ form_open({url: route('projects.update', project.id), method: 'PUT', files: true},
     {class: 'form-horizontal'}) }}
-<div class="form-group">
+<div class="form-group {{ errors.has('name') ? ' has-error' }}">
     {{ form_label('name', 'Name') }}
     {{ form_text('name', project.name, {class: 'form-control'}) }}
+    {% for error in errors.get('name') %}
+        <span class="help-block">{{ error }}</span>
+    {% endfor %}
+</div>
+<div class="form-group {{ errors.has('url') ? ' has-error' }}">
+    {{ form_label('url', 'Project URL (optional)') }}
+    {{ form_text('url', project.url, {class: 'form-control'}) }}
+    {% for error in errors.get('url') %}
+        <span class="help-block">{{ error }}</span>
+    {% endfor %}
+</div>
+<div class="form-group {{ errors.has('bugtracker_url') ? ' has-error' }}">
+    {{ form_label('bugtracker_url', 'Bugtracker URL (optional)') }}
+    {{ form_text('bugtracker_url', project.bugtracker_url, {class: 'form-control'}) }}
+    {% for error in errors.get('bugtracker_url') %}
+        <span class="help-block">{{ error }}</span>
+    {% endfor %}
+</div>
+<div class="form-group {{ errors.has('prerelease_url') ? ' has-error' }}">
+    {{ form_label('prerelease_url', 'Prerelease URL (optional)') }}
+    {{ form_text('prerelease_url', project.prerelease_url, {class: 'form-control'}) }}
+    {% for error in errors.get('prerelease_url') %}
+        <span class="help-block">{{ error }}</span>
+    {% endfor %}
+</div>
+<div class="form-group {{ errors.has('release_date') ? ' has-error' }}">
+    {{ form_label('release_date', 'Release date (optional)') }}
+    {{ form_date('release_date', project.release_date, {class: 'form-control'}) }}
+    {% for error in errors.get('release_date') %}
+        <span class="help-block">{{ error }}</span>
+    {% endfor %}
+</div>
+<div class="form-group {{ errors.has('icon') ? ' has-error' }}">
+    {{ form_label('icon', 'Icon (32x32, PNG, optional)') }}
+    {{ form_file('icon') }}
+    {% for error in errors.get('icon') %}
+        <span class="help-block">{{ error }}</span>
+    {% endfor %}
+</div>
+<div class="form-group">
+    {{ form_label('', 'Current icon') }}
+    {{ html_image(project.icon, null, {class: 'thumbnail'}) }}
 </div>
 <div class="form-group">
     {{ form_submit('Save', {class: 'btn btn-default'}) }}

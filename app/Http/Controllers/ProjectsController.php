@@ -6,11 +6,14 @@ use Polyglot\Language;
 use Polyglot\Project;
 use Polyglot\ProjectUser;
 use Polyglot\Translation;
+use Polyglot\Http\Requests\AddProject;
+use Polyglot\Http\Requests\EditProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectsController extends Controller
 {
@@ -26,7 +29,7 @@ class ProjectsController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::orderBy('name')->get();
         return view('projects.index')->with('projects', $projects);
     }
 
@@ -36,16 +39,19 @@ class ProjectsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AddProject $request)
     {
         $project = new Project;
         $project->name = $request->input('name');
-        $project->url = '';
         $project->save();
 
         $project->users()->attach(Auth::id(), ['role' => 2]);
 
-        return \Redirect::route('projects.index')->with('message', 'Project added.');
+        if($project->save()) {
+            return redirect()->route('projects.edit', [$project->id]);
+        } else {
+            return redirect()->route('projects.index');
+        }
     }
 
     /**
@@ -138,13 +144,23 @@ class ProjectsController extends Controller
      * @param  \Polyglot\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Project $project)
+    public function update(EditProject $request, Project $project)
     {
+        if($request->hasFile('icon') && $request->file('icon')->isValid()) {
+            if($project->icon != Project::DEFAULT_ICON)
+                Storage::delete('public/' . basename($project->icon));
+            $path = $request->icon->store('public');
+            $project->icon = basename($path, '.png');
+        }
+
         $project->name = $request->input('name');
+        $project->url = $request->input('url');
+        $project->bugtracker_url = $request->input('bugtracker_url');
+        $project->prerelease_url = $request->input('prerelease_url');
+        $project->release_date = $request->input('release_date');
         $project->save();
 
-        return \Redirect::route('projects.show', [$project->id])
-            ->with('message', 'Project saved.');
+        return redirect()->back();
     }
 
     /**

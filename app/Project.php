@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
+    const DEFAULT_ICON = 'images/default-project_32.png';
+
     public function files()
     {
         return $this->hasMany('Polyglot\File');
@@ -40,5 +42,10 @@ class Project extends Model
         return $this->users()
             ->wherePivot('role', 1)
             ->orderBy('name');
+    }
+
+    public function getIconAttribute($value)
+    {
+        return $value ? 'storage/' . $value . '.png' : self::DEFAULT_ICON;
     }
 }

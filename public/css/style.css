@@ -15,6 +15,10 @@ td.translation input[type="button"] {
     width: 100%;
 }
 
+td.project {
+    width: 100%;
+}
+
 .progress-translation {
     display: inline-block;
     margin-top: auto;
