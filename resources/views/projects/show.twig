@@ -29,7 +29,9 @@
 <tbody>
 {% for language in languages
     if language.iso_code != 'en' and
-        (display == 'active' and modifiedKeys[language.id] > 0) or (display == 'all') %}
+        (display == 'active' and (modifiedKeys[language.id] > 0 or
+            language.id in auth_user().preferred_languages))
+        or (display == 'all') %}
 <tr>
     <td>{{ html_image('images/flags/' ~ language.iso_code ~ '-flag_32.png') }}
         {{ language.name }}</td>
