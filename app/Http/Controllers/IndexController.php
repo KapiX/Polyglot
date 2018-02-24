@@ -30,15 +30,18 @@ class IndexController extends Controller
     }
 
     function profile() {
+        $languages = Language::orderBy('iso_code')->pluck('name', 'id');
         $user = Auth::user();
         return view('index.profile')
-            ->with('user', $user);
+            ->with('user', $user)
+            ->with('languages', $languages);
     }
 
     function updateProfile(EditProfile $request) {
         $user = Auth::user();
         $user->name = $request->input('name');
         $user->email = $request->input('email');
+        $user->preferred_languages = $request->input('languages');
         $user->save();
 
         return redirect('profile');

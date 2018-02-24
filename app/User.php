@@ -18,6 +18,10 @@ class User extends Authenticatable
         'name', 'email', 'provider', 'provider_id'
     ];
 
+    protected $casts = [
+        'preferred_languages' => 'array'
+    ];
+
     /**
      * The attributes that should be hidden for arrays.
      *
