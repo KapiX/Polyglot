@@ -64,7 +64,7 @@ class ProjectsController extends Controller
     {
         $languages = Language::orderBy('iso_code')->get()->keyBy('id');
         // pull the preferred languages to the top
-        $preferred_languages = Auth::user()->preferred_languages;
+        $preferred_languages = Auth::user()->preferred_languages ?? [];
         $prepend = [];
         foreach($preferred_languages as $id) {
             $prepend[] = $languages->pull($id);
