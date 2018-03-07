@@ -5,6 +5,7 @@ namespace Polyglot\Http\Controllers;
 use Polyglot\Language;
 use Polyglot\Project;
 use Polyglot\ProjectUser;
+use Polyglot\Text;
 use Polyglot\Translation;
 use Polyglot\Http\Requests\AddProject;
 use Polyglot\Http\Requests\EditProject;
@@ -30,7 +31,29 @@ class ProjectsController extends Controller
     public function index()
     {
         $projects = Project::orderBy('name')->get();
-        return view('projects.index')->with('projects', $projects);
+        $preferred_languages = Auth::user()->preferred_languages ?? [];
+        $project_needs_work = null;
+        if(!empty($preferred_languages)) {
+            $project_texts = Text::select('project_id', 'texts.id as text_id')->join('files', 'file_id', '=', 'files.id')->toSql();
+            $project_needs_work = DB::table(DB::raw('(
+                    select `project_id`, `language_id`, `all_count` > `translated` as `needs_work` from (
+                        select `project_id`, `language_id`, count(id) as `translated` from `translations` left join
+                        (' . $project_texts . ') as `project_text` on `project_text`.`text_id` = `translations`.`text_id` and `needs_work` = 0 group by `project_id`, `language_id`
+                    ) as `translation_counts` left join (
+                        select `project_id` as `id`, count(`text_id`) as `all_count` from (' . $project_texts . ') as `all_texts` group by `id`
+                    ) as `texts_count` on `texts_count`.`id` = `translation_counts`.`project_id`
+                ) as `project_needs_work`'))
+                ->select('project_id')
+                ->selectRaw('sum(`needs_work`) > 0 as `needs_work`')
+                ->whereNotNull('project_id')
+                ->whereIn('language_id', $preferred_languages)
+                ->groupBy('project_id')
+                ->pluck('needs_work', 'project_id')
+                ->union($projects->pluck('id')->mapWithKeys(function($item) { return [$item => 1]; }));
+        }
+        return view('projects.index')
+            ->with('projects', $projects)
+            ->with('project_needs_work', $project_needs_work);
     }
 
     /**

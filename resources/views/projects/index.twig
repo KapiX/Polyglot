@@ -37,7 +37,7 @@
 <table class="table table-striped">
     <tbody>
     {% for project in projects %}
-    <tr>
+    <tr{{ project_needs_work ? (project_needs_work[project.id] == 1 ? ' class="warning"') }}>
         <td class="project">
             {{ html_image(project.icon) }}
             {{ link_to_route('projects.show', project.name, project.id, {}) }}
