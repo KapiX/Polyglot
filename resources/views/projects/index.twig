@@ -17,7 +17,7 @@
                 <div class="input-group">
                     {{ form_text('name', null, {placeholder: 'Name', class: 'form-control'}) }}
                     <span class="input-group-btn">
-                        {{ form_submit('Add', {class: 'btn btn-default'}) }}
+                        {{ form_submit('Add', {class: 'btn btn-primary'}) }}
                     </span>
                 </div>
                 {% for error in errors.get('name') %}

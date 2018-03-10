@@ -9,6 +9,7 @@ use Polyglot\Project;
 use Polyglot\Text;
 use Polyglot\Translation;
 use Polyglot\Http\Requests\AddEditFile;
+use Polyglot\Http\Requests\ImportTranslation;
 use Polyglot\Http\Requests\UploadFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -135,7 +136,7 @@ class FilesController extends Controller
         return \Redirect::route('files.edit', [$file->id])->with('message', 'Catkeys uploaded.');
     }
 
-    public function import(Request $request, File $file, Language $lang)
+    public function import(ImportTranslation $request, File $file, Language $lang)
     {
         $catkeys = file_get_contents($request->file('catkeys')->getRealPath());
         [$mimetype, $checksum, $catkeys_processed] = $this->processCatkeysFile($catkeys);

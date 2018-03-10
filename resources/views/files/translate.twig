@@ -90,17 +90,31 @@ $(document).ready(function() {
     <li>{{ link_to_route('projects.show', file.name, {project: file.project}) }}</li>
     <li class="active">{{ html_image('images/flags/' ~ lang.iso_code ~ '-flag_16.png', null, {class: 'breadcrumb-icon'}) }} {{ lang.name }}</li>
 </ol>
-{% if canTranslate %}
-<h2>Upload {{ lang.iso_code }}.catkeys</h2>
-{{ form_open({url: route('files.import', {file: file.id, lang: lang.id}), method: POST, files: true, 'id': 'upload-form'}) }}
-{{ form_file('catkeys', null) }}
-{{ form_submit('Upload') }}
-{{ form_close() }}
-{% endif %}
-<h2>Translations to {{ lang.name }}</h2>
-<p class="message bg-info text-info">
-For strings that don't need translation, because they are the same as the English original, the "Needs work" checkbox should be unmarked. Otherwise the percentage display on the overview page doesn't reach 100%.
-</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 col-md-push-6">
+            {% if canTranslate %}
+            {{ form_open({url: route('files.import', {file: file.id, lang: lang.id}), method: POST, files: true, 'id': 'upload-form'}) }}
+            <div class="form-group {{ errors.has('catkeys') ? ' has-error' }}">
+                {{ form_label('catkeys', 'Upload ' ~ lang.iso_code ~ '.catkeys') }}
+                <div class="input-group">
+                    {{ form_file('catkeys', {class: 'form-control'}) }}
+                    <span class="input-group-btn">
+                        {{ form_submit('Upload', {class: 'btn btn-primary'}) }}
+                    </span>
+                </div>
+                {% for error in errors.get('catkeys') %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            </div>
+            {{ form_close() }}
+            {% endif %}
+        </div>
+        <div class="col-md-6 col-md-pull-6">
+            <p>For strings that don't need translation, because they are the same as the English original, the "Needs work" checkbox should be unmarked. Otherwise the percentage display on the overview page doesn't reach 100%.</p>
+        </div>
+    </div>
+</div>
 {% for context, textsGrouped in texts.groupBy('context') %}
 <h3>{{ context }}</h3>
 <table class="table table-hover table-translations" id="{{ lang.id }}">
