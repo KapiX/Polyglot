@@ -86,9 +86,9 @@ $(document).ready(function() {
 {% block content %}
 <ol class="breadcrumb">
     <li>{{ link_to_route('projects.index', 'Home') }}</li>
-    <li>{{ link_to_route('projects.show', file.project.name, {project: file.project}) }}</li>
+    <li>{{ html_image(file.project.icon, null, {class: 'breadcrumb-icon'}) }} {{ link_to_route('projects.show', file.project.name, {project: file.project}) }}</li>
     <li>{{ link_to_route('projects.show', file.name, {project: file.project}) }}</li>
-    <li class="active">{{ lang.name }}</li>
+    <li class="active">{{ html_image('images/flags/' ~ lang.iso_code ~ '-flag_16.png', null, {class: 'breadcrumb-icon'}) }} {{ lang.name }}</li>
 </ol>
 {% if canTranslate %}
 <h2>Upload {{ lang.iso_code }}.catkeys</h2>

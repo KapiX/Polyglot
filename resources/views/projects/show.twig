@@ -5,7 +5,7 @@
 {% block content %}
 <ol class="breadcrumb">
     <li>{{ link_to_route('projects.index', 'Home') }}</li>
-    <li>{{ link_to_route('projects.show', project.name, {project: project}) }}</li>
+    <li>{{ html_image(project.icon, null, {class: 'breadcrumb-icon'}) }} {{ link_to_route('projects.show', project.name, {project: project}) }}</li>
     <li class="active">Translation modules</li>
 </ol>
 {% if project.files.count() > 0 %}
