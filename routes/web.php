@@ -42,6 +42,9 @@ Route::post('/projects/{project}/file', 'FilesController@store')
 Route::get('/files/{file}/edit', 'FilesController@edit')
     ->name('files.edit')
     ->middleware('can:modify-file,file');
+Route::put('/files/{file}', 'FilesController@update')
+    ->name('files.update')
+    ->middleware('can:modify-file,file');
 Route::post('/files/{file}/upload', 'FilesController@upload')
     ->name('files.upload')
     ->middleware('can:modify-file,file');

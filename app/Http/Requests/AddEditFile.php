@@ -2,9 +2,10 @@
 
 namespace Polyglot\Http\Requests;
 
+use Polyglot\File;
 use Illuminate\Foundation\Http\FormRequest;
 
-class FileFormRequest extends FormRequest
+class AddEditFile extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +14,12 @@ class FileFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        if($this->route('file') === null)
+            return true;
+
+        $file = File::find($this->route('file'))->first();
+
+        return $file && $this->user()->can('modify-file', $file);
     }
 
     /**
@@ -24,7 +30,7 @@ class FileFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required'
+            'name' => 'required|max:255'
         ];
     }
 }

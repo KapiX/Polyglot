@@ -8,7 +8,8 @@ use Polyglot\Language;
 use Polyglot\Project;
 use Polyglot\Text;
 use Polyglot\Translation;
-use Polyglot\Http\Requests\FileFormRequest;
+use Polyglot\Http\Requests\AddEditFile;
+use Polyglot\Http\Requests\UploadFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +29,7 @@ class FilesController extends Controller
      * @param  int                       $project_id
      * @return \Illuminate\Http\Response
      */
-    public function store(FileFormRequest $request, Project $project)
+    public function store(AddEditFile $request, Project $project)
     {
         $file = new File([
             'name' => $request->input('name'),
@@ -39,11 +40,9 @@ class FilesController extends Controller
         $file->project_id = $project->id;
 
         if($file->save()) {
-            return \Redirect::route('files.edit', [$file->id])
-                ->with('message', 'File successfully added.');
+            return redirect()->route('files.edit', [$file->id]);
         } else {
-            return \Redirect::route('projects.show', [$project->id])
-                ->with('message', 'Something went wrong.');
+            return redirect()->route('projects.show', [$project->id]);
         }
     }
 
@@ -65,9 +64,12 @@ class FilesController extends Controller
      * @param  \Polyglot\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, File $file)
+    public function update(AddEditFile $request, File $file)
     {
-        //
+        $file->name = $request->input('name');
+        $file->save();
+
+        return redirect()->back();
     }
 
     /**
@@ -88,7 +90,7 @@ class FilesController extends Controller
      * @param  \Polyglot\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function upload(Request $request, File $file)
+    public function upload(UploadFile $request, File $file)
     {
         $catkeys = file_get_contents($request->file('catkeys')->getRealPath());
         [$mimetype, $checksum, $catkeys_processed] = $this->processCatkeysFile($catkeys);
