@@ -17,7 +17,7 @@ class AddEditFile extends FormRequest
         if($this->route('file') === null)
             return true;
 
-        $file = File::find($this->route('file'))->first();
+        $file = File::find($this->route('file')->id)->first();
 
         return $file && $this->user()->can('modify-file', $file);
     }

@@ -15,7 +15,7 @@ class EditProject extends FormRequest
      */
     public function authorize()
     {
-        $project = Project::find($this->route('project'))->first();
+        $project = Project::find($this->route('project')->id)->first();
 
         return $project && $this->user()->can('modify-project', $project);
     }
