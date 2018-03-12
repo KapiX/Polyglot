@@ -48,12 +48,27 @@
             <div class="progress-bar progress-bar-warning"
                  style="width: {{ lang_stat['needs_work'] }}%"></div>
         </div>
-        {% set link_label = can('translate-file', [file, language]) ?
-            'Translate' : 'View' %}
-        {{ link_to_route('files.translate', link_label,
-            {file: file.id, lang: language.id}, {}) }}
-        {{ link_to_route('files.export', 'Export',
-            {file: file.id, lang: language.id}, {}) }}
+        <div class="btn-group">
+            {% set canTranslate = can('translate-file', [file, language]) %}
+            {% set continueLabel = canTranslate ? 'Continue' : 'View unfinished' %}
+            {% set allLabel = canTranslate ? 'All translations' : 'View all' %}
+            {% set parameters = {file: file.id, lang: language.id} %}
+            {% set buttonClass = canTranslate ? 'btn-primary' : 'btn-default' %}
+            {{ link_to_route('files.translate',
+                canTranslate ? continueLabel : allLabel,
+                canTranslate ? parameters|merge({type: 'continue'}) : parameters,
+                {class: 'btn btn-xs ' ~ buttonClass}) }}
+            <a href="#" class="btn {{ buttonClass }} btn-xs dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle dropdown</span>
+            </a>
+            <ul class="dropdown-menu">
+                {% if canTranslate %}
+                    <li>{{ link_to_route('files.translate', allLabel, parameters, {}) }}</li>
+                {% endif %}
+                <li>{{ link_to_route('files.export', 'Export', parameters, {}) }}</li>
+            </ul>
+        </div>
     </td>
     {% endfor %}
 </tr>

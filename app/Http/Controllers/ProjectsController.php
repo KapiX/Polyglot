@@ -116,8 +116,8 @@ class ProjectsController extends Controller
                 ->mapWithKeys(function($item) use ($count) {
                     return [
                         $item->language_id => [
-                            'needs_work' => round($item->needs_work / $count * 100),
-                            'translated' => round($item->translated / $count * 100)
+                            'needs_work' => floor($item->needs_work / $count * 100),
+                            'translated' => floor($item->translated / $count * 100)
                         ]
                     ];
                 })->toArray();

@@ -48,7 +48,8 @@ Route::put('/files/{file}', 'FilesController@update')
 Route::post('/files/{file}/upload', 'FilesController@upload')
     ->name('files.upload')
     ->middleware('can:modify-file,file');
-Route::get('/files/{file}/lang/{lang}', 'FilesController@translate')
+Route::get('/files/{file}/lang/{lang}/{type?}', 'FilesController@translate')
+    ->where('type', 'all|continue')
     ->name('files.translate');
 Route::get('/files/{file}/lang/{lang}/export', 'FilesController@export')
     ->name('files.export');

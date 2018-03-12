@@ -12,6 +12,7 @@ use Polyglot\Http\Requests\AddEditFile;
 use Polyglot\Http\Requests\ImportTranslation;
 use Polyglot\Http\Requests\UploadFile;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -191,17 +192,37 @@ class FilesController extends Controller
         return \Redirect::route('files.translate', [$file->id, $lang->id])->with('message', 'Translations uploaded.');
     }
 
-    public function translate(File $file, Language $lang)
+    public function translate(File $file, Language $lang, $type = 'all')
     {
-        $texts = $file->texts()->paginate(30);
-        $translations = Translation::where('language_id', $lang->id)
-            ->whereIn('text_id', $texts->pluck('id'))
-            ->get();
+        $perPage = 30;
+        $translationsCount = 0;
+        $translations = Text::select('texts.id as text_id', 'file_id', 'text', 'comment', 'context')
+            ->selectRaw('COALESCE(`language_id`, ?) as `language_id`', [$lang->id])
+            ->selectRaw('COALESCE(`translation`, `text`) as `translation`')
+            ->selectRaw('COALESCE(`needs_work`, 1) as `needs_work`')
+            ->leftJoin('translations', function($join) use($lang) {
+                $join->on('texts.id', '=', 'translations.text_id')
+                    ->where('language_id', $lang->id);
+            })
+            ->where('file_id', $file->id)
+            ->orderBy('context', 'asc')
+            ->orderBy('text', 'asc');
+        if($type == 'continue') {
+            $translations = $translations->having('needs_work', 1)
+                ->get();
+            $translationsCount = $translations->count();
+            $translations = $translations->forPage(1, $perPage);
+        }
+        else
+            $translations = $translations->paginate($perPage);
+
         return view('files.translate')
+            ->with('perPage', $perPage)
+            ->with('type', $type)
             ->with('file', $file)
             ->with('lang', $lang)
-            ->with('texts', $texts)
-            ->with('translations', $translations->groupBy('text_id'));
+            ->with('allTranslationsCount', $translationsCount)
+            ->with('translations', $translations);
     }
 
     public function export(File $file, Language $lang)

@@ -89,6 +89,9 @@ $(document).ready(function() {
     <li>{{ html_image(file.project.icon, null, {class: 'breadcrumb-icon'}) }} {{ link_to_route('projects.show', file.project.name, {project: file.project}) }}</li>
     <li>{{ link_to_route('projects.show', file.name, {project: file.project}) }}</li>
     <li class="active">{{ html_image('images/flags/' ~ lang.iso_code ~ '-flag_16.png', null, {class: 'breadcrumb-icon'}) }} {{ lang.name }}</li>
+    {% if type == 'continue' %}
+        <li class="active">Continue translation</li>
+    {% endif %}
 </ol>
 <div class="container-fluid">
     <div class="row">
@@ -115,20 +118,24 @@ $(document).ready(function() {
         </div>
     </div>
 </div>
-{% for context, textsGrouped in texts.groupBy('context') %}
-<h3>{{ context }}</h3>
-<table class="table table-hover table-translations" id="{{ lang.id }}">
-    {% for text in textsGrouped %}
-    {% set translation = translations[text.id][0] %}
-    <tr id="{{ text.id }}"{{ translation == null or translation.needs_work == true ? ' class="warning"' }}>
-        <td><p>{{ text.text }}</p><p class="comment">{{ text.comment }}</p></td>
-        <td{{ canTranslate ? ' class="translation"' }}>
-            {{ translation == null ? text.text : translation.translation }}
-        </td>
-    </tr>
+{% if translations.count() > 0 %}
+    {% for context, translationsGrouped in translations.groupBy('context') %}
+        <h3>{{ context }}</h3>
+        <table class="table table-hover table-translations" id="{{ lang.id }}">
+        {% for translation in translationsGrouped %}
+            <tr id="{{ translation.text_id }}"{{ translation.needs_work ? ' class="warning"' }}>
+                <td><p>{{ translation.text }}</p><p class="comment">{{ translation.comment }}</p></td>
+                <td{{ canTranslate ? ' class="translation"' }}>{{ translation.translation }}</td>
+            </tr>
+        {% endfor %}
+        </table>
     {% endfor %}
-</table>
-{% endfor %}
-{{ texts.links() | raw }}
-
+    {% if type == 'continue' and allTranslationsCount > perPage %}
+        <p>Refresh the page to get more strings to translate.</p>
+    {% else %}
+        {{ translations.links() | raw }}
+    {% endif %}
+{% else %}
+<div class="alert alert-success"><strong>Well done!</strong> Translation complete!</div>
+{% endif %}
 {% endblock %}
