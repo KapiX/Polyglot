@@ -53,7 +53,8 @@
             {% set continueLabel = canTranslate ? 'Continue' : 'View unfinished' %}
             {% set allLabel = canTranslate ? 'All translations' : 'View all' %}
             {% set parameters = {file: file.id, lang: language.id} %}
-            {% set buttonClass = canTranslate ? 'btn-primary' : 'btn-default' %}
+            {% set buttonClass = canTranslate and lang_stat['translated'] < 100
+                ? 'btn-primary' : 'btn-default' %}
             {{ link_to_route('files.translate',
                 canTranslate ? continueLabel : allLabel,
                 canTranslate ? parameters|merge({type: 'continue'}) : parameters,
