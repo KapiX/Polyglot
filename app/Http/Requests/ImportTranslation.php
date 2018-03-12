@@ -14,7 +14,7 @@ class ImportTranslation extends FormRequest
      */
     public function authorize()
     {
-        $file = File::find($this->route('file')->id)->first();
+        $file = File::find($this->route('file')['id']);
         $lang = $this->route('lang')->id;
 
         return $file && $lang && $this->user()->can('translate-file', [$file, $lang]);

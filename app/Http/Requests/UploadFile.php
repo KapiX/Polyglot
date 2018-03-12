@@ -14,7 +14,7 @@ class UploadFile extends FormRequest
      */
     public function authorize()
     {
-        $file = File::find($this->route('file')->id)->first();
+        $file = File::find($this->route('file')['id']);
 
         return $file && $this->user()->can('modify-file', $file);
     }
