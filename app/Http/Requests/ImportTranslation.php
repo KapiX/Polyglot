@@ -3,6 +3,7 @@
 namespace Polyglot\Http\Requests;
 
 use Polyglot\File;
+use Polyglot\Language;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ImportTranslation extends FormRequest
@@ -15,7 +16,7 @@ class ImportTranslation extends FormRequest
     public function authorize()
     {
         $file = File::find($this->route('file')['id']);
-        $lang = $this->route('lang')->id;
+        $lang = Language::find($this->route('lang')['id']);
 
         return $file && $lang && $this->user()->can('translate-file', [$file, $lang]);
     }
