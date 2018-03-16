@@ -115,8 +115,9 @@ $(document).ready(function() {
         </div>
         <div class="col-md-6 col-md-pull-6">
             <p>For strings that don't need translation, because they are the same as the English original, the "Needs work" checkbox should be unmarked. Otherwise the percentage display on the overview page doesn't reach 100%.</p>
-
-            <p>If you find typos in the English original or other issues, please report them at the <a href="{{ project.bugtracker_url }}">{{ project.name }} bug tracker</a>.</p>
+            {% if file.project.bugtracker_url %}
+                <p>If you find typos in the English original or other issues, please report them at the <a href="{{ file.project.bugtracker_url }}">{{ file.project.name }} bug tracker</a>.</p>
+            {% endif %}
         </div>
     </div>
 </div>

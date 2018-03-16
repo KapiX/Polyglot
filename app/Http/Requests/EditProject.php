@@ -28,7 +28,7 @@ class EditProject extends FormRequest
     public function rules()
     {
         $uniqueName = 'unique:projects';
-        $project = Project::find($this->route('project'))->first();
+        $project = Project::find($this->route('project')['id']);
         if($project)
             $uniqueName .= ',name,' . $project->id;
         return [
