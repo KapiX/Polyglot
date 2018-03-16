@@ -51,7 +51,7 @@
         <div class="btn-group">
             {% set canTranslate = can('translate-file', [file, language]) %}
             {% set continueLabel = canTranslate ? 'Continue' : 'View unfinished' %}
-            {% set allLabel = canTranslate ? 'All translations' : 'View all' %}
+            {% set allLabel = canTranslate ? 'All text blocks' : 'View all' %}
             {% set parameters = {file: file.id, lang: language.id} %}
             {% set buttonClass = canTranslate and lang_stat['translated'] < 100
                 ? 'btn-primary' : 'btn-default' %}
