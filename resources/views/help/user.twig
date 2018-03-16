@@ -13,18 +13,29 @@
 
 <p>{{ html_image('images/help/user-startpage.png', 'The start page with a list of all projects') }}</p>
 
-<p>After logging into Polyglot, just click on a project from the start page, and see if your language needs attention (i.e. its status is below 100%):</p>
+<p>After logging into Polyglot, the start page shows a list of all the hosted projects. After a project's name you may see a globe symbol, linking the it's website and a sheet icon linking to its bugtracker. Some developers also include the date of the next planned release, so translators can cram to get in their translations in time.<p>
+
+<p>Projects that aren't 100% translated in your preferred language - see <i>Edit profile</i> in your user menu at the top right of the page - are highlighted yellow.</p>
+
+<p>Click on a project to go to its translation page:</p>
 
 <p>{{ html_image('images/help/user-project-files.png', 'The "Translation modules" page of a project, with the status of all translations') }}</p>
 
 <p>Most projects have only one <i>Translation module</i> (one "catkeys" file) per language, i.e. there's only one column with the language progress for the main application. If the software, however, includes for example a Tracker add-on or a library or consists of several applications, you'll see more columns that you'll have to get to 100%.</p>
 
-<p><i>Export</i> lets you download the catkeys of a particular language. The downloaded file can then be edited in a text editor or <a href="https://depot.haiku-os.org/#!/pkg/catkeyseditor/haikuports/0/1/2/-/3/x86_gcc2">CatKeysEditor</a>, if you prefer that.<br />
-The <i>Translate</i> link takes you to the actual translation page:</p>
+<p>By default, only languages that are being actively translated are listed. If yours isn't among them, it means that nobody has started a translation yet: Click <i>Show all languages</i> to see it.</p>
+
+<p>If the progress of a translation is below 100% the menu <i>Continue</i> beside the progress bar is highlighted blue and a click brings you to a page with all still unfinished text blocks.<br />
+In the menu, the item <i>All text blocks</i> opens that page with all text blocks, the ones already translated and the ones still needing work.<br />
+<i>Export<i> lets you download the catkeys of that particular language, just like <i>Export all</i> at the bottom of the list of languages lets you download the catkeys of all languages. The downloaded file can then be edited in a text editor or <a href="https://depot.haiku-os.org/#!/pkg/catkeyseditor/haikuports/0/1/2/-/3/x86_gcc2">CatKeysEditor</a>, if you prefer that.</p>
+
+<p>You can only edit text blocks for the languages you have permissions for. All others you can only <i>Export</i> or <i>View all</i> the text blocks.</p>
+
+<p>This is the translation page:</p>
 
 <p>{{ html_image('images/help/user-translation-upload.png', 'Upload translated catkeys at the top of the "Translation" page') }}</p>
 
-<p>At the top, you can upload a previously exported and edited catkeys file of your language. Be aware: if the developer has updated the original English catkeys of his project, they take precedence. If it has changed, more or fewer text blocks, only the ones of yours that still match will be imported.<br />
+<p>At the top, you can upload a previously exported and edited catkeys file of your language. Be aware: if the developer has updated the original English catkeys of his project, they take precedence. If it has changed - more or fewer text blocks - only the ones of yours that still match will be imported.<br />
 So everthing's safe, but you may want to prefer leaving the exporting/uploading to the developer and stick to the Polyglot web interface...</p>
 
 <p>Below the catkeys upload, there's a table with all the GUI texts that need localization. Clicking in a row expands it to the editing mode (last row in this example):</p>
