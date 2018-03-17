@@ -135,8 +135,8 @@
 
 {% block add_file_panel %}
 <p class="message bg-info text-info">
-Some apps generate several catkeys files, one for each "module" of the software, like for the "Main app", a "Preference panel", a "Library" or "Tracker-addon" it comes with.<br />
-Here you can add those different translation modules and their catkeys. Normal "single-catkeys" projects should be named "Main app" for consistency.
+Some apps generate several catkeys files, one for each "module" of the software, like for the main "Application", a "Preference" panel, a "Library" or "Tracker-addon" it comes with.<br />
+Here you can add those different translation modules and their catkeys. Normal "single-catkeys" projects should be named simply "Application" for consistency.
 </p>
 {{ form_open({url: route('files.store', {project: project.id}), method: POST}) }}
 <div class="input-group">
