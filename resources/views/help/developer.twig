@@ -40,14 +40,17 @@ Strings that aren't in the new <i>en.catkeys</i> anymore get removed (together w
 <a href="#">{{ html_image('images/up.png', 'Go up', {'class': 'go-up'}) }}</a>
 <a id="adding" name="adding"></a>Adding a project</h2>
 
-<p>Simply enter the new project name into the text box of the Polyglot start page, click <i>Add project</i> and it'll appear in the list of projects. Click on it and you get to the <i>Translation modules</i> page of your project:</p>
+<p>Simply enter the new project name into the <i>Add project</i> text box on the Polyglot start page, click <i>Add</i> and it'll appear in the list of projects. Click on it and you get to the <i>Translation modules</i> page of your project:</p>
 
 <p>{{ html_image('images/help/dev-files-name.png', 'The "Translation modules" page to name parts of your application that need their catkeys translated') }}</p>
 
-<p>After adding the identifying name for this main part of your app (by default named "Main app"), you upload the <i>en.catkeys</i> for it.<br />
-You'll see the signature of the application and the fingerprint, that changes every time you create a new <i>en.catkeys</i> with changed GUI strings:</p>
+<p>After adding the translation module for this main part of your app (by default named "Application"), you upload the <i>en.catkeys</i> for it:</p>
 
-<p>{{ html_image('images/help/dev-upload-xx-catkeys.png', 'Uploading the en.catkeys') }}</p>
+<p>{{ html_image('images/help/dev-upload-en-catkeys.png', 'Uploading the en.catkeys') }}</p>
+
+<p>Below that you'll see the name of the translation module, the signature of the application and the checksum which changes every time you create a new <i>en.catkeys</i> with changed GUI strings:</p>
+
+<p>{{ html_image('images/help/dev-name-sig-checksum.png', 'The data of a translation module') }}</p>
 
 <p>Under that follows the contents of your <i>en.catkeys</i>.</p>
 
@@ -57,7 +60,7 @@ You'll see the signature of the application and the fingerprint, that changes ev
 <a href="#">{{ html_image('images/up.png', 'Go up', {'class': 'go-up'}) }}</a>
 <a id="uploading" name="uploading"></a>Uploading existing xx.catkeys (translations)</h2>
 
-<p>If you already have some (partially) translated <i>xx.catkeys</i>, you can upload those too: Just like your translating collegues, you click on your project on the start page, and then on the <i>Translate</i> link of each  language you have <i>xx.catkeys</i> for.</p>
+<p>If you already have some (partially) translated <i>xx.catkeys</i>, you can upload those too: Just like your translating collegues, you click on your project on the start page, and then on the <i>Continue</i> or <i>All text blocks</i> link of each language you have <i>xx.catkeys</i> for.</p>
 
 <p>{{ html_image('images/help/dev-upload-xx-catkeys.png', 'The "Translation" page') }}</p>
 
@@ -72,7 +75,7 @@ If the uploaded <i>xx.catkeys</i> are outdated and contain additional, now obsol
 <a id="updating" name="updating"></a>Updating en.catkeys</h2>
 
 <p>It's practically the same as when you created your new project.<br />
-You click on your project on the start page to get to your <i>Translation modules</i> page and then click on the <i>Edit</i> link of the identifying name (default "Main app") and you're back where you can upload an <i>en.catkeys</i> file.</p>
+You click on your project on the start page to get to your <i>Translation modules</i> page and then click on the <i>Edit</i> link of the identifying name (default "Application") and you're back where you can upload an <i>en.catkeys</i> file.</p>
 
 <p>You can return to this page anytime you need to upload a new version of your <i>en.catkeys</i>. Remember from the "<a href="#overview">Overview</a>" section though: uploading new <i>en.catkeys</i> will lose already translated strings, if their original English string has changed. Don't wear out your translators...!</p>
 
@@ -80,7 +83,7 @@ You click on your project on the start page to get to your <i>Translation module
 <a href="#">{{ html_image('images/up.png', 'Go up', {'class': 'go-up'}) }}</a>
 <a id="exporting" name="exporting"></a>Exporting translated xx.catkeys</h2>
 
-<p>You've probably already seen all the <i>Export</i> links on the <i>Translation</i> page. Just click to download the <i>xx.catkeys</i> of that particular language or <i>Export all</i> for a ZIP archive containing all languages.</p>
+<p>On the <i>Translation modules</i> page, each language has an <i>Export</i> item in the <i>Continue</i> menu beside its progress bar. With it you download the <i>xx.catkeys</i> of that particular language. To download a ZIP archive containing all languages, click on the <i>Export all</i> at the bottom of the list of languages on that page.</p>
 
 <h2 class="help">
 <a href="#">{{ html_image('images/up.png', 'Go up', {'class': 'go-up'}) }}</a>
@@ -118,9 +121,9 @@ You click on your project on the start page to get to your <i>Translation module
 <ol>
 	<li>Read at least the "<a href="#overview">Overview</a>" on this page. :)</li>
 	<li>Add a new project.</li>
-	<li>Add names for the different parts of your app that create <i>en.catkeys</i> (often just one <i>en.catkeys</i> file is used, default name "Application").</li>
+	<li>Add "Translation modules" for the different parts of your app that create <i>en.catkeys</i> (often just one <i>en.catkeys</i> file is used, default name "Application").</li>
 	<li>Upload the <i>en.catkeys</i>.</li>
-	<li>Add all existing translated <i>xx.catkeys</i> on the "<i>Translation</i>" page of each language you got. Un-set the <i>Needs work</i> checkbox and click <i>Save</i> for those strings that didn't need translation, because they are the same as the original English, e.g. often for <i>OK</i> buttons.</li>
+	<li>Add all existing translated <i>xx.catkeys</i> on the <i>Translation modules</i> page of each language you got. Un-set the <i>Needs work</i> checkbox and click <i>Save</i> for those strings that didn't need translation, because they are the same as the original English, e.g. often for <i>OK</i> buttons.</li>
 	<li>Uploading a new <i>en.catkeys</i> file impacts the translations (items get added or removed, including already translated strings!). Uploading translations (<i>xx.catkeys</i>) doesn't impact the <i>en.catkeys</i>.</li>
 	<li>Export the translated <i>xx.catkeys</i> for the languages that you need when their translations are finished.</li>
 </ol>
