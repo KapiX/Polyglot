@@ -85,7 +85,7 @@ class ProjectsController extends Controller
      */
     public function show(Project $project, $display = 'active')
     {
-        $languages = Language::orderBy('iso_code')->get()->keyBy('id');
+        $languages = Language::orderBy('name')->get()->keyBy('id');
         // pull the preferred languages to the top
         $preferred_languages = Auth::user()->preferred_languages ?? [];
         $prepend = [];
