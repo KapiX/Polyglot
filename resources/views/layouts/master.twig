@@ -19,7 +19,6 @@
                         <a class="navbar-brand" href="{{ url('/') }}">{{ html_image('images/Polyglot_40px.png') }}</a>
                     </div>
                     <div class="collapse navbar-collapse">
-                        {% if auth_check() %}
                         <ul class="nav navbar-nav">
                             {% if auth_user().can('global-settings') %}
                                 <li>{{ link_to_route('users.index', 'Users') }}</li>
@@ -27,7 +26,6 @@
                             {% endif %}
                             <li>{{ link_to_route('help', 'Help') }}</li>
                         </ul>
-                        {% endif %}
                         <ul class="nav navbar-nav navbar-right">
                             {% if auth_check() %}
                                 <li class="dropdown">
