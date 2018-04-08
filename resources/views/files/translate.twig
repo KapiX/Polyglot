@@ -27,7 +27,7 @@ $(document).ready(function() {
             url: '{{ url('/') }}/texts/' + id + '/lang/' + lang,
             success: function (data) {
                 textarea.val(data.translation);
-                needsWorkCheckbox.prop('checked', data.needswork);
+                needsWorkCheckbox.prop('checked', false);
                 textarea.prop('disabled', false);
                 textarea.focus();
                 textarea.select();
