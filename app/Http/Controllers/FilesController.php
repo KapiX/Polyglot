@@ -2,6 +2,7 @@
 
 namespace Polyglot\Http\Controllers;
 
+use Exception;
 use ZipArchive;
 use Polyglot\File;
 use Polyglot\Language;
@@ -14,6 +15,7 @@ use Polyglot\Http\Requests\UploadFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class FilesController extends Controller
@@ -94,7 +96,12 @@ class FilesController extends Controller
     public function upload(UploadFile $request, File $file)
     {
         $catkeys = file_get_contents($request->file('catkeys')->getRealPath());
-        [$mimetype, $checksum, $catkeys_processed] = $this->processCatkeysFile($catkeys);
+        try {
+            [$mimetype, $checksum, $catkeys_processed] = $this->processCatkeysFile($catkeys);
+        } catch(Exception $e) {
+            return redirect()->route('files.edit', [$file->id])
+                ->with('error', $e->getMessage());
+        }
 
         $file->mime_type = $mimetype;
         $file->checksum = $checksum;
@@ -132,14 +139,20 @@ class FilesController extends Controller
         if(!empty($textsToInsert))
             Text::insert($textsToInsert);
 
-        // TODO: how many added and deleted
-        return \Redirect::route('files.edit', [$file->id])->with('message', 'Catkeys uploaded.');
+        return redirect()->route('files.edit', [$file->id])
+            ->with('success', 'Catkeys uploaded. ' . count($textsToInsert) . ' added, '
+                . count($deleteIds) . ' deleted.');
     }
 
     public function import(ImportTranslation $request, File $file, Language $lang)
     {
         $catkeys = file_get_contents($request->file('catkeys')->getRealPath());
-        [$mimetype, $checksum, $catkeys_processed] = $this->processCatkeysFile($catkeys);
+        try {
+            [$mimetype, $checksum, $catkeys_processed] = $this->processCatkeysFile($catkeys);
+        } catch(Exception $e) {
+            return redirect()->route('files.translate', [$file->id, $lang->id])
+                ->with('error', $e->getMessage());
+        }
 
         // TODO: verify checksum and mimetype and fail if they don't match
 
@@ -188,7 +201,8 @@ class FilesController extends Controller
             ]);
         }
 
-        return \Redirect::route('files.translate', [$file->id, $lang->id])->with('message', 'Translations uploaded.');
+        return redirect()->route('files.translate', [$file->id, $lang->id])
+            ->with('success', 'Translations uploaded.');
     }
 
     public function translate(File $file, Language $lang, $type = 'all')
@@ -332,8 +346,14 @@ class FilesController extends Controller
         $checksum = $first[3];
         $line = strtok($separator);
 
+        $i = 1;
         while($line !== false) {
+            ++$i;
             $exploded = explode("\t", $line);
+            if(count($exploded) != 4) {
+                throw new Exception('File is malformed, error is in line ' . $i
+                        . '. Most likely a tab is missing or there are too many.');
+            }
             $catkeys[] = [
                 'text' => $exploded[0],
                 'context' => $exploded[1],
