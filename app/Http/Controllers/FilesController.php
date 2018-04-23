@@ -154,7 +154,10 @@ class FilesController extends Controller
                 ->with('error', $e->getMessage());
         }
 
-        // TODO: verify checksum and mimetype and fail if they don't match
+        if($checksum !== $file->checksum || $mimetype !== $file->mime_type) {
+            return redirect()->route('files.translate', [$file->id, $lang->id])
+                ->with('error', "MIME type or checksum don't match.");
+        }
 
         foreach($catkeys_processed as $catkey) {
             $text = $file->texts()
