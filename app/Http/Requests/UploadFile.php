@@ -27,7 +27,7 @@ class UploadFile extends FormRequest
     public function rules()
     {
         return [
-            'catkeys' => 'required|file|mimetypes:text/plain|max:1024'
+            'catkeys' => 'required|file|max:1024'
         ];
     }
 }
