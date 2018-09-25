@@ -45,7 +45,7 @@ $(document).ready(function() {
                         tr.addClass('warning');
                     else
                         tr.removeClass('warning');
-                    translationCell.html(data.translation);
+                    translationCell.text(data.translation);
                     translationCell.removeClass('translation-active');
                     tr.click(trclick);
                     tr.next().click();
@@ -62,7 +62,7 @@ $(document).ready(function() {
                         tr.addClass('warning');
                     else
                         tr.removeClass('warning');
-                    translationCell.html(data.translation);
+                    translationCell.text(data.translation);
                     tr.click(trclick);
                     translationCell.removeClass('translation-active');
                 }
