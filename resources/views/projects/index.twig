@@ -34,9 +34,11 @@
     </div>
 </div>
 {% if projects.count != 0 %}
+{% for chunk in projects.chunk((projects.count() / 2)|round(0, 'ceil')) %}
+<div class="col-md-6">
 <table class="table table-striped">
     <tbody>
-    {% for project in projects %}
+    {% for project in chunk %}
     <tr{{ project_needs_work ? (project_needs_work[project.id] == 1 ? ' class="warning"') }}>
         <td class="project">
             {{ html_image(project.icon) }}
@@ -67,6 +69,8 @@
     {% endfor %}
     </tbody>
 </table>
+</div>
+{% endfor %}
 {% else %}
 <p>No projects found.</p>
 {% endif %}
