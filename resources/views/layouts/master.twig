@@ -44,6 +44,9 @@
                 </div>
             </nav>
         <div class="container">
+        {% if auth_check() and auth_user().languages is empty and auth_user().role == 0 %}
+            <div class="alert alert-warning" role="alert">You don't have permissions to translate anything. They are required to do anything, until suggestions are implemented. See {{ link_to_route('help', 'Help for translators', {article: 'user'}) }} for information.</div>
+        {% endif %}
         {% block content %}{% endblock %}
         </div>
     </body>
