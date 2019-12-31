@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "kapix/polyglot",
+    "description": "Translation system for Haiku's catkeys, tailored for translating apps from different authors.",
+    "keywords": ["translation", "i18n", "haiku"],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -12,7 +12,7 @@
         "laravel/socialite": "^3.0",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",
-        "rcrowe/twigbridge": "^0.9.5"
+        "rcrowe/twigbridge": "^0.11.2"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
