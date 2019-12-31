@@ -9,7 +9,7 @@
         "doctrine/dbal": "^2.6",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.8.*",
-        "laravel/socialite": "^3.0",
+        "laravel/socialite": "^4.0",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",
         "rcrowe/twigbridge": "^0.11.2"
