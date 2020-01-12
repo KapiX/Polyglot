@@ -25,7 +25,7 @@
                     <p class="message bg-info text-info">
                         When an updated en.catkeys file is uploaded, the unchanged strings are kept in the database (along with their translations) and all new strings are added (with no translations yet, of course). Strings that aren't in the new en.catkeys anymore get removed (together with all their attached translations: just fixing a typo is then very costly, because the whole string has to be re-translated!).
                     </p>
-                    {{ form_open({url: route('files.upload', {id: file.id}), method: POST, files: true}) }}
+                    {{ form_open({url: route('files.upload', {file: file.id}), method: POST, files: true}) }}
                     <div class="form-group {{ errors.has('catkeys') ? ' has-error' }}">
                         <div class="input-group">
                             {{ form_file('catkeys', {class: 'form-control'}) }}

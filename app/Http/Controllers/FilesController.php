@@ -109,11 +109,18 @@ class FilesController extends Controller
 
         $textsToInsert = [];
         $idsProcessed = [];
+        $idsUpdated = [];
+        $translationIdsToUpdate = []; // needs_work => 1
         foreach($catkeys_processed as $catkey) {
+            // these comparisons ignore case and trailing whitespace
             $text = $file->texts()
                 ->whereRaw('STRCMP(text, ?) = 0', [$catkey['text']])
                 ->whereRaw('STRCMP(context, ?) = 0', [$catkey['context']])
                 ->whereRaw('STRCMP(comment, ?) = 0', [$catkey['comment']])
+                ->selectRaw('id')
+                ->selectRaw('STRCMP(BINARY text, BINARY ?) = 0 as text_same', [$catkey['text']])
+                ->selectRaw('STRCMP(BINARY context, BINARY ?) = 0 as context_same', [$catkey['context']])
+                ->selectRaw('STRCMP(BINARY comment, BINARY ?) = 0 as comment_same', [$catkey['comment']])
                 ->get();
             if($text->count() == 0) {
                 $textToInsert = [
@@ -126,10 +133,26 @@ class FilesController extends Controller
                 ];
                 $textsToInsert[] = $textToInsert;
             } else {
+                // if we're here there was a match
+                // let's see if texts are exactly the same
+                $textToUpdate = $text->first();
+                if($textToUpdate->text_same == 0 || $textToUpdate->context_same == 0 ||
+                    $textToUpdate->comment_same == 0) {
+                    // if not, update
+                    // this is not very performant, but the assumption is
+                    // that there are not a lot of changes like that
+                    $textToUpdate->text = $catkey['text'];
+                    $textToUpdate->context = $catkey['context'];
+                    $textToUpdate->comment = $catkey['comment'];
+                    $textToUpdate->save();
+                    $translationIdsToUpdate = array_merge($translationIdsToUpdate,
+                        $textToUpdate->translations()->pluck('id')->toArray());
+                    $idsUpdated[] = $textToUpdate->id;
+                }
                 // if it is in the table, remember it
                 // later we can pull all ids and diff with them to see which
                 // catkeys disappeared from the file
-                $idsProcessed[] = $text->first()->id;
+                $idsProcessed[] = $textToUpdate->id;
             }
         }
         $allIds = $file->texts()->pluck('id')->toArray();
@@ -138,10 +161,16 @@ class FilesController extends Controller
             Text::whereIn('id', $deleteIds)->delete();
         if(!empty($textsToInsert))
             Text::insert($textsToInsert);
+        if(!empty($translationIdsToUpdate))
+            Translation::whereIn('id', $translationIdsToUpdate)->update(['needs_work' => 1]);
+        $result = 'Catkeys uploaded. ' . count($textsToInsert) . ' added, '
+                . count($deleteIds) . ' deleted, ' . count($idsUpdated)
+                . ' updated (casing, whitespace changes), with '
+                . count($translationIdsToUpdate)
+                . ' related translations marked as incomplete.';
 
         return redirect()->route('files.edit', [$file->id])
-            ->with('success', 'Catkeys uploaded. ' . count($textsToInsert) . ' added, '
-                . count($deleteIds) . ' deleted.');
+            ->with('success', $result);
     }
 
     public function import(ImportTranslation $request, File $file, Language $lang)
@@ -160,10 +189,12 @@ class FilesController extends Controller
         }
 
         foreach($catkeys_processed as $catkey) {
+            // the texts must match exactly, if case or whitespace are different
+            // it's not the same
             $text = $file->texts()
-                ->whereRaw('STRCMP(text, ?) = 0', [$catkey['text']])
-                ->whereRaw('STRCMP(context, ?) = 0', [$catkey['context']])
-                ->whereRaw('STRCMP(comment, ?) = 0', [$catkey['comment']])
+                ->whereRaw('STRCMP(BINARY text, BINARY ?) = 0', [$catkey['text']])
+                ->whereRaw('STRCMP(BINARY context, BINARY ?) = 0', [$catkey['context']])
+                ->whereRaw('STRCMP(BINARY comment, BINARY ?) = 0', [$catkey['comment']])
                 ->get();
             if($text->count() == 0) {
                 // TODO: report stray texts?
