@@ -34,6 +34,8 @@
 When an <i>en.catkeys</i> file is uploaded, the unchanged strings are kept in the database (along with their translations) and all new strings are added (with no translations yet, of course).<br />
 Strings that aren't in the new <i>en.catkeys</i> anymore get removed (together with all their attached translations: just fixing a typo is then very costly, because the whole string has to be re-translated!).</p>
 
+<p>Notable exception: If the English original only has whitespace or capitalization changes, Polyglot won't drop the whole string, but update the English original and keep the translation and marks it as <i>Needs work</i>.</p>
+
 <p>When all the languages you need are 100% finished, you can export and download their <i>xx.catkeys</i> to use when building your application.</p>
 
 <h2 class="help">
