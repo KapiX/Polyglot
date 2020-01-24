@@ -74,18 +74,14 @@
     {% endfor %}
 </tr>
 {% endfor %}
-{% if auth_user().can('modify-project', project) %}
 <tr>
     <td></td>
     {% for file in project.files %}
     <td>
-        {% if auth_user().can('modify-file', file) %}
-            {{ link_to_route('files.exportAll', 'Export all', file.id, {}) }}
-        {% endif %}
+        {{ link_to_route('files.exportAll', 'Export all', file.id, {}) }}
     </td>
     {% endfor %}
 </tr>
-{% endif %}
 </tbody>
 </table>
 {% else %}
