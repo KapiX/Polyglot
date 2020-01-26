@@ -30,7 +30,7 @@ class IndexController extends Controller
     }
 
     function profile() {
-        $languages = Language::orderBy('iso_code')->pluck('name', 'id');
+        $languages = Language::orderBy('name')->pluck('name', 'id');
         $user = Auth::user();
         return view('index.profile')
             ->with('user', $user)
