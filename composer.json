@@ -25,7 +25,8 @@
     "autoload": {
         "classmap": [
             "database/seeds",
-            "database/factories"
+            "database/factories",
+            "app/Extensions/Twig"
         ],
         "psr-4": {
             "Polyglot\\": "app/"

@@ -83,7 +83,7 @@
 <table class="table">
     {% for text in texts %}
     <tr>
-        <td><p>{{ text.text }}</p><p class="comment">{{ text.comment }}</p></td>
+        <td><p>{{ text.text|preserveSpaces }}</p><p class="comment">{{ text.comment|preserveSpaces }}</p></td>
     </tr>
     {% endfor %}
 </table>

@@ -133,8 +133,8 @@ $(document).ready(function() {
         <table class="table table-hover table-translations" id="{{ lang.id }}">
         {% for translation in translationsGrouped %}
             <tr id="{{ translation.text_id }}"{{ translation.needs_work ? ' class="warning"' }}>
-                <td><p>{{ translation.text }}</p><p class="comment">{{ translation.comment }}</p></td>
-                <td{{ canTranslate ? ' class="translation"' }}>{{ translation.translation }}</td>
+                <td><p>{{ translation.text|preserveSpaces }}</p><p class="comment">{{ translation.comment|preserveSpaces }}</p></td>
+                <td{{ canTranslate ? ' class="translation"' }}>{{ translation.translation|preserveSpaces }}</td>
             </tr>
         {% endfor %}
         </table>

@@ -1,0 +1,14 @@
+--TEST--
+"preserveSpaces" filter
+--TEMPLATE--
+{{ "    test"|preserveSpaces }}
+{{ "test    "|preserveSpaces }}
+{{ "    test    "|preserveSpaces }}
+{{ "open origin package    "|preserveSpaces }}
+--DATA--
+return [];
+--EXPECT--
+&nbsp;&nbsp;&nbsp;&nbsp;test
+test&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;test&nbsp;&nbsp;&nbsp;&nbsp;
+open origin package&nbsp;&nbsp;&nbsp;&nbsp;
