@@ -19,6 +19,11 @@ td.project {
     width: 100%;
 }
 
+td.iso-code {
+    width: 100px;
+    text-transform: uppercase;
+}
+
 .progress-translation {
     display: inline-block;
     margin-top: auto;

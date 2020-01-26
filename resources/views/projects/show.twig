@@ -12,7 +12,7 @@
 <table class="table table-striped">
 <thead>
 <tr>
-    <th>
+    <th colspan="2">
         {{ link_to_route('projects.show', displayLinkLabel,
             { 'project': project.id, 'display': display == 'active' ? 'all' : '' }) }}
     </th>
@@ -33,8 +33,8 @@
             language.id in auth_user().preferred_languages))
         or (display == 'all') %}
 <tr>
-    <td>{{ html_image('images/flags/' ~ language.iso_code ~ '-flag_32.png') }}
-        {{ language.name }}</td>
+    <td class="iso-code"><b>{{ language.iso_code }}</b></td>
+    <td>{{ language.name }}</td>
     {% for file in project.files %}
     <td>
         {% set lang_stat = status[file.id][language.id] %}

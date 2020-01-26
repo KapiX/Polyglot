@@ -88,7 +88,7 @@ $(document).ready(function() {
     <li>{{ link_to_route('projects.index', 'Home') }}</li>
     <li>{{ html_image(file.project.icon, null, {class: 'breadcrumb-icon'}) }} {{ link_to_route('projects.show', file.project.name, {project: file.project}) }}</li>
     <li>{{ link_to_route('projects.show', file.name, {project: file.project}) }}</li>
-    <li class="active">{{ html_image('images/flags/' ~ lang.iso_code ~ '-flag_16.png', null, {class: 'breadcrumb-icon'}) }} {{ lang.name }}</li>
+    <li class="active">{{ lang.name }}</li>
     {% if type == 'continue' %}
         <li class="active">Continue translation</li>
     {% endif %}
