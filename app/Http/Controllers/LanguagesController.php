@@ -23,6 +23,8 @@ class LanguagesController extends Controller
         $language = new Language;
         $language->iso_code = $request->input('iso_code');
         $language->name = $request->input('name');
+        $language->style_guide_url = $request->input('style_guide_url');
+        $language->terminology_url = $request->input('terminology_url');
         $language->save();
 
         return \Redirect::route('languages.index')
@@ -34,6 +36,8 @@ class LanguagesController extends Controller
     {
         $language->name = $request->input('name');
         $language->iso_code = $request->input('iso_code');
+        $language->style_guide_url = $request->input('style_guide_url');
+        $language->terminology_url = $request->input('terminology_url');
         $language->save();
 
         return \Redirect::route('languages.index')

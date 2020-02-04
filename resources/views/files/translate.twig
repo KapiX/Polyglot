@@ -118,6 +118,11 @@ $(document).ready(function() {
             </div>
             {{ form_close() }}
             {% endif %}
+            {% if lang.style_guide_url or lang.terminology_url %}
+                <p>Remember to
+                    {% if lang.style_guide_url %} follow <a href="{{ lang.style_guide_url }}">style</a>{{ lang.terminology_url ? ' and ' }}{% endif %}
+                    {% if lang.terminology_url %} use <a href="{{ lang.terminology_url }}">terminology</a>{% endif %} of your language.</p>
+            {% endif %}
         </div>
         <div class="col-md-6 col-md-pull-6">
             <p>For strings that don't need translation, because they are the same as the English original, the "Needs work" checkbox should be unmarked. Otherwise the percentage display on the overview page doesn't reach 100%.</p>

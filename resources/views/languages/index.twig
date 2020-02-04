@@ -13,6 +13,8 @@
     <tr>
         <th>ISO code</th>
         <th>Language</th>
+        <th>Style guide URL</th>
+        <th>Terminology URL</th>
         <th></th>
     </tr>
     </thead>
@@ -21,6 +23,8 @@
         {{ form_open({url: route('languages.store'), method: 'POST'}) }}
         <td class="iso-code">{{ form_text('iso_code', null, {'class': 'form-control'}) }}</td>
         <td>{{ form_text('name', null, {'class': 'form-control'}) }}</td>
+        <td>{{ form_text('style_guide_url', null, {'class': 'form-control'}) }}</td>
+        <td>{{ form_text('terminology_url', null, {'class': 'form-control'}) }}</td>
         <td>{{ form_submit('Add', {'class': 'btn btn-default'}) }}</td>
         {{ form_close() }}
     </tr>
@@ -29,6 +33,8 @@
         {{ form_open({url: route('languages.update', language.id), method: 'PUT'}) }}
         <td class="iso-code">{{ form_text('iso_code', language.iso_code, {'class': 'form-control'}) }}</td>
         <td>{{ form_text('name', language.name, {'class': 'form-control'}) }}</td>
+        <td>{{ form_text('style_guide_url', language.style_guide_url, {'class': 'form-control'}) }}</td>
+        <td>{{ form_text('terminology_url', language.terminology_url, {'class': 'form-control'}) }}</td>
         <td>{{ form_submit('Save', {'class': 'btn btn-default'}) }}</td>
         {{ form_close() }}
     </tr>
