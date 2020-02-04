@@ -8,6 +8,18 @@
     <li class="active">Languages</li>
 </ol>
 
+{% if errors.all() %}
+<div class="alert alert-danger">
+    {% for error in errors.all() %}
+    <p>{{ error }}</p>
+    {% endfor %}
+</div>
+{% elseif session('message') %}
+<div class="alert alert-success">
+    <p>{{ session('message') }}</p>
+</div>
+{% endif %}
+
 <table class="table table-striped">
     <thead>
     <tr>
@@ -22,7 +34,7 @@
     <tr>
         {{ form_open({url: route('languages.store'), method: 'POST'}) }}
         <td class="iso-code">{{ form_text('iso_code', null, {'class': 'form-control'}) }}</td>
-        <td>{{ form_text('name', null, {'class': 'form-control'}) }}</td>
+        <td>{{ form_text('name', null, {'class': 'form-control'}) }}
         <td>{{ form_text('style_guide_url', null, {'class': 'form-control'}) }}</td>
         <td>{{ form_text('terminology_url', null, {'class': 'form-control'}) }}</td>
         <td>{{ form_submit('Add', {'class': 'btn btn-default'}) }}</td>
@@ -31,10 +43,10 @@
     {% for language in languages %}
     <tr>
         {{ form_open({url: route('languages.update', language.id), method: 'PUT'}) }}
-        <td class="iso-code">{{ form_text('iso_code', language.iso_code, {'class': 'form-control'}) }}</td>
-        <td>{{ form_text('name', language.name, {'class': 'form-control'}) }}</td>
-        <td>{{ form_text('style_guide_url', language.style_guide_url, {'class': 'form-control'}) }}</td>
-        <td>{{ form_text('terminology_url', language.terminology_url, {'class': 'form-control'}) }}</td>
+        <td class="iso-code">{{ form_text('iso_code_' ~ language.id, language.iso_code, {'class': 'form-control'}) }}</td>
+        <td>{{ form_text('name_' ~ language.id, language.name, {'class': 'form-control'}) }}</td>
+        <td>{{ form_text('style_guide_url_' ~ language.id, language.style_guide_url, {'class': 'form-control'}) }}</td>
+        <td>{{ form_text('terminology_url_' ~ language.id, language.terminology_url, {'class': 'form-control'}) }}</td>
         <td>{{ form_submit('Save', {'class': 'btn btn-default'}) }}</td>
         {{ form_close() }}
     </tr>
