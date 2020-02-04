@@ -32,6 +32,13 @@ $(document).ready(function() {
                 textarea.focus();
                 textarea.select();
                 translationCell.addClass('translation-active');
+                textarea.keypress(function(e) {
+                    if(e.which == 13 && (e.ctrlKey == false && e.shiftKey == false)) {
+                        sendButton.click();
+                        return false;
+                    }
+                    return true;
+                })
             }
         });
         sendButton.click(function() {
