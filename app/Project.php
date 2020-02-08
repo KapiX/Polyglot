@@ -3,6 +3,10 @@
 namespace Polyglot;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+
+use Polyglot\Text;
+use Polyglot\Translation;
 
 class Project extends Model
 {
@@ -47,5 +51,62 @@ class Project extends Model
     public function getIconAttribute($value)
     {
         return $value ? 'storage/' . $value . '.png' : self::DEFAULT_ICON;
+    }
+
+    public static function textsCount()
+    {
+        return DB::table(Text::projects())
+            ->select('project_id as id')
+            ->selectRaw('count(text_id) as text_count')
+            ->groupBy('id');
+    }
+
+    public static function translatedCountByLanguage()
+    {
+        return Translation::select('project_id', 'language_id')
+            ->selectRaw('count(id) as translated_count')
+            ->leftJoinSub(Text::projects(), 'text_project', function($join) {
+                $join->on('text_project.text_id', '=', 'translations.text_id');
+                $join->where('needs_work', 0);
+            })
+            ->groupBy('project_id', 'language_id');
+    }
+
+    public static function allNeedsWorkByLanguage()
+    {
+        return DB::table(self::translatedCountByLanguage(), 'translation_counts')
+            ->select('project_id', 'language_id')
+            ->selectRaw('text_count > translated_count as needs_work')
+            ->leftJoinSub(self::textsCount(), 'text_counts', 'text_counts.id', '=', 'translation_counts.project_id');
+    }
+
+    public static function allNeedsWorkForLanguages($languagesToMark)
+    {
+        $langID_projID_product = self::select('projects.id as pid', 'languages.id as lid')
+            ->crossJoin('languages')
+            ->whereIn('languages.id', $languagesToMark);
+        return DB::table(
+            DB::table(
+                DB::table(
+                    DB::table(self::allNeedsWorkByLanguage())
+                        ->select('project_id', 'language_id', 'needs_work')
+                        ->whereNotNull('project_id')
+                        ->whereIn('language_id', $languagesToMark))
+                    ->select('pid as project_id', 'lid as language_id')
+                    ->selectRaw('coalesce(needs_work, 1) as needs_work')
+                    // join with cross product of languages x projects to fill empty places
+                    // (if project_id didn't appear it means it needs work)
+                    ->rightJoinSub($langID_projID_product, 'product', function($join) {
+                        $join->on('project_id', '=', 'pid');
+                        $join->on('language_id', '=', 'lid');
+                    }))
+                // group by language_id and project_id
+                ->select('project_id')
+                ->selectRaw('sum(needs_work) > 0 as needs_work')
+                ->groupBy('language_id', 'project_id'))
+            // then group by project_id to merge the results
+            ->select('project_id as id')
+            ->selectRaw('sum(needs_work) > 0 as needs_work')
+            ->groupBy('id');
     }
 }

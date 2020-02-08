@@ -15,4 +15,9 @@ class Text extends Model
     {
         return $this->hasMany('Polyglot\Translation');
     }
+
+    public static function projects()
+    {
+        return self::select('texts.id as text_id', 'project_id')->join('files', 'file_id', '=', 'files.id');
+    }
 }
