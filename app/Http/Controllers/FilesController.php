@@ -323,6 +323,8 @@ class FilesController extends Controller
         foreach($languages as $lang) {
             $files[$lang->iso_code] = $this->getCatkeysFile($file, $lang);
         }
+        if(empty($files))
+            return redirect()->back();
 
         $filename = sprintf('%s_%s_%s.zip', $file->project->name, $file->name, $file->checksum);
         $headers = [
