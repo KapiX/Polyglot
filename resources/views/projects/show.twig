@@ -76,6 +76,7 @@
 {% endfor %}
 <tr>
     <td></td>
+    <td></td>
     {% for file in project.files %}
     <td>
         {{ link_to_route('files.exportAll', 'Export all', file.id, {}) }}
