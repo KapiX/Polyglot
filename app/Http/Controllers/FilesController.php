@@ -3,6 +3,8 @@
 namespace Polyglot\Http\Controllers;
 
 use Exception;
+use Polyglot\CatkeysFile;
+use Polyglot\TranslationFile;
 use ZipArchive;
 use Polyglot\File;
 use Polyglot\Language;
@@ -95,16 +97,22 @@ class FilesController extends Controller
      */
     public function upload(UploadFile $request, File $file)
     {
+        $instance = $file->getFileInstance();
         $catkeys = file_get_contents($request->file('catkeys')->getRealPath());
         try {
-            [$mimetype, $checksum, $catkeys_processed] = $this->processCatkeysFile($catkeys);
+            $catkeys_processed = $instance->process($catkeys);
         } catch(Exception $e) {
             return redirect()->route('files.edit', [$file->id])
                 ->with('error', $e->getMessage());
         }
 
-        $file->mime_type = $mimetype;
-        $file->checksum = $checksum;
+        if($file->type == File::CATKEYS) {
+            $file->mime_type = $instance->getMetaData(CatkeysFile::MIME_TYPE);
+            $file->checksum = $instance->getMetaData(CatkeysFile::CHECKSUM);
+        } else {
+            $file->mime_type = 'placeholder';
+            $file->checksum = 0;
+        }
         $file->save();
 
         $textsToInsert = [];
@@ -175,17 +183,22 @@ class FilesController extends Controller
 
     public function import(ImportTranslation $request, File $file, Language $lang)
     {
+        $instance = $file->getFileInstance();
         $catkeys = file_get_contents($request->file('catkeys')->getRealPath());
         try {
-            [$mimetype, $checksum, $catkeys_processed] = $this->processCatkeysFile($catkeys);
+            $catkeys_processed = $instance->process($catkeys);
         } catch(Exception $e) {
             return redirect()->route('files.translate', [$file->id, $lang->id])
                 ->with('error', $e->getMessage());
         }
 
-        if($checksum !== $file->checksum || $mimetype !== $file->mime_type) {
-            return redirect()->route('files.translate', [$file->id, $lang->id])
-                ->with('error', "MIME type or checksum don't match.");
+        if($file->type == File::CATKEYS) {
+            $mimetype = $instance->getMetaData(CatkeysFile::MIME_TYPE);
+            $checksum = $instance->getMetaData(CatkeysFile::CHECKSUM);
+            if ($checksum !== $file->checksum || $mimetype !== $file->mime_type) {
+                return redirect()->route('files.translate', [$file->id, $lang->id])
+                    ->with('error', "MIME type or checksum don't match.");
+            }
         }
 
         foreach($catkeys_processed as $catkey) {
@@ -280,7 +293,7 @@ class FilesController extends Controller
                 ->with('message', 'Checksum or MIME type are missing.');
 
         // prepare file
-        $filename = $lang->iso_code . '.catkeys';
+        $filename = $lang->iso_code . '.' . $file->getFileInstance()->getExtension();
         $headers = [
             'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
             'Content-type'        => 'text/plain',
@@ -320,10 +333,11 @@ class FilesController extends Controller
             'Pragma'              => 'public',
         ];
         $tmpfile = tempnam(storage_path('app'), 'zip');
+        $extension = $file->getFileInstance()->getExtension();
         $zip = new ZipArchive();
         $zip->open($tmpfile, ZipArchive::CREATE);
         foreach($files as $name => $file) {
-            $zip->addFile(storage_path('app/' . $file), $name . '.catkeys');
+            $zip->addFile(storage_path('app/' . $file), $name . '.' . $extension);
         }
         $zip->close();
 
@@ -339,10 +353,12 @@ class FilesController extends Controller
         if($lastUpdated === null) $lastUpdated = '1970-01-01 00:00:01';
         else $lastUpdated = $lastUpdated->updated_at;
 
+        $instance = $file->getFileInstance();
+
         // see if we have a cached copy
         $directory = sprintf('exported/%u/%u', $file->id, $lang->id);
         $escapedMIME = str_replace('/', '_', $file->mime_type);
-        $filename = sprintf('%s/%s_%s_%s.catkeys', $directory, $file->checksum, $escapedMIME, $lastUpdated);
+        $filename = sprintf('%s/%s_%s_%s.%s', $directory, $file->checksum, $escapedMIME, $lastUpdated, $instance->getExtension());
         if(Storage::exists($filename) == false) {
             // we don't, delete old ones and generate new
             Storage::delete(Storage::files($directory));
@@ -351,8 +367,12 @@ class FilesController extends Controller
             $translations = Translation::where('language_id', $lang->id)
                 ->whereIn('text_id', $file->texts()->select('id')->getQuery())
                 ->get()->groupBy('text_id');
-            $lines = [];
-            $lines[] = implode("\t", ['1', $lang->name, $file->mime_type, $file->checksum]);
+            if($file->type == File::CATKEYS) {
+                $instance->setMetaData(CatkeysFile::LANGUAGE, $lang->name);
+                $instance->setMetaData(CatkeysFile::MIME_TYPE, $file->mime_type);
+                $instance->setMetaData(CatkeysFile::CHECKSUM, $file->checksum);
+            }
+            $keys = [];
             foreach($texts as $context) {
                 foreach($context as $text) {
                     $t = $translations->get($text['id']);
@@ -360,42 +380,17 @@ class FilesController extends Controller
                         $translation = $t[0]['translation'];
                     else
                         $translation = $text['text'];
-                    $lines[] = implode("\t", [$text['text'], $text['context'], $text['comment'], $translation]);
+                    $keys[] = [
+                        'text' => $text['text'],
+                        'context' => $text['context'],
+                        'comment' => $text['comment'],
+                        'translation' => $translation
+                    ];
                 }
             }
-            $result = implode("\n", $lines) . "\n";
+            $result = $instance->assemble($keys);
             Storage::put($filename, $result);
         }
         return $filename;
-    }
-
-    private function processCatkeysFile($contents)
-    {
-        $separator = "\r\n";
-        $line = strtok($contents, $separator);
-
-        $catkeys = [];
-        $first = explode("\t", $line);
-        $mimetype = $first[2];
-        $checksum = $first[3];
-        $line = strtok($separator);
-
-        $i = 1;
-        while($line !== false) {
-            ++$i;
-            $exploded = explode("\t", $line);
-            if(count($exploded) != 4) {
-                throw new Exception('File is malformed, error is in line ' . $i
-                        . '. Most likely a tab is missing or there are too many.');
-            }
-            $catkeys[] = [
-                'text' => $exploded[0],
-                'context' => $exploded[1],
-                'comment' => $exploded[2],
-                'translation' => $exploded[3]
-            ];
-            $line = strtok($separator);
-        }
-        return [$mimetype, $checksum, $catkeys];
     }
 }
