@@ -5,8 +5,22 @@
 {% block content %}
 <ol class="breadcrumb">
     <li>{{ link_to_route('projects.index', 'Home') }}</li>
-    <li class="active">Users</li>
+    {% if not search %}
+        <li class="active">Users</li>
+    {% else %}
+        <li>{{ link_to_route('users.index', 'Users') }}</li>
+        <li class="active">Search: {{ search }}</li>
+    {% endif %}
 </ol>
+
+{{ form_open({url: route('users.index'), method: 'GET'}) }}
+<div class="input-group">
+    {{ form_text('search', search, {class: 'form-control', placeholder: 'Name or e-mail...'}) }}
+    <span class="input-group-btn">
+        {{ form_submit('Search', {class: 'btn btn-default'}) }}
+    </span>
+</div>
+{{ form_close() }}
 
 <table class="table table-striped">
     <thead>
@@ -37,5 +51,5 @@
     {% endfor %}
     </tbody>
 </table>
-{{ users.links() | raw }}
+{{ users.appends({'search': search}).links() | raw }}
 {% endblock %}

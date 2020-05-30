@@ -42,4 +42,9 @@ class User extends Authenticatable
         return $this->belongsToMany('Polyglot\Language')
             ->withTimestamps();
     }
+
+    public static function search($query) {
+        return self::where('name', 'LIKE', '%' . $query . '%')
+            ->orWhere('email', 'LIKE', '%' . $query . '%');
+    }
 }

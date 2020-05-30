@@ -20,12 +20,18 @@ class UsersController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::paginate(15);
+        $search = $request->input('search');
+        if($search == '') {
+            $users = User::paginate(15);
+        } else {
+            $users = User::search($search)->paginate(15);
+        }
         return view('users.index')
             ->with('users', $users)
-            ->with('roles', self::ROLES);
+            ->with('roles', self::ROLES)
+            ->with('search', $search);
     }
 
     public function edit(User $user)
