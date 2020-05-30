@@ -62,7 +62,7 @@
                     </div>
                     {% for prop, data in file.metadata %}
                     <div class="form-group">
-                        {{ form_label(prop, instance.getLabelForMetaData(prop)) }}
+                        {{ form_label(prop, fileInstance.getLabelForMetaData(prop)) }}
                         {{ form_text(prop, data, {class: 'form-control', disabled: ''}) }}
                     </div>
                     {% endfor %}
