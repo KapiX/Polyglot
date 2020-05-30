@@ -9,13 +9,21 @@ class CatkeysFile implements TranslationFile
     private const LINE_SEPARATOR = "\n";
 
     // metadata
-    public const LANGUAGE = 'language';
     public const MIME_TYPE = 'mime_type';
     public const CHECKSUM = 'checksum';
 
     private $mime_type;
     private $checksum;
     private $language;
+
+    public function __construct($metadata)
+    {
+        if($metadata === null)
+            return;
+
+        $this->mime_type = $metadata['mime_type'];
+        $this->checksum = $metadata['checksum'];
+    }
 
     public function process(string $contents) {
         $separator = "\r\n";
@@ -47,13 +55,17 @@ class CatkeysFile implements TranslationFile
         return $catkeys;
     }
 
-    public function getMetaData(string $key)
+    public function getMetaData(string $key = null)
     {
         switch ($key) {
             case self::MIME_TYPE: return $this->mime_type;
             case self::CHECKSUM: return $this->checksum;
-            case self::LANGUAGE: return $this->language;
         }
+        return [
+            'mime_type' => $this->mime_type,
+            'checksum' => $this->checksum
+        ];
+        // XXX: exception?
     }
 
     public function setMetaData(string $key, string $value)
@@ -61,8 +73,22 @@ class CatkeysFile implements TranslationFile
         switch ($key) {
             case self::MIME_TYPE: $this->mime_type = $value; break;
             case self::CHECKSUM: $this->checksum = $value; break;
-            case self::LANGUAGE: $this->language = $value; break;
         }
+    }
+
+    public function getLabelForMetaData(string $key) : string
+    {
+        switch ($key) {
+            case self::MIME_TYPE: return 'MIME type';
+            case self::CHECKSUM: return 'Checksum';
+        }
+        return '';
+    }
+
+    public function validateMetaData($metadata) : bool
+    {
+        return $this->checksum === $metadata['checksum']
+            && $this->mime_type === $metadata['mime_type'];
     }
 
     public function assemble($keys)
@@ -78,5 +104,15 @@ class CatkeysFile implements TranslationFile
     public function getExtension(): string
     {
         return 'catkeys';
+    }
+
+    public function setLanguage(string $lang)
+    {
+        $this->language = $lang;
+    }
+
+    public function getLanguage() : string
+    {
+        return $this->language;
     }
 }

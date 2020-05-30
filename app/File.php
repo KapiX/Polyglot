@@ -11,6 +11,7 @@ class File extends Model
     const CATKEYS = 1;
 
     protected $fillable = ['name', 'path'];
+    protected $casts = ['metadata' => 'array'];
 
     public function project()
     {
@@ -24,7 +25,8 @@ class File extends Model
 
     public function getFileInstance() {
         switch($this->type) {
-            case self::CATKEYS: return new CatkeysFile;
+            case self::CATKEYS: return new CatkeysFile($this->metadata);
         }
+        return null;
     }
 }

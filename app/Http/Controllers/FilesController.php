@@ -40,8 +40,6 @@ class FilesController extends Controller
             'name' => $request->input('name'),
             'path' => '',
         ]);
-        $file->checksum = '';
-        $file->mime_type = '';
         $file->project_id = $project->id;
 
         if($file->save()) {
@@ -106,13 +104,7 @@ class FilesController extends Controller
                 ->with('error', $e->getMessage());
         }
 
-        if($file->type == File::CATKEYS) {
-            $file->mime_type = $instance->getMetaData(CatkeysFile::MIME_TYPE);
-            $file->checksum = $instance->getMetaData(CatkeysFile::CHECKSUM);
-        } else {
-            $file->mime_type = 'placeholder';
-            $file->checksum = 0;
-        }
+        $file->metadata = $instance->getMetaData();
         $file->save();
 
         $textsToInsert = [];
@@ -184,6 +176,7 @@ class FilesController extends Controller
     public function import(ImportTranslation $request, File $file, Language $lang)
     {
         $instance = $file->getFileInstance();
+        $oldMetadata = $instance->getMetaData();
         $catkeys = file_get_contents($request->file('catkeys')->getRealPath());
         try {
             $catkeys_processed = $instance->process($catkeys);
@@ -192,13 +185,9 @@ class FilesController extends Controller
                 ->with('error', $e->getMessage());
         }
 
-        if($file->type == File::CATKEYS) {
-            $mimetype = $instance->getMetaData(CatkeysFile::MIME_TYPE);
-            $checksum = $instance->getMetaData(CatkeysFile::CHECKSUM);
-            if ($checksum !== $file->checksum || $mimetype !== $file->mime_type) {
-                return redirect()->route('files.translate', [$file->id, $lang->id])
-                    ->with('error', "MIME type or checksum don't match.");
-            }
+        if($instance->validateMetaData($oldMetadata) == false) {
+            return redirect()->route('files.translate', [$file->id, $lang->id])
+                ->with('error', "Metadata does not match.");
         }
 
         foreach($catkeys_processed as $catkey) {
@@ -312,9 +301,6 @@ class FilesController extends Controller
 
     public function exportAll(File $file)
     {
-        if($file->checksum == null || $file->mime_type == null)
-            return null;
-
         $files = [];
         $languages = Language::whereIn('id',
             Translation::whereIn('text_id', $file->texts()->select('id')->getQuery())
@@ -326,7 +312,7 @@ class FilesController extends Controller
         if(empty($files))
             return redirect()->back();
 
-        $filename = sprintf('%s_%s_%s.zip', $file->project->name, $file->name, $file->checksum);
+        $filename = sprintf('%s_%s.zip', $file->project->name, $file->name);
         $headers = [
             'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
             'Content-type'        => 'application/zip',
@@ -348,19 +334,16 @@ class FilesController extends Controller
 
     private function getCatkeysFile(File $file, Language $lang)
     {
-        if($file->checksum == null || $file->mime_type == null)
-            return null;
-
         $lastUpdated = Translation::lastUpdatedAt($file->id, $lang->id);
-        if($lastUpdated === null) $lastUpdated = '1970-01-01 00:00:01';
-        else $lastUpdated = $lastUpdated->updated_at;
+        if($lastUpdated === null)
+            $lastUpdated = '1970-01-01 00:00:01';
+        else
+            $lastUpdated = $lastUpdated->updated_at;
 
         $instance = $file->getFileInstance();
-
         // see if we have a cached copy
         $directory = sprintf('exported/%u/%u', $file->id, $lang->id);
-        $escapedMIME = str_replace('/', '_', $file->mime_type);
-        $filename = sprintf('%s/%s_%s_%s.%s', $directory, $file->checksum, $escapedMIME, $lastUpdated, $instance->getExtension());
+        $filename = sprintf('%s/%s.%s', $directory, $lastUpdated, $instance->getExtension());
         if(Storage::exists($filename) == false) {
             // we don't, delete old ones and generate new
             Storage::delete(Storage::files($directory));
@@ -369,11 +352,6 @@ class FilesController extends Controller
             $translations = Translation::where('language_id', $lang->id)
                 ->whereIn('text_id', $file->texts()->select('id')->getQuery())
                 ->get()->groupBy('text_id');
-            if($file->type == File::CATKEYS) {
-                $instance->setMetaData(CatkeysFile::LANGUAGE, $lang->name);
-                $instance->setMetaData(CatkeysFile::MIME_TYPE, $file->mime_type);
-                $instance->setMetaData(CatkeysFile::CHECKSUM, $file->checksum);
-            }
             $keys = [];
             foreach($texts as $context) {
                 foreach($context as $text) {
@@ -390,6 +368,7 @@ class FilesController extends Controller
                     ];
                 }
             }
+            $instance->setLanguage($lang->name);
             $result = $instance->assemble($keys);
             Storage::put($filename, $result);
         }
