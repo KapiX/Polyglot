@@ -14,7 +14,7 @@ class CatkeysFileTest extends TestCase
 
     public function setUp() : void
     {
-        $this->instance = new CatkeysFile();
+        $this->instance = new CatkeysFile(null);
     }
 
     public function testProcessBasicTest()
@@ -78,7 +78,7 @@ class CatkeysFileTest extends TestCase
     {
         $contents = file_get_contents(self::RESOURCES_DIR . 'basic.catkeys');
         $this->instance->process($contents);
-        $this->assertEquals('English', $this->instance->getMetaData(CatkeysFile::LANGUAGE));
+        $this->assertEquals('English', $this->instance->getLanguage());
         $this->assertEquals('application/x-vnd.tipster', $this->instance->getMetaData(CatkeysFile::MIME_TYPE));
         $this->assertEquals('2518152396', $this->instance->getMetaData(CatkeysFile::CHECKSUM));
     }
@@ -94,7 +94,7 @@ class CatkeysFileTest extends TestCase
             ]
         ];
         $expected = file_get_contents(self::RESOURCES_DIR . 'basic.catkeys');
-        $this->instance->setMetaData(CatkeysFile::LANGUAGE, 'English');
+        $this->instance->setLanguage('English');
         $this->instance->setMetaData(CatkeysFile::MIME_TYPE, 'application/x-vnd.tipster');
         $this->instance->setMetaData(CatkeysFile::CHECKSUM, '2518152396');
         $this->assertEquals($expected, $this->instance->assemble($keys));
