@@ -80,3 +80,8 @@ img.go-up {
 .table-translations>thead>tr>th {
       vertical-align: top;
 }
+
+.table tr>th small {
+    color:#777;
+    font-weight: normal;
+}

@@ -22,6 +22,8 @@
         {% if auth_user().can('modify-file', file) %}
             {{ link_to_route('files.edit', 'Edit', file.id, {}) }}
         {% endif %}
+        <br>
+        <small>{{ file.path }}.{{ file.getFileInstance().getExtension() }}</small>
     </th>
     {% endfor %}
 </tr>
@@ -79,7 +81,7 @@
     <td></td>
     {% for file in project.files %}
     <td>
-        {{ link_to_route('files.exportAll', 'Export all', file.id, {}) }}
+        {{ link_to_route('files.exportAll', 'Export all languages', file.id, {}) }}
     </td>
     {% endfor %}
 </tr>

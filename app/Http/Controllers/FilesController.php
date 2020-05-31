@@ -11,7 +11,8 @@ use Polyglot\Language;
 use Polyglot\Project;
 use Polyglot\Text;
 use Polyglot\Translation;
-use Polyglot\Http\Requests\AddEditFile;
+use Polyglot\Http\Requests\AddFile;
+use Polyglot\Http\Requests\EditFile;
 use Polyglot\Http\Requests\ImportTranslation;
 use Polyglot\Http\Requests\UploadFile;
 use Illuminate\Http\Request;
@@ -34,11 +35,10 @@ class FilesController extends Controller
      * @param  int                       $project_id
      * @return \Illuminate\Http\Response
      */
-    public function store(AddEditFile $request, Project $project)
+    public function store(AddFile $request, Project $project)
     {
         $file = new File([
-            'name' => $request->input('name'),
-            'path' => '',
+            'name' => $request->input('name')
         ]);
         $file->project_id = $project->id;
 
@@ -67,9 +67,10 @@ class FilesController extends Controller
      * @param  \Polyglot\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function update(AddEditFile $request, File $file)
+    public function update(EditFile $request, File $file)
     {
         $file->name = $request->input('name');
+        $file->path = $request->input('path');
         $file->save();
 
         return redirect()->back();
@@ -282,7 +283,9 @@ class FilesController extends Controller
                 ->with('message', 'Checksum or MIME type are missing.');
 
         // prepare file
-        $filename = $lang->iso_code . '.' . $file->getFileInstance()->getExtension();
+        $basename = basename($file->path);
+        $filename = str_replace('%lang%', $lang->iso_code, $basename)
+            . '.' . $file->getFileInstance()->getExtension();
         $headers = [
             'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
             'Content-type'        => 'text/plain',
@@ -324,8 +327,9 @@ class FilesController extends Controller
         $extension = $file->getFileInstance()->getExtension();
         $zip = new ZipArchive();
         $zip->open($tmpfile, ZipArchive::CREATE);
-        foreach($files as $name => $file) {
-            $zip->addFile(storage_path('app/' . $file), $name . '.' . $extension);
+        foreach($files as $lang => $generatedPath) {
+            $path = str_replace('%lang%', $lang, $file->path);
+            $zip->addFile(storage_path('app/' . $generatedPath), $path . '.' . $extension);
         }
         $zip->close();
 
