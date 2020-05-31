@@ -88,6 +88,28 @@ class LineSeparatedFileTest extends TestCase
         $this->assertEquals($expected, $catkeys);
     }
 
+    public function testProcessWithEmptyLastTextTest()
+    {
+        $contents = file_get_contents(self::RESOURCES_DIR . 'last_empty.txt');
+        $catkeys = $this->instance->process($contents);
+        $expected = [
+            0 => [
+                'text' => "w",
+                'context' => '',
+                'comment' => 1,
+                'translation' => "w"
+            ],
+            1 => [
+                'text' => "a",
+                'context' => '',
+                'comment' => 2,
+                'translation' => "a"
+            ],
+        ];
+        $this->assertIsArray($catkeys);
+        $this->assertEquals($expected, $catkeys);
+    }
+
     public function testAssembleTest()
     {
         $keys = [
@@ -112,5 +134,40 @@ class LineSeparatedFileTest extends TestCase
         ];
         $expected = file_get_contents(self::RESOURCES_DIR . 'many.txt');
         $this->assertEquals($expected, $this->instance->assemble($keys));
+    }
+
+    public function testAssembleWithLastEmptyTest()
+    {
+        $instance = new LineSeparatedFile(['separator' => '%', 'last_empty' => true]);
+        $keys = [
+            0 => [
+                'text' => "w",
+                'context' => '',
+                'comment' => 1,
+                'translation' => "w"
+            ],
+            1 => [
+                'text' => "a",
+                'context' => '',
+                'comment' => 2,
+                'translation' => "a"
+            ],
+        ];
+        $expected = file_get_contents(self::RESOURCES_DIR . 'last_empty.txt');
+        $this->assertEquals($expected, $instance->assemble($keys));
+    }
+
+    public function testProcessAndAssembleSameWithoutLastEmptyTest()
+    {
+        $contents = file_get_contents(self::RESOURCES_DIR . 'many.txt');
+        $keys = $this->instance->process($contents);
+        $this->assertEquals($contents, $this->instance->assemble($keys));
+    }
+
+    public function testProcessAndAssembleSameWithLastEmptyTest()
+    {
+        $contents = file_get_contents(self::RESOURCES_DIR . 'last_empty.txt');
+        $keys = $this->instance->process($contents);
+        $this->assertEquals($contents, $this->instance->assemble($keys));
     }
 }

@@ -7,11 +7,14 @@ class LineSeparatedFile implements TranslationFile
 {
     // metadata
     public const SEPARATOR = 'separator';
+    public const LAST_EMPTY = 'last_empty';
 
     private $separator;
+    private $last_empty;
 
     public function __construct($metadata)
     {
+        $this->last_empty = false;
         if($metadata === null) {
             // TODO: remove when separator can be adjusted
             $this->separator = '%';
@@ -19,9 +22,12 @@ class LineSeparatedFile implements TranslationFile
         }
 
         $this->separator = $metadata['separator'];
+        if(array_key_exists('last_empty', $metadata))
+            $this->last_empty = $metadata['last_empty'];
     }
 
     public function process(string $contents) {
+        $this->last_empty = true;
         $separator = "\r\n";
         $line = strtok($contents, $separator);
 
@@ -44,13 +50,16 @@ class LineSeparatedFile implements TranslationFile
             }
             $line = strtok($separator);
         }
-        $text = implode("\n", $buffer);
-        $catkeys[] = [
-            'text' => $text,
-            'context' => '',
-            'comment' => $i,
-            'translation' => $text
-        ];
+        if(empty($buffer) == false) {
+            $this->last_empty = false;
+            $text = implode("\n", $buffer);
+            $catkeys[] = [
+                'text' => $text,
+                'context' => '',
+                'comment' => $i,
+                'translation' => $text
+            ];
+        }
         return $catkeys;
     }
 
@@ -61,7 +70,8 @@ class LineSeparatedFile implements TranslationFile
             case self::SEPARATOR: return '%';
         }
         return [
-            'separator' => '%'
+            'separator' => '%',
+            'last_empty' => $this->last_empty
         ];
         // XXX: exception?
     }
@@ -91,7 +101,7 @@ class LineSeparatedFile implements TranslationFile
         $contents = '';
         foreach($keys as $key) {
             $contents .= $key['translation'] . "\n";
-            if($key !== end($keys))
+            if($key !== end($keys) || $this->last_empty == true)
                 $contents .= $this->separator . "\n";
         }
         return $contents;
