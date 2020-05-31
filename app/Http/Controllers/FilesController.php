@@ -57,7 +57,8 @@ class FilesController extends Controller
      */
     public function edit(File $file)
     {
-        return view('files.edit')->with('file', $file);
+        $filename = str_replace('%lang%', 'en', basename($file->path));
+        return view('files.edit')->with('file', $file)->with('filename', $filename);
     }
 
     /**
@@ -272,7 +273,8 @@ class FilesController extends Controller
             ->with('file', $file)
             ->with('lang', $lang)
             ->with('allTranslationsCount', $translationsCount)
-            ->with('translations', $translations);
+            ->with('translations', $translations)
+            ->with('filename', $filename);
     }
 
     public function export(File $file, Language $lang)

@@ -112,7 +112,7 @@ $(document).ready(function() {
             {% if canTranslate %}
             {{ form_open({url: route('files.import', {file: file.id, lang: lang.id}), method: POST, files: true, 'id': 'upload-form'}) }}
             <div class="form-group {{ errors.has('catkeys') ? ' has-error' }}">
-                {{ form_label('catkeys', 'Upload ' ~ lang.iso_code ~ '.catkeys') }}
+                {{ form_label('catkeys', 'Upload ' ~ filename ~ '.' ~ file.getFileInstance().getExtension()) }}
                 <div class="input-group">
                     {{ form_file('catkeys', {class: 'form-control'}) }}
                     <span class="input-group-btn">
