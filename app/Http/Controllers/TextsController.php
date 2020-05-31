@@ -49,13 +49,13 @@ class TextsController extends Controller
             $translation->text_id = $text->id;
             $translation->language_id = $lang->id;
             $translation->author_id = Auth::id();
-            $translation->translation = $request->post('translation');
+            $translation->translation = $request->post('translation') ?? '';
             $translation->needs_work = $request->post('needswork') === 'true' ? 1 : 0;
             $translation->save();
         } else {
             $translation = $translation->first();
             $translation->author_id = Auth::id();
-            $translation->translation = $request->post('translation');
+            $translation->translation = $request->post('translation') ?? '';
             $translation->needs_work = $request->post('needswork') === 'true' ? 1 : 0;
             $translation->save();
         }
