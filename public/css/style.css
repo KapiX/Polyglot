@@ -5,6 +5,7 @@ td.translation {
 
 td.translation.translation-active {
     cursor: default;
+    white-space: normal;
 }
 
 td.translation textarea {
@@ -69,7 +70,7 @@ img.go-up {
 .table>tfoot>tr>th,
 .table>thead>tr>td,
 .table>thead>tr>th {
-      vertical-align: middle;
+    vertical-align: middle;
 }
 
 .table-translations>tbody>tr>td,
@@ -78,7 +79,8 @@ img.go-up {
 .table-translations>tfoot>tr>th,
 .table-translations>thead>tr>td,
 .table-translations>thead>tr>th {
-      vertical-align: top;
+    vertical-align: top;
+    white-space: pre-wrap;
 }
 
 .table tr>th small {

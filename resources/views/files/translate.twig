@@ -6,20 +6,13 @@
 {% block scripts %}
 {% if canTranslate %}
 <script type="text/javascript">
-function escapeHtml(string) {
-    return string
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/\n/g, "<br>")
-        .replace(/ /g, "&nbsp;");
-}
 $(document).ready(function() {
     $('tr').click(function trclick() {
         var translationCell = $(this).find('td.translation');
         var id = $(this).attr('id');
         var lang = $(this).parents('table').attr('id');
-        var form = '<div class="container-fluid"><div class="row"><textarea>' + translationCell.html() + '</textarea></div><div class="row"><div class="col-md-4"><div class="checkbox"><label><input type="checkbox" id="needswork" value="1"> Needs work</label></div></div><div class="col-md-4"><input class="btn btn-primary" id="save" type="button" value="Save"></div><div class="col-md-4"><input class="btn" id="cancel" type="button" value="Cancel"></div></div></div>';
+        var form = '<div class="container-fluid"><div class="row"><textarea>' + translationCell.html() + '</textarea></div><div class="row"><small>Press Shift+Enter to enter a newline.</div></small><div class="row"><div class="col-md-4"><div class="checkbox"><label><input type="checkbox" id="needswork" value="1"> Needs work</label></div></div><div class="col-md-4"><input class="btn btn-primary" id="save" type="button" value="Save"></div><div class="col-md-4"><input class="btn" id="cancel" type="button" value="Cancel"></div></div></div>';
+        translationCell.addClass('translation-active');
         translationCell.html(form);
         $(this).removeClass('warning');
         $(this).unbind('click');
@@ -39,7 +32,6 @@ $(document).ready(function() {
                 textarea.prop('disabled', false);
                 textarea.focus();
                 textarea.select();
-                translationCell.addClass('translation-active');
                 textarea.keypress(function(e) {
                     if(e.which == 13 && (e.ctrlKey == false && e.shiftKey == false)) {
                         sendButton.click();
@@ -60,7 +52,7 @@ $(document).ready(function() {
                         tr.addClass('warning');
                     else
                         tr.removeClass('warning');
-                    translationCell.html(escapeHtml(data.translation));
+                    translationCell.text(data.translation);
                     translationCell.removeClass('translation-active');
                     tr.click(trclick);
                     tr.next().click();
@@ -77,7 +69,7 @@ $(document).ready(function() {
                         tr.addClass('warning');
                     else
                         tr.removeClass('warning');
-                    translationCell.html(escapeHtml(data.translation));
+                    translationCell.text(data.translation);
                     tr.click(trclick);
                     translationCell.removeClass('translation-active');
                 }
@@ -153,8 +145,8 @@ $(document).ready(function() {
         <table class="table table-hover table-translations" id="{{ lang.id }}">
         {% for translation in translationsGrouped %}
             <tr id="{{ translation.text_id }}"{{ translation.needs_work ? ' class="warning"' }}>
-                <td><p>{{ translation.text|preserveSpaces|nl2br }}</p><p class="comment">{{ translation.comment|preserveSpaces }}</p></td>
-                <td{{ canTranslate ? ' class="translation"' }}>{{ translation.translation|preserveSpaces|nl2br }}</td>
+                <td><p>{{ translation.text }}</p><p class="comment">{{ translation.comment }}</p></td>
+                <td{{ canTranslate ? ' class="translation"' }}>{{ translation.translation }}</td>
             </tr>
         {% endfor %}
         </table>

@@ -86,10 +86,10 @@
     <div class="col-md-4">
 {% for context, texts in chunk.groupBy('context') %}
 <h3>{{ context }}</h3>
-<table class="table">
+<table class="table table-translations">
     {% for text in texts %}
     <tr>
-        <td><p>{{ text.text|preserveSpaces|nl2br }}</p><p class="comment">{{ text.comment|preserveSpaces }}</p></td>
+        <td><p>{{ text.text }}</p><p class="comment">{{ text.comment }}</p></td>
     </tr>
     {% endfor %}
 </table>
