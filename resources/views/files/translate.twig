@@ -6,6 +6,14 @@
 {% block scripts %}
 {% if canTranslate %}
 <script type="text/javascript">
+function escapeHtml(string) {
+    return string
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\n/g, "<br>")
+        .replace(/ /g, "&nbsp;");
+}
 $(document).ready(function() {
     $('tr').click(function trclick() {
         var translationCell = $(this).find('td.translation');
@@ -52,7 +60,7 @@ $(document).ready(function() {
                         tr.addClass('warning');
                     else
                         tr.removeClass('warning');
-                    translationCell.text(data.translation);
+                    translationCell.html(escapeHtml(data.translation));
                     translationCell.removeClass('translation-active');
                     tr.click(trclick);
                     tr.next().click();
@@ -69,7 +77,7 @@ $(document).ready(function() {
                         tr.addClass('warning');
                     else
                         tr.removeClass('warning');
-                    translationCell.text(data.translation);
+                    translationCell.html(escapeHtml(data.translation));
                     tr.click(trclick);
                     translationCell.removeClass('translation-active');
                 }
@@ -145,8 +153,8 @@ $(document).ready(function() {
         <table class="table table-hover table-translations" id="{{ lang.id }}">
         {% for translation in translationsGrouped %}
             <tr id="{{ translation.text_id }}"{{ translation.needs_work ? ' class="warning"' }}>
-                <td><p>{{ translation.text|preserveSpaces }}</p><p class="comment">{{ translation.comment|preserveSpaces }}</p></td>
-                <td{{ canTranslate ? ' class="translation"' }}>{{ translation.translation|preserveSpaces }}</td>
+                <td><p>{{ translation.text|preserveSpaces|nl2br }}</p><p class="comment">{{ translation.comment|preserveSpaces }}</p></td>
+                <td{{ canTranslate ? ' class="translation"' }}>{{ translation.translation|preserveSpaces|nl2br }}</td>
             </tr>
         {% endfor %}
         </table>
