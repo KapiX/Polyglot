@@ -115,4 +115,14 @@ class CatkeysFile implements TranslationFile
     {
         return $this->language;
     }
+
+    public static function getTypeName() : string
+    {
+        return 'Haiku catkeys';
+    }
+
+    public function matchBy() : array
+    {
+        return ['text', 'context', 'comment'];
+    }
 }

@@ -144,5 +144,7 @@ Here you can add those different translation modules and their catkeys. Normal "
         {{ form_submit('Add', {'class': 'btn btn-primary'}) }}
     </span>
 </div>
+{{ form_select('type', file_types, 1,
+    {class: 'form-control', name: 'type[]'}) }}
 {{ form_close() }}
 {% endblock %}

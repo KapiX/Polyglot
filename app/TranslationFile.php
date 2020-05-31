@@ -15,4 +15,8 @@ interface TranslationFile
     public function getExtension() : string;
     public function setLanguage(string $lang);
     public function getLanguage() : string;
+    public static function getTypeName() : string;
+
+    // list of columns to match the strings by
+    public function matchBy() : array;
 }

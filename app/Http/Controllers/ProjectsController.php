@@ -2,6 +2,7 @@
 
 namespace Polyglot\Http\Controllers;
 
+use Polyglot\File;
 use Polyglot\Language;
 use Polyglot\Project;
 use Polyglot\ProjectUser;
@@ -140,7 +141,8 @@ class ProjectsController extends Controller
             ->with('displayLinkLabel', $displayLinkLabel)
             ->with('languages', $languages)
             ->with('roleClass', $contributorRoles)
-            ->with('contributors', $contributors);
+            ->with('contributors', $contributors)
+            ->with('file_types', File::getTypes());
     }
 
     /**

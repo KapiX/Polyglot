@@ -38,7 +38,8 @@ class FilesController extends Controller
     public function store(AddFile $request, Project $project)
     {
         $file = new File([
-            'name' => $request->input('name')
+            'name' => $request->input('name'),
+            'type' => (integer) $request->input('type')[0]
         ]);
         $file->project_id = $project->id;
 
@@ -192,22 +193,26 @@ class FilesController extends Controller
                 ->with('error', "Metadata does not match.");
         }
 
+        $matchColumns = $instance->matchBy();
+        if(empty($matchColumns)) {
+            throw new \Exception('This file type has no match columns. This is programming error.');
+        }
         foreach($catkeys_processed as $catkey) {
             // the texts must match exactly, if case or whitespace are different
             // it's not the same
-            $text = $file->texts()
-                ->whereRaw('STRCMP(BINARY text, BINARY ?) = 0', [$catkey['text']])
-                ->whereRaw('STRCMP(BINARY context, BINARY ?) = 0', [$catkey['context']])
-                ->whereRaw('STRCMP(BINARY comment, BINARY ?) = 0', [$catkey['comment']])
-                ->get();
+            $text = $file->texts();
+            foreach($matchColumns as $column) {
+                $text->whereRaw('STRCMP(BINARY ' . $column . ', BINARY ?) = 0', [$catkey[$column]]);
+            }
+            $text->get();
             if($text->count() == 0) {
                 // TODO: report stray texts?
             } else {
                 // TODO: update in batches?
-                $t = $text->first()
+                $tr = $text->first()
                     ->translations()->where('language_id', $lang->id)->get();
-                $needswork = $catkey['text'] === $catkey['translation'] ? 1 : 0;
-                if($t->count() == 0) {
+                $needswork = $text->first()->text === $catkey['translation'] ? 1 : 0;
+                if($tr->count() == 0) {
                     if($needswork == 0) {
                         $translation = new Translation;
                         $translation->text_id = $text->first()->id;
@@ -218,7 +223,7 @@ class FilesController extends Controller
                         $translation->save();
                     }
                 } else {
-                    $translation = $t->first();
+                    $translation = $tr->first();
                     $translation->author_id = Auth::id();
                     $translation->translation = $catkey['translation'];
                     $translation->needs_work = $needswork;
@@ -266,6 +271,7 @@ class FilesController extends Controller
         }
         else
             $translations = $translations->paginate($perPage);
+        $filename = str_replace('%lang%', $lang->iso_code, basename($file->path));
 
         return view('files.translate')
             ->with('perPage', $perPage)

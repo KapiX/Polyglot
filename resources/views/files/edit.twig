@@ -46,7 +46,7 @@
             {{ form_open({url: route('files.update', file.id), method: 'PUT'},
                 {class: 'form-horizontal'}) }}
             <div class="panel panel-default">
-                <div class="panel-heading">Properties</div>
+                <div class="panel-heading">{{ fileInstance.getTypeName() }} properties</div>
                 <div class="panel-body">
                     <div class="form-group {{ errors.has('name') ? ' has-error' }}">
                         {{ form_label('name', 'Name') }}
