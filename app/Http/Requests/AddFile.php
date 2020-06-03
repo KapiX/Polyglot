@@ -27,7 +27,7 @@ class AddFile extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'type.0' => 'required|integer|between:1,2'
+            'type.0' => 'required|integer|between:1,3'
         ];
     }
 }
