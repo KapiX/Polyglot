@@ -52,7 +52,11 @@ class LineSeparatedFile implements TranslationFile
         $catkeys = [];
         $i = 1;
         while($line !== false) {
-            if($line === $this->separator) {
+            $lineToCompare = $line;
+            if($this->separator === '') {
+                $lineToCompare = trim($line);
+            }
+            if($lineToCompare === $this->separator) {
                 $text = implode("\n", $buffer);
                 $buffer = [];
                 $catkeys[] = [

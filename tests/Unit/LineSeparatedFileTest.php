@@ -168,6 +168,35 @@ class LineSeparatedFileTest extends TestCase
         $this->assertEquals($expected, $catkeys);
     }
 
+    public function testProcessWithEmptySeparatorWhitespaceInSeparatorIsTrimmedTest()
+    {
+        $instance = new LineSeparatedFile(['separator' => '']);
+        $contents = file_get_contents(self::RESOURCES_DIR . 'empty_separator_whitespace.txt');
+        $catkeys = $instance->process($contents);
+        $expected = [
+            0 => [
+                'text' => "  test",
+                'context' => '',
+                'comment' => 1,
+                'translation' => "  test"
+            ],
+            1 => [
+                'text' => "test2",
+                'context' => '',
+                'comment' => 2,
+                'translation' => "test2"
+            ],
+            2 => [
+                'text' => "test3",
+                'context' => '',
+                'comment' => 3,
+                'translation' => "test3"
+            ],
+        ];
+        $this->assertIsArray($catkeys);
+        $this->assertEquals($expected, $catkeys);
+    }
+
     public function testAssembleTest()
     {
         $keys = [
