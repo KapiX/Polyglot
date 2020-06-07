@@ -8,22 +8,28 @@ class LineSeparatedFile implements TranslationFile
     // metadata
     public const SEPARATOR = 'separator';
     public const LAST_EMPTY = 'last_empty';
+    public const EXTENSION = 'extension';
 
     private $separator;
     private $last_empty;
+    private $extension;
 
     public function __construct($metadata)
     {
         $this->last_empty = false;
+        $this->separator = '';
+        $this->extension = 'txt';
+
         if($metadata === null) {
-            // TODO: remove when separator can be adjusted
-            $this->separator = '%';
             return;
         }
 
-        $this->separator = $metadata['separator'];
         if(array_key_exists('last_empty', $metadata))
             $this->last_empty = $metadata['last_empty'];
+        if(array_key_exists('separator', $metadata))
+            $this->separator = $metadata['separator'];
+        if(array_key_exists('extension', $metadata))
+            $this->extension = $metadata['extension'];
     }
 
     public function process(string $contents) {
@@ -66,12 +72,14 @@ class LineSeparatedFile implements TranslationFile
     public function getMetaData(string $key = null)
     {
         switch ($key) {
-            // TODO: allow changing separator
-            case self::SEPARATOR: return '%';
+            case self::SEPARATOR: return $this->separator;
+            case self::LAST_EMPTY: return $this->last_empty;
+            case self::EXTENSION: return $this->extension;
         }
         return [
-            'separator' => '%',
-            'last_empty' => $this->last_empty
+            'separator' => $this->separator,
+            'last_empty' => $this->last_empty,
+            'extension' => $this->extension
         ];
         // XXX: exception?
     }
@@ -79,7 +87,8 @@ class LineSeparatedFile implements TranslationFile
     public function setMetaData(string $key, string $value)
     {
         switch ($key) {
-            // case self::SEPARATOR: $this->separator = $value; break;
+            case self::SEPARATOR: $this->separator = $value; break;
+            case self::EXTENSION: $this->extension = $value; break;
         }
     }
 
@@ -87,6 +96,8 @@ class LineSeparatedFile implements TranslationFile
     {
         switch ($key) {
             case self::SEPARATOR: return 'Separator';
+            case self::LAST_EMPTY: return 'Last key empty';
+            case self::EXTENSION: return 'Extension';
         }
         return '';
     }
@@ -94,6 +105,11 @@ class LineSeparatedFile implements TranslationFile
     public function validateMetaData($metadata) : bool
     {
         return true;
+    }
+
+    public function editableMetaData(): array
+    {
+        return [self::SEPARATOR, self::EXTENSION];
     }
 
     public function assemble($keys)
@@ -109,8 +125,9 @@ class LineSeparatedFile implements TranslationFile
 
     public function getExtension(): string
     {
-        // TODO: allow changing extension
-        return 'txt';
+        if($this->extension === null)
+            return 'txt';
+        return $this->extension;
     }
 
     public function setLanguage(string $lang)

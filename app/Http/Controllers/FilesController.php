@@ -41,6 +41,10 @@ class FilesController extends Controller
             'name' => $request->input('name'),
             'type' => (integer) $request->input('type')[0]
         ]);
+        $editableMetaData = $file->getFileInstance()->editableMetaData();
+        if(empty($editableMetaData) == false) {
+            $file->metadata = array_fill_keys($editableMetaData, null);
+        }
         $file->project_id = $project->id;
 
         if($file->save()) {
@@ -73,6 +77,13 @@ class FilesController extends Controller
     {
         $file->name = $request->input('name');
         $file->path = $request->input('path');
+
+        $metaData = $file->metadata;
+        $instance = $file->getFileInstance();
+        foreach($instance->editableMetaData() as $data) {
+            $metaData[$data] = $request->input($data);
+        }
+        $file->metadata = $metaData;
         $file->save();
 
         return redirect()->back();

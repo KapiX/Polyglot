@@ -91,6 +91,11 @@ class CatkeysFile implements TranslationFile
             && $this->mime_type === $metadata['mime_type'];
     }
 
+    public function editableMetaData(): array
+    {
+        return [];
+    }
+
     public function assemble($keys)
     {
         $contents = implode(self::SEPARATOR, ['1', $this->language, $this->mime_type, $this->checksum]) . self::LINE_SEPARATOR;

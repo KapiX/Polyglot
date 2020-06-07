@@ -122,6 +122,11 @@ class JavaPropertiesFile implements TranslationFile
         return true;
     }
 
+    public function editableMetaData(): array
+    {
+        return [];
+    }
+
     public function assemble($keys)
     {
         $contents = '';
