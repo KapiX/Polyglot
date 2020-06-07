@@ -121,8 +121,18 @@ class CatkeysFile implements TranslationFile
         return 'Haiku catkeys';
     }
 
-    public function matchBy() : array
+    public function matchTranslationsBy() : array
     {
         return ['text', 'context', 'comment'];
+    }
+
+    public function matchTextsBy(): array
+    {
+        return ['text', 'context', 'comment'];
+    }
+
+    public function indexColumn(): ?string
+    {
+        return null;
     }
 }

@@ -107,6 +107,12 @@ class FilesController extends Controller
                 ->with('error', $e->getMessage());
         }
 
+        $matchColumns = $instance->matchTextsBy();
+        if(empty($matchColumns)) {
+            throw new \Exception('This file type has no match columns. This is programming error.');
+        }
+        $indexColumn = $instance->indexColumn();
+
         $file->metadata = $instance->getMetaData();
         $file->save();
 
@@ -116,15 +122,17 @@ class FilesController extends Controller
         $translationIdsToUpdate = []; // needs_work => 1
         foreach($catkeys_processed as $catkey) {
             // these comparisons ignore case and trailing whitespace
-            $text = $file->texts()
-                ->whereRaw('STRCMP(text, ?) = 0', [$catkey['text']])
-                ->whereRaw('STRCMP(context, ?) = 0', [$catkey['context']])
-                ->whereRaw('STRCMP(comment, ?) = 0', [$catkey['comment']])
-                ->selectRaw('id')
-                ->selectRaw('STRCMP(BINARY text, BINARY ?) = 0 as text_same', [$catkey['text']])
-                ->selectRaw('STRCMP(BINARY context, BINARY ?) = 0 as context_same', [$catkey['context']])
-                ->selectRaw('STRCMP(BINARY comment, BINARY ?) = 0 as comment_same', [$catkey['comment']])
-                ->get();
+            // selectRaw must be used here, select overwrites previous calls
+            $query = $file->texts()
+                ->selectRaw('id');
+            if($indexColumn !== null) {
+                $query->selectRaw($indexColumn);
+            }
+            foreach($matchColumns as $column) {
+                $query->whereRaw('STRCMP(' . $column . ', ?) = 0', [$catkey[$column]])
+                    ->selectRaw('STRCMP(BINARY ' . $column . ', BINARY ?) = 0 as ' . $column . '_same', [$catkey[$column]]);
+            }
+            $text = $query->get();
             if($text->count() == 0) {
                 $textToInsert = [
                     'file_id' => $file->id,
@@ -139,8 +147,15 @@ class FilesController extends Controller
                 // if we're here there was a match
                 // let's see if texts are exactly the same
                 $textToUpdate = $text->first();
-                if($textToUpdate->text_same == 0 || $textToUpdate->context_same == 0 ||
-                    $textToUpdate->comment_same == 0) {
+                $catkeyChanged = false;
+                $indexChanged = false;
+                foreach($matchColumns as $column) {
+                    $catkeyChanged = $catkeyChanged || $textToUpdate[$column . '_same'] == 0;
+                }
+                if($indexColumn !== null) {
+                    $indexChanged = $textToUpdate[$indexColumn] != $catkey[$indexColumn];
+                }
+                if($catkeyChanged || $indexChanged) {
                     // if not, update
                     // this is not very performant, but the assumption is
                     // that there are not a lot of changes like that
@@ -148,8 +163,10 @@ class FilesController extends Controller
                     $textToUpdate->context = $catkey['context'];
                     $textToUpdate->comment = $catkey['comment'];
                     $textToUpdate->save();
-                    $translationIdsToUpdate = array_merge($translationIdsToUpdate,
-                        $textToUpdate->translations()->pluck('id')->toArray());
+                    if ($catkeyChanged == true) {
+                        $translationIdsToUpdate = array_merge($translationIdsToUpdate,
+                            $textToUpdate->translations()->pluck('id')->toArray());
+                    }
                     $idsUpdated[] = $textToUpdate->id;
                 }
                 // if it is in the table, remember it
@@ -168,7 +185,7 @@ class FilesController extends Controller
             Translation::whereIn('id', $translationIdsToUpdate)->update(['needs_work' => 1]);
         $result = 'Catkeys uploaded. ' . count($textsToInsert) . ' added, '
                 . count($deleteIds) . ' deleted, ' . count($idsUpdated)
-                . ' updated (casing, whitespace changes), with '
+                . ' updated (order, casing, whitespace changes), with '
                 . count($translationIdsToUpdate)
                 . ' related translations marked as incomplete.';
 
@@ -193,7 +210,7 @@ class FilesController extends Controller
                 ->with('error', "Metadata does not match.");
         }
 
-        $matchColumns = $instance->matchBy();
+        $matchColumns = $instance->matchTranslationsBy();
         if(empty($matchColumns)) {
             throw new \Exception('This file type has no match columns. This is programming error.');
         }

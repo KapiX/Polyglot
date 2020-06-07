@@ -17,6 +17,14 @@ interface TranslationFile
     public function getLanguage() : string;
     public static function getTypeName() : string;
 
-    // list of columns to match the strings by
-    public function matchBy() : array;
+    // list of columns to match translated strings by
+    // used in import
+    public function matchTranslationsBy() : array;
+
+    // list of columns to match texts (untranslated) by
+    // used in upload
+    public function matchTextsBy() : array;
+
+    // column containing order index for files without keys
+    public function indexColumn() : ?string;
 }

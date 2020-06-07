@@ -128,8 +128,18 @@ class LineSeparatedFile implements TranslationFile
         return 'Line separated file';
     }
 
-    public function matchBy(): array
+    public function matchTranslationsBy(): array
     {
         return ['comment'];
+    }
+
+    public function matchTextsBy(): array
+    {
+        return ['text'];
+    }
+
+    public function indexColumn(): ?string
+    {
+        return 'comment';
     }
 }

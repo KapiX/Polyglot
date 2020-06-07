@@ -164,8 +164,18 @@ class JavaPropertiesFile implements TranslationFile
         return 'Java properties';
     }
 
-    public function matchBy(): array
+    public function matchTranslationsBy(): array
     {
         return ['comment'];
+    }
+
+    public function matchTextsBy(): array
+    {
+        return ['text', 'context', 'comment'];
+    }
+
+    public function indexColumn() : ?string
+    {
+        return null;
     }
 }
