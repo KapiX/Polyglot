@@ -110,6 +110,64 @@ class LineSeparatedFileTest extends TestCase
         $this->assertEquals($expected, $catkeys);
     }
 
+    public function testProcessWithEmptySeparatorTest()
+    {
+        $instance = new LineSeparatedFile(['separator' => '']);
+        $contents = file_get_contents(self::RESOURCES_DIR . 'empty_separator.txt');
+        $catkeys = $instance->process($contents);
+        $expected = [
+            0 => [
+                'text' => "test",
+                'context' => '',
+                'comment' => 1,
+                'translation' => "test"
+            ],
+            1 => [
+                'text' => "test2",
+                'context' => '',
+                'comment' => 2,
+                'translation' => "test2"
+            ],
+            2 => [
+                'text' => "test3",
+                'context' => '',
+                'comment' => 3,
+                'translation' => "test3"
+            ],
+        ];
+        $this->assertIsArray($catkeys);
+        $this->assertEquals($expected, $catkeys);
+    }
+
+    public function testProcessWithEmptySeparatorMultilineKeysTest()
+    {
+        $instance = new LineSeparatedFile(['separator' => '']);
+        $contents = file_get_contents(self::RESOURCES_DIR . 'empty_separator_multiline.txt');
+        $catkeys = $instance->process($contents);
+        $expected = [
+            0 => [
+                'text' => "test",
+                'context' => '',
+                'comment' => 1,
+                'translation' => "test"
+            ],
+            1 => [
+                'text' => "test2\nhas two lines",
+                'context' => '',
+                'comment' => 2,
+                'translation' => "test2\nhas two lines"
+            ],
+            2 => [
+                'text' => "test3\nhas\nthree",
+                'context' => '',
+                'comment' => 3,
+                'translation' => "test3\nhas\nthree"
+            ],
+        ];
+        $this->assertIsArray($catkeys);
+        $this->assertEquals($expected, $catkeys);
+    }
+
     public function testAssembleTest()
     {
         $keys = [
@@ -157,6 +215,33 @@ class LineSeparatedFileTest extends TestCase
         $this->assertEquals($expected, $instance->assemble($keys));
     }
 
+    public function testAssembleWithEmptySeparatorTest()
+    {
+        $instance = new LineSeparatedFile(['separator' => '']);
+        $keys = [
+            0 => [
+                'text' => "test",
+                'context' => '',
+                'comment' => 1,
+                'translation' => "test"
+            ],
+            1 => [
+                'text' => "test2",
+                'context' => '',
+                'comment' => 2,
+                'translation' => "test2"
+            ],
+            2 => [
+                'text' => "test3",
+                'context' => '',
+                'comment' => 3,
+                'translation' => "test3"
+            ],
+        ];
+        $expected = file_get_contents(self::RESOURCES_DIR . 'empty_separator.txt');
+        $this->assertEquals($expected, $instance->assemble($keys));
+    }
+
     public function testProcessAndAssembleSameWithoutLastEmptyTest()
     {
         $contents = file_get_contents(self::RESOURCES_DIR . 'many.txt');
@@ -169,5 +254,13 @@ class LineSeparatedFileTest extends TestCase
         $contents = file_get_contents(self::RESOURCES_DIR . 'last_empty.txt');
         $keys = $this->instance->process($contents);
         $this->assertEquals($contents, $this->instance->assemble($keys));
+    }
+
+    public function testProcessAndAssembleSameWithEmptySeparatorTest()
+    {
+        $instance = new LineSeparatedFile(['separator' => '']);
+        $contents = file_get_contents(self::RESOURCES_DIR . 'empty_separator.txt');
+        $keys = $instance->process($contents);
+        $this->assertEquals($contents, $instance->assemble($keys));
     }
 }

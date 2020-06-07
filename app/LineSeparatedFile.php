@@ -27,7 +27,7 @@ class LineSeparatedFile implements TranslationFile
         if(array_key_exists('last_empty', $metadata))
             $this->last_empty = $metadata['last_empty'];
         if(array_key_exists('separator', $metadata))
-            $this->separator = $metadata['separator'];
+            $this->separator = $metadata['separator'] ?: '';
         if(array_key_exists('extension', $metadata))
             $this->extension = $metadata['extension'];
     }
@@ -35,7 +35,18 @@ class LineSeparatedFile implements TranslationFile
     public function process(string $contents) {
         $this->last_empty = true;
         $separator = "\r\n";
-        $line = strtok($contents, $separator);
+
+        $contents = str_replace("\r\n", "\n", $contents);
+        // strtok skips empty lines
+
+        $pos = strpos($contents, "\n");
+        if($pos !== false) {
+            $line = substr($contents, 0, $pos);
+            $rest = substr($contents, ++$pos);
+        } else {
+            $line = $contents;
+            $rest = false;
+        }
 
         $buffer = [];
         $catkeys = [];
@@ -52,9 +63,23 @@ class LineSeparatedFile implements TranslationFile
                 ];
                 ++$i;
             } else {
-                $buffer[] = $line;
+                if($this->separator !== '') {
+                    if($line !== '') {
+                        $buffer[] = $line;
+                    }
+                } else {
+                    $buffer[] = $line;
+                }
             }
-            $line = strtok($separator);
+
+            $pos = strpos($rest, "\n");
+            if($pos !== false) {
+                $line = substr($rest, 0, $pos);
+                $rest = substr($rest, ++$pos);
+            } else {
+                $line = $rest;
+                $rest = false;
+            }
         }
         if(empty($buffer) == false) {
             $this->last_empty = false;
@@ -117,7 +142,7 @@ class LineSeparatedFile implements TranslationFile
         $contents = '';
         foreach($keys as $key) {
             $contents .= $key['translation'] . "\n";
-            if($key !== end($keys) || $this->last_empty == true)
+            if($key !== end($keys) || ($this->last_empty == true && $this->separator !== ''))
                 $contents .= $this->separator . "\n";
         }
         return $contents;
