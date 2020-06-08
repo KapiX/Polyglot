@@ -291,7 +291,7 @@ class FilesController extends Controller
             ->where('file_id', $file->id);
         $instance = $file->getFileInstance();
         if($instance->indexColumn() !== null) {
-            $translations->orderByRaw('cast(' . $instance->indexColumn() . ' as int) asc');
+            $translations->orderByRaw('cast(' . $instance->indexColumn() . ' as unsigned) asc');
         } else {
             $translations->orderBy('context', 'asc')
                 ->orderBy('text', 'asc');
