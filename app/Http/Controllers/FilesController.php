@@ -288,9 +288,14 @@ class FilesController extends Controller
                 $join->on('texts.id', '=', 'translations.text_id')
                     ->where('language_id', $lang->id);
             })
-            ->where('file_id', $file->id)
-            ->orderBy('context', 'asc')
-            ->orderBy('text', 'asc');
+            ->where('file_id', $file->id);
+        $instance = $file->getFileInstance();
+        if($instance->indexColumn() !== null) {
+            $translations->orderByRaw('cast(' . $instance->indexColumn() . ' as int) asc');
+        } else {
+            $translations->orderBy('context', 'asc')
+                ->orderBy('text', 'asc');
+        }
         if($type == 'continue') {
             $translations = $translations->having('needs_work', 1)
                 ->get();
