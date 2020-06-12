@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use Polyglot\LineSeparatedFile;
+use Polyglot\FileTypes\LineSeparatedFile;
 use PHPUnit\Framework\TestCase;
 
 class LineSeparatedFileTest extends TestCase

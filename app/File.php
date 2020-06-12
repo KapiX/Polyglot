@@ -2,8 +2,10 @@
 
 namespace Polyglot;
 
-use Polyglot\CatkeysFile;
 use Illuminate\Database\Eloquent\Model;
+use Polyglot\FileTypes\CatkeysFile;
+use Polyglot\FileTypes\JavaPropertiesFile;
+use Polyglot\FileTypes\LineSeparatedFile;
 
 class File extends Model
 {

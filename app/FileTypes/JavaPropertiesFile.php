@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Polyglot;
+namespace Polyglot\FileTypes;
 
 class JavaPropertiesFile implements TranslationFile
 {

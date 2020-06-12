@@ -3,8 +3,8 @@
 namespace Polyglot\Http\Controllers;
 
 use Exception;
-use Polyglot\CatkeysFile;
-use Polyglot\TranslationFile;
+use Polyglot\FileTypes\CatkeysFile;
+use Polyglot\FileTypes\TranslationFile;
 use ZipArchive;
 use Polyglot\File;
 use Polyglot\Language;
