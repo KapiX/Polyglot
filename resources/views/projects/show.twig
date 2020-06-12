@@ -3,20 +3,32 @@
 {% block title %}{{ project.name }}{% endblock %}
 
 {% block content %}
+{% macro fill_table(chunk_count, tag = 'td') %}
+    {% if chunk_count < 4 %}
+        {% for i in 1..(4 - chunk_count) %}
+            <{{ tag }}></{{ tag }}>
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
 <ol class="breadcrumb">
     <li>{{ link_to_route('projects.index', 'Home') }}</li>
     <li>{{ html_image(project.icon, null, {class: 'breadcrumb-icon'}) }} {{ link_to_route('projects.show', project.name, {project: project}) }}</li>
     <li class="active">Translation modules</li>
 </ol>
+{% set manyFiles = project.files.count() > 4 %}
 {% if project.files.count() > 0 %}
+{% set chunks = project.files.chunk(4) %}
 <table class="table table-striped">
-<thead>
+{% for chunk in chunks %}
+<tbody>
 <tr>
     <th colspan="2">
+        {% if loop.first %}
         {{ link_to_route('projects.show', displayLinkLabel,
             { 'project': project.id, 'display': display == 'active' ? 'all' : '' }) }}
+        {% endif %}
     </th>
-    {% for file in project.files %}
+    {% for file in chunk %}
     <th>
         <span title="{{ file.path }}.{{ file.getFileInstance().getExtension() }}" class="text-hover">
             {{ file.name }}
@@ -27,18 +39,18 @@
         <br>
     </th>
     {% endfor %}
+    {{ _self.fill_table(chunk.count(), 'th') }}
 </tr>
-</thead>
-<tbody>
 {% for language in languages
     if language.iso_code != 'en' and
-        (display == 'active' and (modifiedKeys[language.id] > 0 or
+        (display == 'active' and (
+            (modifiedKeys[language.id] > 0 and not manyFiles) or
             language.id in auth_user().preferred_languages))
         or (display == 'all') %}
 <tr>
     <td class="iso-code"><b>{{ language.iso_code }}</b></td>
     <td>{{ language.name }}</td>
-    {% for file in project.files %}
+    {% for file in chunk %}
     <td>
         {% set lang_stat = status[file.id][language.id] %}
         <div class="progress progress-translation">
@@ -75,18 +87,21 @@
         </div>
     </td>
     {% endfor %}
+    {{ _self.fill_table(chunk.count()) }}
 </tr>
 {% endfor %}
 <tr>
     <td></td>
     <td></td>
-    {% for file in project.files %}
+    {% for file in chunk %}
     <td>
         {{ link_to_route('files.exportAll', 'Export all languages', file.id, {}) }}
     </td>
     {% endfor %}
+    {{ _self.fill_table(chunk.count()) }}
 </tr>
 </tbody>
+{% endfor %}
 </table>
 {% else %}
 <p>This project has no translation modules yet.</p>
