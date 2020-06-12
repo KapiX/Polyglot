@@ -37,6 +37,10 @@ span.admin {
     font-weight: bold;
 }
 
+span.text-hover {
+    border-bottom: 1px dotted #333;
+}
+
 p.message {
     padding: 15px;
 }

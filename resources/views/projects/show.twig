@@ -18,12 +18,13 @@
     </th>
     {% for file in project.files %}
     <th>
-        {{ file.name }}
+        <span title="{{ file.path }}.{{ file.getFileInstance().getExtension() }}" class="text-hover">
+            {{ file.name }}
+        </span>
         {% if auth_user().can('modify-file', file) %}
             {{ link_to_route('files.edit', 'Edit', file.id, {}) }}
         {% endif %}
         <br>
-        <small>{{ file.path }}.{{ file.getFileInstance().getExtension() }}</small>
     </th>
     {% endfor %}
 </tr>
