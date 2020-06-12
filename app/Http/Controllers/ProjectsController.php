@@ -128,8 +128,8 @@ class ProjectsController extends Controller
         $contributors = ProjectUser::contributors($project->id)
             ->with('user')
             ->with('language')
-            ->get()->groupBy('user_id')->sortBy(function($c) {
-                return strtolower($c[0]->user->name);
+            ->get()->groupBy('language_id')->sortBy(function($c) {
+                return strtolower($c[0]->language->name);
             });
         $displayLinkLabel = sprintf('Show %s languages',
                                     ($display == 'all' ? 'only active' : 'all'));

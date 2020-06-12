@@ -112,38 +112,39 @@
 {% block panels %}
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">Administrators</div>
-                <div class="panel-body">
-                    {% for admin in project.administrators %}
-                    {{ admin.name }}{% if loop.last == false %}, {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">Contributors</div>
-                <div class="panel-body">
-                    {% for contributor in contributors %}
-                    <span class="{{ roleClass[contributor[0].role] }}">
-                        {{ contributor[0].user.name }} {{ contributor.language }}
-                        ({% for language in contributor %}{{ language.language.iso_code }}{% if loop.last == false %}, {% endif %}{% endfor %})</span>{% if loop.last == false %}, {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
         {% if auth_user().can('modify-project', project) %}
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">Add translation module</div>
-                <div class="panel-body">
-                    {{ block('add_file_panel') }}
-                </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Add translation module</div>
+            <div class="panel-body">
+                {{ block('add_file_panel') }}
             </div>
         </div>
         {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-heading">Administrators</div>
+            <div class="panel-body">
+                {% for admin in project.administrators %}
+                {{ admin.name }}{% if loop.last == false %}, {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Contributors</div>
+            <div class="panel-body">
+                <table class="table table-striped">
+                {% for language in contributors %}
+                <tr>
+                    <td>{{ language[0].language.name }} ({{ language[0].language.iso_code }})</td>
+                    <td>
+                        {% for contributor in language %}
+                        <span class="{{ roleClass[contributor.role] }}">{{ contributor.user.name }}</span>{% if loop.last == false %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    </tr>
+                {% endfor %}
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
