@@ -24,7 +24,8 @@
 <tr>
     <th colspan="2">
         {% if loop.first %}
-        {{ link_to_route('projects.show', displayLinkLabel,
+        {% set label = 'Show ' ~ (display == 'all' ? 'only ' ~ (manyFiles ? 'preferred' : 'active') : 'all') ~ ' languages' %}
+        {{ link_to_route('projects.show', label,
             { 'project': project.id, 'display': display == 'active' ? 'all' : '' }) }}
         {% endif %}
     </th>
