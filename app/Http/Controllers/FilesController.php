@@ -318,7 +318,7 @@ class FilesController extends Controller
 
     public function export(File $file, Language $lang)
     {
-        $catkeys = $this->getCatkeysFile($file, $lang);
+        $catkeys = $file->export($lang);
         if($catkeys === null)
             return \Redirect::route('projects.show', [$file->project_id])
                 ->with('message', 'Checksum or MIME type are missing.');
@@ -351,7 +351,7 @@ class FilesController extends Controller
                 ->distinct()->select('language_id')->getQuery()
         )->get();
         foreach($languages as $lang) {
-            $files[$lang->iso_code] = $this->getCatkeysFile($file, $lang);
+            $files[$lang->iso_code] = $file->export($lang);
         }
         if(empty($files))
             return redirect()->back();
@@ -375,48 +375,5 @@ class FilesController extends Controller
         $zip->close();
 
         return response()->download($tmpfile, $filename, $headers)->deleteFileAfterSend(true);
-    }
-
-    private function getCatkeysFile(File $file, Language $lang)
-    {
-        $lastUpdated = Translation::lastUpdatedAt($file->id, $lang->id);
-        if($lastUpdated === null)
-            $lastUpdated = '1970-01-01 00:00:01';
-        else
-            $lastUpdated = $lastUpdated->updated_at;
-
-        $instance = $file->getFileInstance();
-        // see if we have a cached copy
-        $directory = sprintf('exported/%u/%u', $file->id, $lang->id);
-        $filename = sprintf('%s/%s.%s', $directory, $lastUpdated, $instance->getExtension());
-        if(Storage::exists($filename) == false) {
-            // we don't, delete old ones and generate new
-            Storage::delete(Storage::files($directory));
-
-            $texts = $file->texts()->get()->groupBy('context');
-            $translations = Translation::where('language_id', $lang->id)
-                ->whereIn('text_id', $file->texts()->select('id')->getQuery())
-                ->get()->groupBy('text_id');
-            $keys = [];
-            foreach($texts as $context) {
-                foreach($context as $text) {
-                    $t = $translations->get($text['id']);
-                    if($t !== null)
-                        $translation = $t[0]['translation'];
-                    else
-                        $translation = $text['text'];
-                    $keys[] = [
-                        'text' => $text['text'],
-                        'context' => $text['context'],
-                        'comment' => $text['comment'],
-                        'translation' => $translation
-                    ];
-                }
-            }
-            $instance->setLanguage($lang->name);
-            $result = $instance->assemble($keys);
-            Storage::put($filename, $result);
-        }
-        return $filename;
     }
 }

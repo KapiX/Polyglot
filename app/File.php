@@ -3,6 +3,7 @@
 namespace Polyglot;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Polyglot\FileTypes\CatkeysFile;
 use Polyglot\FileTypes\JavaPropertiesFile;
 use Polyglot\FileTypes\LineSeparatedFile;
@@ -25,6 +26,49 @@ class File extends Model
     public function texts()
     {
         return $this->hasMany('Polyglot\Text');
+    }
+    
+    public function export(Language $lang)
+    {
+        $lastUpdated = Translation::lastUpdatedAt($this->id, $lang->id);
+        if($lastUpdated === null)
+            $lastUpdated = '1970-01-01 00:00:01';
+        else
+            $lastUpdated = $lastUpdated->updated_at;
+
+        $instance = $this->getFileInstance();
+        // see if we have a cached copy
+        $directory = sprintf('exported/%u/%u', $this->id, $lang->id);
+        $filename = sprintf('%s/%s.%s', $directory, $lastUpdated, $instance->getExtension());
+        if(Storage::exists($filename) == false) {
+            // we don't, delete old ones and generate new
+            Storage::delete(Storage::files($directory));
+
+            $texts = $this->texts()->get()->groupBy('context');
+            $translations = Translation::where('language_id', $lang->id)
+                ->whereIn('text_id', $this->texts()->select('id')->getQuery())
+                ->get()->groupBy('text_id');
+            $keys = [];
+            foreach($texts as $context) {
+                foreach($context as $text) {
+                    $t = $translations->get($text['id']);
+                    if($t !== null)
+                        $translation = $t[0]['translation'];
+                    else
+                        $translation = $text['text'];
+                    $keys[] = [
+                        'text' => $text['text'],
+                        'context' => $text['context'],
+                        'comment' => $text['comment'],
+                        'translation' => $translation
+                    ];
+                }
+            }
+            $instance->setLanguage($lang->name);
+            $result = $instance->assemble($keys);
+            Storage::put($filename, $result);
+        }
+        return $filename;
     }
 
     public function getFileInstance() {
