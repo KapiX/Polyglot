@@ -55,7 +55,11 @@ class Project extends Model
     
     public function allFilePathsAreUnique()
     {
-        return $this->files()->groupBy('path')->havingRaw('count(*) > 1')->doesntExist();
+        return $this->files()
+            ->select('path')
+            ->groupBy('path')
+            ->havingRaw('count(*) > 1')
+            ->doesntExist();
     }
     
     public function completeLanguages() {
