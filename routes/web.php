@@ -29,6 +29,9 @@ Route::post('/projects', 'ProjectsController@store')
 Route::get('/projects/{project}/{display?}', 'ProjectsController@show')
     ->where('display', 'all|active')
     ->name('projects.show');
+Route::get('/projects/{project}/export/{status?}', 'ProjectsController@export')
+    ->where('status', 'all|complete')
+    ->name('projects.export');
 Route::get('/projects/{project}/edit', 'ProjectsController@edit')
     ->name('projects.edit')
     ->middleware('can:modify-project,project');

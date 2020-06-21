@@ -52,8 +52,22 @@ class Project extends Model
     {
         return $value ? 'storage/' . $value . '.png' : self::DEFAULT_ICON;
     }
+    
+    public function allFilePathsAreUnique()
+    {
+        return $this->files()->groupBy('path')->havingRaw('count(*) > 1')->doesntExist();
+    }
+    
+    public function completeLanguages() {
+        return Language::whereIn('id',
+            DB::table(self::allNeedsWorkByLanguage()
+                // this is actually faster than adding where in each query
+                ->where('project_id', $this->id)
+                ->having('needs_work', 0))
+            ->select('language_id'));
+    }
 
-    public static function textsCount()
+    public static function textsCountPerProject()
     {
         return DB::table(Text::projects())
             ->select('project_id as id')
@@ -77,7 +91,7 @@ class Project extends Model
         return DB::table(self::translatedCountByLanguage(), 'translation_counts')
             ->select('project_id', 'language_id')
             ->selectRaw('text_count > translated_count as needs_work')
-            ->leftJoinSub(self::textsCount(), 'text_counts', 'text_counts.id', '=', 'translation_counts.project_id');
+            ->leftJoinSub(self::textsCountPerProject(), 'text_counts', 'text_counts.id', '=', 'translation_counts.project_id');
     }
 
     public static function allNeedsWorkForLanguages($languagesToMark)

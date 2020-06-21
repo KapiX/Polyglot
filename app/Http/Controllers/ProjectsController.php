@@ -2,6 +2,7 @@
 
 namespace Polyglot\Http\Controllers;
 
+use ZipArchive;
 use Polyglot\File;
 use Polyglot\Language;
 use Polyglot\Project;
@@ -192,5 +193,57 @@ class ProjectsController extends Controller
     public function destroy(Project $project)
     {
         //
+    }
+    
+    public function export(Project $project, $status = 'all')
+    {
+        if(!$project->allFilePathsAreUnique()) {
+            return redirect()->route('projects.show', [$project->id])
+                ->with('error',
+                    'There are duplicate file paths. Cannot generate an archive.');
+        }
+        $generatedFiles = [];
+        $languages = [];
+        if($status == 'complete') {
+            $languages = $project->completeLanguages()->get();
+            if(empty($languages))
+                return redirect()->back();
+        }
+        foreach($project->files()->get() as $file) {
+            if($status == 'all') {
+                $languages = Language::whereIn('id',
+                    Translation::whereIn('text_id', $file->texts()->select('id')->getQuery())
+                        ->distinct()->select('language_id')->getQuery())->get();
+                if(empty($languages))
+                    continue;
+            }
+            foreach($languages as $lang) {
+                $file_key = $file->path . '.' . $file->getFileInstance()->getExtension();
+                $generatedFiles[$file_key][$lang->iso_code] = $file->export($lang);
+            }
+        }
+        if(empty($generatedFiles))
+            return redirect()->back();
+
+        $filename = $project->name . '.zip';
+        $headers = [
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Content-type'        => 'application/zip',
+            'Content-Disposition' => 'attachment; filename=' . $filename,
+            'Expires'             => '0',
+            'Pragma'              => 'public',
+        ];
+        $tmpfile = tempnam(storage_path('app'), 'zip');
+        $zip = new ZipArchive();
+        $zip->open($tmpfile, ZipArchive::CREATE);
+        foreach($generatedFiles as $path => $languages) {
+            foreach($languages as $lang => $generatedFilePath) {
+                $inArchivePath = str_replace('%lang%', $lang, $path);
+                $zip->addFile(storage_path('app/' . $generatedFilePath), $inArchivePath);
+            }
+        }
+        $zip->close();
+
+        return response()->download($tmpfile, $filename, $headers)->deleteFileAfterSend(true);
     }
 }

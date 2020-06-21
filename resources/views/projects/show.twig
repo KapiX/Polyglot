@@ -15,6 +15,9 @@
     <li>{{ html_image(project.icon, null, {class: 'breadcrumb-icon'}) }} {{ link_to_route('projects.show', project.name, {project: project}) }}</li>
     <li class="active">Translation modules</li>
 </ol>
+{% if session('error') %}
+    <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+{% endif %}
 {% set manyFiles = project.files.count() > 4 %}
 {% if project.files.count() > 0 %}
 {% set chunks = project.files.chunk(4) %}
@@ -92,11 +95,13 @@
 </tr>
 {% endfor %}
 <tr>
-    <td></td>
-    <td></td>
+    <td colspan="2">Export languages:
+        {{ link_to_route('projects.export', 'all', {'project': project.id, 'status': 'all'}) }} |
+        {{ link_to_route('projects.export', 'only completed', {'project': project.id, 'status': 'complete'}) }}
+    </td>
     {% for file in chunk %}
     <td>
-        {{ link_to_route('files.exportAll', 'Export all languages', file.id, {}) }}
+        {{ link_to_route('files.exportAll', 'Export file', file.id, {}) }}
     </td>
     {% endfor %}
     {{ _self.fill_table(chunk.count()) }}
