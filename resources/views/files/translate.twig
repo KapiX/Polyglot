@@ -3,6 +3,33 @@
 {% set canTranslate = can('translate-file', [file, lang]) %}
 {% block title %}{{ file.project.name }} - {{ file.name }} - {{ lang.name }}{% endblock %}
 
+{% block translationEditor %}
+<div class="container-fluid">
+    <div class="row">
+        <textarea>${translationCell.html()}</textarea>
+    </div>
+    <div class="row">
+        <small>Press Shift+Enter to enter a newline.</small>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="needswork" value="1">
+                    Needs work
+                </label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <input class="btn btn-primary" id="save" type="button" value="Save">
+        </div>
+        <div class="col-md-4">
+            <input class="btn" id="cancel" type="button" value="Cancel">
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 {% block scripts %}
 {% if canTranslate %}
 <script type="text/javascript">
@@ -11,7 +38,7 @@ $(document).ready(function() {
         var translationCell = $(this).find('td.translation');
         var id = $(this).attr('id');
         var lang = $(this).parents('table').attr('id');
-        var form = '<div class="container-fluid"><div class="row"><textarea>' + translationCell.html() + '</textarea></div><div class="row"><small>Press Shift+Enter to enter a newline.</div></small><div class="row"><div class="col-md-4"><div class="checkbox"><label><input type="checkbox" id="needswork" value="1"> Needs work</label></div></div><div class="col-md-4"><input class="btn btn-primary" id="save" type="button" value="Save"></div><div class="col-md-4"><input class="btn" id="cancel" type="button" value="Cancel"></div></div></div>';
+        var form = `{{ block('translationEditor') }}`;
         translationCell.addClass('translation-active');
         translationCell.html(form);
         $(this).removeClass('warning');
