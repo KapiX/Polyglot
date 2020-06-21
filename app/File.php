@@ -44,7 +44,13 @@ class File extends Model
             // we don't, delete old ones and generate new
             Storage::delete(Storage::files($directory));
 
-            $texts = $this->texts()->get()->groupBy('context');
+            $texts_query = $this->texts();
+            if($instance->indexColumn() !== null) {
+                $texts_query->orderByRaw('cast(' . $instance->indexColumn() . ' as unsigned) asc');
+            } else {
+                $texts_query->orderBy($instance->matchTranslationsBy()[0]);
+            }
+            $texts = $texts_query->get()->groupBy('context');
             $translations = Translation::where('language_id', $lang->id)
                 ->whereIn('text_id', $this->texts()->select('id')->getQuery())
                 ->get()->groupBy('text_id');
