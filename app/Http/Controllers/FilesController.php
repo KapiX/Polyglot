@@ -186,6 +186,7 @@ class FilesController extends Controller
                 $idsProcessed[] = $textToUpdate->id;
             }
         }
+        $file->touch();
         $allIds = $file->texts()->pluck('id')->toArray();
         $deleteIds = array_values(array_diff($allIds, $idsProcessed));
         if(!empty($deleteIds))

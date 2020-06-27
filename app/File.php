@@ -2,6 +2,7 @@
 
 namespace Polyglot;
 
+use \DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Polyglot\FileTypes\CatkeysFile;
@@ -28,13 +29,20 @@ class File extends Model
         return $this->hasMany('Polyglot\Text');
     }
     
+    public function lastUpdatedAt(Language $lang)
+    {
+        $translationLastUpdated = null;
+        $fileLastUpdated = new DateTime($this->updated_at);
+        $query = Translation::lastUpdatedAt($this->id, $lang->id);
+        if($query !== null)
+            $translationLastUpdated = new DateTime($query->updated_at);
+        $lastUpdated = $translationLastUpdated > $fileLastUpdated ? $translationLastUpdated : $fileLastUpdated;
+        return $lastUpdated->format('Y-m-d H:i:s');
+    }
+
     public function export(Language $lang)
     {
-        $lastUpdated = Translation::lastUpdatedAt($this->id, $lang->id);
-        if($lastUpdated === null)
-            $lastUpdated = '1970-01-01 00:00:01';
-        else
-            $lastUpdated = $lastUpdated->updated_at;
+        $lastUpdated = $this->lastUpdatedAt($lang);
 
         $instance = $this->getFileInstance();
         // see if we have a cached copy
