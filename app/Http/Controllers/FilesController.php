@@ -185,7 +185,7 @@ class FilesController extends Controller
 
         if($checksum !== $file->checksum || $mimetype !== $file->mime_type) {
             return redirect()->route('files.translate', [$file->id, $lang->id])
-                ->with('error', "MIME type or checksum don't match.");
+                ->with('error', "App signature or checksum don't match.");
         }
 
         foreach($catkeys_processed as $catkey) {
@@ -277,7 +277,7 @@ class FilesController extends Controller
         $catkeys = $this->getCatkeysFile($file, $lang);
         if($catkeys === null)
             return \Redirect::route('projects.show', [$file->project_id])
-                ->with('message', 'Checksum or MIME type are missing.');
+                ->with('message', 'Checksum or app signature are missing.');
 
         // prepare file
         $filename = $lang->iso_code . '.catkeys';
