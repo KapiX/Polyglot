@@ -322,7 +322,7 @@ class FilesController extends Controller
         $catkeys = $file->export($lang);
         if($catkeys === null)
             return \Redirect::route('projects.show', [$file->project_id])
-                ->with('message', 'Checksum or MIME type are missing.');
+                ->with('message', 'Checksum or app signature are missing.');
 
         // prepare file
         $basename = basename($file->path);
