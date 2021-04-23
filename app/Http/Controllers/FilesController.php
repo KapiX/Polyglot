@@ -6,11 +6,11 @@ use Exception;
 use App\FileTypes\CatkeysFile;
 use App\FileTypes\TranslationFile;
 use ZipArchive;
-use App\File;
-use App\Language;
-use App\Project;
-use App\Text;
-use App\Translation;
+use App\Models\File;
+use App\Models\Language;
+use App\Models\Project;
+use App\Models\Text;
+use App\Models\Translation;
 use App\Http\Requests\AddFile;
 use App\Http\Requests\EditFile;
 use App\Http\Requests\ImportTranslation;
@@ -57,7 +57,7 @@ class FilesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\File  $file
+     * @param  \App\Models\File $file
      * @return \Illuminate\Http\Response
      */
     public function edit(File $file)
@@ -70,7 +70,7 @@ class FilesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\File  $file
+     * @param  \App\Models\File $file
      * @return \Illuminate\Http\Response
      */
     public function update(EditFile $request, File $file)
@@ -92,7 +92,7 @@ class FilesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\File  $file
+     * @param  \App\Models\File $file
      * @return \Illuminate\Http\Response
      */
     public function destroy(File $file)
@@ -104,7 +104,7 @@ class FilesController extends Controller
      * Upload the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\File  $file
+     * @param  \App\Models\File $file
      * @return \Illuminate\Http\Response
      */
     public function upload(UploadFile $request, File $file)

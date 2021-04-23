@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
-use App\File;
-use App\Language;
-use App\Project;
-use App\Text;
-use App\User;
+use App\Models\File;
+use App\Models\Language;
+use App\Models\Project;
+use App\Models\Text;
+use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;

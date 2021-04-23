@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\File;
-use App\Language;
+use App\Models\File;
+use App\Models\Language;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ImportTranslation extends FormRequest

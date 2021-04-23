@@ -1,12 +1,12 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-use App\Text;
-use App\Translation;
+use App\Models\Text;
+use App\Models\Translation;
 
 class Project extends Model
 {
@@ -14,13 +14,13 @@ class Project extends Model
 
     public function files()
     {
-        return $this->hasMany('App\File');
+        return $this->hasMany('App\Models\File');
     }
 
     public function users()
     {
-        return $this->belongsToMany('App\User')
-            ->using('App\ProjectUser')
+        return $this->belongsToMany('App\Models\User')
+            ->using('App\Models\ProjectUser')
             ->withPivot('language_id', 'role')
             ->withTimestamps();
     }

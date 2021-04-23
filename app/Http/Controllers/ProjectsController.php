@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use ZipArchive;
-use App\File;
-use App\Language;
-use App\Project;
-use App\ProjectUser;
-use App\Text;
-use App\Translation;
+use App\Models\File;
+use App\Models\Language;
+use App\Models\Project;
+use App\Models\ProjectUser;
+use App\Models\Text;
+use App\Models\Translation;
 use App\Http\Requests\AddProject;
 use App\Http\Requests\EditProject;
 use Illuminate\Http\Request;
@@ -68,7 +68,7 @@ class ProjectsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Project  $project
+     * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
     public function show(Project $project, $display = 'active')
@@ -149,7 +149,7 @@ class ProjectsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Project  $project
+     * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
     public function edit(Project $project)
@@ -162,7 +162,7 @@ class ProjectsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Project  $project
+     * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
     public function update(EditProject $request, Project $project)
@@ -187,7 +187,7 @@ class ProjectsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Project  $project
+     * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
     public function destroy(Project $project)

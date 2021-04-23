@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Language;
-use App\User;
+use App\Models\Language;
+use App\Models\User;
 use App\Http\Requests\EditProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

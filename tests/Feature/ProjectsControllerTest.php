@@ -5,8 +5,8 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use App\User;
-use App\Project;
+use App\Models\User;
+use App\Models\Project;
 
 class ProjectsControllerTest extends TestCase
 {

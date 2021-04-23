@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -34,14 +34,14 @@ class User extends Authenticatable
     ];
 
     public function projects() {
-        return $this->belongsToMany('App\Project')
-            ->using('App\ProjectUser')
+        return $this->belongsToMany('App\Models\Project')
+            ->using('App\Models\ProjectUser')
             ->withPivot('language_id', 'role')
             ->withTimestamps();
     }
 
     public function languages() {
-        return $this->belongsToMany('App\Language')
+        return $this->belongsToMany('App\Models\Language')
             ->withTimestamps();
     }
 

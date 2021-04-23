@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,12 +8,12 @@ class Text extends Model
 {
     public function file()
     {
-        return $this->belongsTo('App\File');
+        return $this->belongsTo('App\Models\File');
     }
 
     public function translations()
     {
-        return $this->hasMany('App\Translation');
+        return $this->hasMany('App\Models\Translation');
     }
 
     public static function projects($project_id = null)

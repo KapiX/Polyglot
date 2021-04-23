@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddLanguage;
 use App\Http\Requests\EditLanguage;
-use App\Language;
+use App\Models\Language;
 use Illuminate\Http\Request;
 
 class LanguagesController extends Controller

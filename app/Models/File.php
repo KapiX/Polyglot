@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use \DateTime;
 use Illuminate\Database\Eloquent\Model;
@@ -21,12 +21,12 @@ class File extends Model
 
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo('App\Models\Project');
     }
 
     public function texts()
     {
-        return $this->hasMany('App\Text');
+        return $this->hasMany('App\Models\Text');
     }
     
     public function lastUpdatedAt(Language $lang)

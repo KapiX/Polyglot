@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\File;
+use App\Models\File;
 
 class EditFile extends FormRequest
 {

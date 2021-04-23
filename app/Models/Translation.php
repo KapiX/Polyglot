@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,12 +8,12 @@ class Translation extends Model
 {
     public function language()
     {
-        return $this->belongsTo('App\Language');
+        return $this->belongsTo('App\Models\Language');
     }
 
     public function text()
     {
-        return $this->belongsTo('App\Text');
+        return $this->belongsTo('App\Models\Text');
     }
 
     static public function lastUpdatedAt($file_id, $language_id)
