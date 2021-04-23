@@ -1,16 +1,16 @@
 <?php
 
-namespace Polyglot\Http\Controllers;
+namespace App\Http\Controllers;
 
 use ZipArchive;
-use Polyglot\File;
-use Polyglot\Language;
-use Polyglot\Project;
-use Polyglot\ProjectUser;
-use Polyglot\Text;
-use Polyglot\Translation;
-use Polyglot\Http\Requests\AddProject;
-use Polyglot\Http\Requests\EditProject;
+use App\File;
+use App\Language;
+use App\Project;
+use App\ProjectUser;
+use App\Text;
+use App\Translation;
+use App\Http\Requests\AddProject;
+use App\Http\Requests\EditProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -68,7 +68,7 @@ class ProjectsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \Polyglot\Project  $project
+     * @param  \App\Project  $project
      * @return \Illuminate\Http\Response
      */
     public function show(Project $project, $display = 'active')
@@ -149,7 +149,7 @@ class ProjectsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \Polyglot\Project  $project
+     * @param  \App\Project  $project
      * @return \Illuminate\Http\Response
      */
     public function edit(Project $project)
@@ -162,7 +162,7 @@ class ProjectsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Polyglot\Project  $project
+     * @param  \App\Project  $project
      * @return \Illuminate\Http\Response
      */
     public function update(EditProject $request, Project $project)
@@ -187,7 +187,7 @@ class ProjectsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Polyglot\Project  $project
+     * @param  \App\Project  $project
      * @return \Illuminate\Http\Response
      */
     public function destroy(Project $project)

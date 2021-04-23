@@ -1,9 +1,9 @@
 <?php
 
-namespace Polyglot\Http\Requests;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Polyglot\File;
+use App\File;
 
 class EditFile extends FormRequest
 {

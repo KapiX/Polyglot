@@ -1,13 +1,13 @@
 <?php
 
-namespace Polyglot;
+namespace App;
 
 use \DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Polyglot\FileTypes\CatkeysFile;
-use Polyglot\FileTypes\JavaPropertiesFile;
-use Polyglot\FileTypes\LineSeparatedFile;
+use App\FileTypes\CatkeysFile;
+use App\FileTypes\JavaPropertiesFile;
+use App\FileTypes\LineSeparatedFile;
 
 class File extends Model
 {
@@ -21,12 +21,12 @@ class File extends Model
 
     public function project()
     {
-        return $this->belongsTo('Polyglot\Project');
+        return $this->belongsTo('App\Project');
     }
 
     public function texts()
     {
-        return $this->hasMany('Polyglot\Text');
+        return $this->hasMany('App\Text');
     }
     
     public function lastUpdatedAt(Language $lang)

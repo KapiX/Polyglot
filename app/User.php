@@ -1,8 +1,6 @@
 <?php
 
-namespace Polyglot;
-
-use Database\Factories\UserFactory;
+namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -36,24 +34,19 @@ class User extends Authenticatable
     ];
 
     public function projects() {
-        return $this->belongsToMany('Polyglot\Project')
-            ->using('Polyglot\ProjectUser')
+        return $this->belongsToMany('App\Project')
+            ->using('App\ProjectUser')
             ->withPivot('language_id', 'role')
             ->withTimestamps();
     }
 
     public function languages() {
-        return $this->belongsToMany('Polyglot\Language')
+        return $this->belongsToMany('App\Language')
             ->withTimestamps();
     }
 
     public static function search($query) {
         return self::where('name', 'LIKE', '%' . $query . '%')
             ->orWhere('email', 'LIKE', '%' . $query . '%');
-    }
-
-    protected static function newFactory()
-    {
-        return UserFactory::new();
     }
 }

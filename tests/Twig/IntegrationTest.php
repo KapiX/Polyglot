@@ -2,7 +2,7 @@
 namespace Tests\Twig;
 
 use Twig\Test\IntegrationTestCase;
-use Polyglot\Extensions\Twig\TwigFilters;
+use App\Extensions\Twig\TwigFilters;
 
 class IntegrationTest extends IntegrationTestCase
 {

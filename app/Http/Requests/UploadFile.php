@@ -1,8 +1,8 @@
 <?php
 
-namespace Polyglot\Http\Requests;
+namespace App\Http\Requests;
 
-use Polyglot\File;
+use App\File;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UploadFile extends FormRequest

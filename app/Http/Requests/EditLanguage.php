@@ -1,9 +1,9 @@
 <?php
 
-namespace Polyglot\Http\Requests;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Polyglot\Language;
+use App\Language;
 
 class EditLanguage extends FormRequest
 {

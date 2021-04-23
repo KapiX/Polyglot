@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use Polyglot\FileTypes\CatkeysFile;
+use App\FileTypes\CatkeysFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CatkeysFileTest extends TestCase

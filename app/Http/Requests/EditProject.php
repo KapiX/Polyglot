@@ -1,8 +1,8 @@
 <?php
 
-namespace Polyglot\Http\Requests;
+namespace App\Http\Requests;
 
-use Polyglot\Project;
+use App\Project;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
 

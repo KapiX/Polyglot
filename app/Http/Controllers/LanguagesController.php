@@ -1,10 +1,10 @@
 <?php
 
-namespace Polyglot\Http\Controllers;
+namespace App\Http\Controllers;
 
-use Polyglot\Http\Requests\AddLanguage;
-use Polyglot\Http\Requests\EditLanguage;
-use Polyglot\Language;
+use App\Http\Requests\AddLanguage;
+use App\Http\Requests\EditLanguage;
+use App\Language;
 use Illuminate\Http\Request;
 
 class LanguagesController extends Controller

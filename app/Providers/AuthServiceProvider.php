@@ -1,12 +1,12 @@
 <?php
 
-namespace Polyglot\Providers;
+namespace App\Providers;
 
-use Polyglot\File;
-use Polyglot\Language;
-use Polyglot\Project;
-use Polyglot\Text;
-use Polyglot\User;
+use App\File;
+use App\Language;
+use App\Project;
+use App\Text;
+use App\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -19,7 +19,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'Polyglot\Model' => 'Polyglot\Policies\ModelPolicy',
+        'App\Model' => 'App\Policies\ModelPolicy',
     ];
 
     /**

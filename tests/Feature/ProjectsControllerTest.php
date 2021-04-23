@@ -5,8 +5,8 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use Polyglot\User;
-use Polyglot\Project;
+use App\User;
+use App\Project;
 
 class ProjectsControllerTest extends TestCase
 {

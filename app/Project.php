@@ -1,12 +1,12 @@
 <?php
 
-namespace Polyglot;
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-use Polyglot\Text;
-use Polyglot\Translation;
+use App\Text;
+use App\Translation;
 
 class Project extends Model
 {
@@ -14,13 +14,13 @@ class Project extends Model
 
     public function files()
     {
-        return $this->hasMany('Polyglot\File');
+        return $this->hasMany('App\File');
     }
 
     public function users()
     {
-        return $this->belongsToMany('Polyglot\User')
-            ->using('Polyglot\ProjectUser')
+        return $this->belongsToMany('App\User')
+            ->using('App\ProjectUser')
             ->withPivot('language_id', 'role')
             ->withTimestamps();
     }

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Polyglot\FileTypes;
+namespace App\FileTypes;
 
 
 interface TranslationFile

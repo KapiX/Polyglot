@@ -1,6 +1,6 @@
 <?php
 
-namespace Polyglot;
+namespace App;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
@@ -15,17 +15,17 @@ class ProjectUser extends Pivot
 
     public function language()
     {
-        return $this->belongsTo('Polyglot\Language');
+        return $this->belongsTo('App\Language');
     }
 
     public function user()
     {
-        return $this->belongsTo('Polyglot\User');
+        return $this->belongsTo('App\User');
     }
 
     public function project()
     {
-        return $this->belongsTo('Polyglot\Project');
+        return $this->belongsTo('App\Project');
     }
 
     public function scopeContributors($query, $projectId)

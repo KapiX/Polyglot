@@ -1,20 +1,20 @@
 <?php
 
-namespace Polyglot\Http\Controllers;
+namespace App\Http\Controllers;
 
 use Exception;
-use Polyglot\FileTypes\CatkeysFile;
-use Polyglot\FileTypes\TranslationFile;
+use App\FileTypes\CatkeysFile;
+use App\FileTypes\TranslationFile;
 use ZipArchive;
-use Polyglot\File;
-use Polyglot\Language;
-use Polyglot\Project;
-use Polyglot\Text;
-use Polyglot\Translation;
-use Polyglot\Http\Requests\AddFile;
-use Polyglot\Http\Requests\EditFile;
-use Polyglot\Http\Requests\ImportTranslation;
-use Polyglot\Http\Requests\UploadFile;
+use App\File;
+use App\Language;
+use App\Project;
+use App\Text;
+use App\Translation;
+use App\Http\Requests\AddFile;
+use App\Http\Requests\EditFile;
+use App\Http\Requests\ImportTranslation;
+use App\Http\Requests\UploadFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -57,7 +57,7 @@ class FilesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \Polyglot\File  $file
+     * @param  \App\File  $file
      * @return \Illuminate\Http\Response
      */
     public function edit(File $file)
@@ -70,7 +70,7 @@ class FilesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Polyglot\File  $file
+     * @param  \App\File  $file
      * @return \Illuminate\Http\Response
      */
     public function update(EditFile $request, File $file)
@@ -92,7 +92,7 @@ class FilesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Polyglot\File  $file
+     * @param  \App\File  $file
      * @return \Illuminate\Http\Response
      */
     public function destroy(File $file)
@@ -104,7 +104,7 @@ class FilesController extends Controller
      * Upload the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Polyglot\File  $file
+     * @param  \App\File  $file
      * @return \Illuminate\Http\Response
      */
     public function upload(UploadFile $request, File $file)

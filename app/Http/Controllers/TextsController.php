@@ -1,10 +1,10 @@
 <?php
 
-namespace Polyglot\Http\Controllers;
+namespace App\Http\Controllers;
 
-use Polyglot\Language;
-use Polyglot\Text;
-use Polyglot\Translation;
+use App\Language;
+use App\Text;
+use App\Translation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -78,7 +78,7 @@ class TextsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \Polyglot\Text  $text
+     * @param  \App\Text  $text
      * @return \Illuminate\Http\Response
      */
     public function show(Text $text, Language $lang)
@@ -98,7 +98,7 @@ class TextsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \Polyglot\Text  $text
+     * @param  \App\Text  $text
      * @return \Illuminate\Http\Response
      */
     public function edit(Text $text)
@@ -110,7 +110,7 @@ class TextsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Polyglot\Text  $text
+     * @param  \App\Text  $text
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Text $text)
@@ -121,7 +121,7 @@ class TextsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Polyglot\Text  $text
+     * @param  \App\Text  $text
      * @return \Illuminate\Http\Response
      */
     public function destroy(Text $text)

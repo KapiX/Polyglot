@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use Polyglot\FileTypes\JavaPropertiesFile;
+use App\FileTypes\JavaPropertiesFile;
 use PHPUnit\Framework\TestCase;
 
 class JavaPropertiesFileTest extends TestCase

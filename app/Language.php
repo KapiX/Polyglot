@@ -1,6 +1,6 @@
 <?php
 
-namespace Polyglot;
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,12 +8,12 @@ class Language extends Model
 {
     public function translations()
     {
-        return $this->hasMany('Polyglot\Translation');
+        return $this->hasMany('App\Translation');
     }
 
     public function users()
     {
-        return $this->belongsToMany('Polyglot\User')
+        return $this->belongsToMany('App\User')
             ->withTimestamps();
     }
 }

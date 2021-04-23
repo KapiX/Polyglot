@@ -28,7 +28,7 @@
             "app/Extensions/Twig"
         ],
         "psr-4": {
-            "Polyglot\\": "app/",
+            "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Polyglot;
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,12 +8,12 @@ class Text extends Model
 {
     public function file()
     {
-        return $this->belongsTo('Polyglot\File');
+        return $this->belongsTo('App\File');
     }
 
     public function translations()
     {
-        return $this->hasMany('Polyglot\Translation');
+        return $this->hasMany('App\Translation');
     }
 
     public static function projects($project_id = null)

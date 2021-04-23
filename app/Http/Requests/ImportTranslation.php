@@ -1,9 +1,9 @@
 <?php
 
-namespace Polyglot\Http\Requests;
+namespace App\Http\Requests;
 
-use Polyglot\File;
-use Polyglot\Language;
+use App\File;
+use App\Language;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ImportTranslation extends FormRequest

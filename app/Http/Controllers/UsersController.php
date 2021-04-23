@@ -1,9 +1,9 @@
 <?php
 
-namespace Polyglot\Http\Controllers;
+namespace App\Http\Controllers;
 
-use Polyglot\Language;
-use Polyglot\User;
+use App\Language;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

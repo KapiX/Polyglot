@@ -1,5 +1,5 @@
 <?php
-namespace Polyglot\Extensions\Twig;
+namespace App\Extensions\Twig;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;

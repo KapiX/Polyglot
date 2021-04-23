@@ -1,10 +1,10 @@
 <?php
 
-namespace Polyglot\Http\Controllers;
+namespace App\Http\Controllers;
 
-use Polyglot\Language;
-use Polyglot\User;
-use Polyglot\Http\Requests\EditProfile;
+use App\Language;
+use App\User;
+use App\Http\Requests\EditProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Polyglot\FileTypes;
+namespace App\FileTypes;
 
 class CatkeysFile implements TranslationFile
 {

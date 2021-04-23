@@ -1,6 +1,6 @@
 <?php
 
-namespace Polyglot;
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,12 +8,12 @@ class Translation extends Model
 {
     public function language()
     {
-        return $this->belongsTo('Polyglot\Language');
+        return $this->belongsTo('App\Language');
     }
 
     public function text()
     {
-        return $this->belongsTo('Polyglot\Text');
+        return $this->belongsTo('App\Text');
     }
 
     static public function lastUpdatedAt($file_id, $language_id)
