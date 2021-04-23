@@ -15,12 +15,13 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(Polyglot\User::class, function (Faker $faker) {
-    static $password;
-
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'password' => $password ?: $password = bcrypt('secret'),
+        'provider' => 'github',
+        'provider_id' => 0,
+        'role' => 0,
+        'preferred_languages' => [],
         'remember_token' => Str::random(10),
     ];
 });
