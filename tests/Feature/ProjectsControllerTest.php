@@ -14,7 +14,7 @@ class ProjectsControllerTest extends TestCase
     
     public function testIndexShowsProjectsList()
     {
-        $user = \factory(User::class)->create();
+        $user = User::factory()->create();
         $response = $this->actingAs($user)->get('/projects');
 
         $response->assertStatus(200);
@@ -23,7 +23,7 @@ class ProjectsControllerTest extends TestCase
 
     public function testAddingProjectSetsProjectAdminAndRedirectsToEdit()
     {
-        $user = \factory(User::class)->create();
+        $user = User::factory()->create();
         $user->role = 2;
 
         $name = 'test';
@@ -46,7 +46,7 @@ class ProjectsControllerTest extends TestCase
 
     public function testDeveloperCanAddProjectsAndIsSetAsItsAdmin()
     {
-        $user = \factory(User::class)->create();
+        $user = User::factory()->create();
         $user->role = 1;
 
         $name = 'test';
@@ -69,7 +69,7 @@ class ProjectsControllerTest extends TestCase
 
     public function testRegularUserCannotAddProjects()
     {
-        $user = \factory(User::class)->create();
+        $user = User::factory()->create();
 
         $name = 'test';
 
@@ -90,7 +90,7 @@ class ProjectsControllerTest extends TestCase
     
     public function testAddedProjectHasToHaveAName()
     {
-        $user = \factory(User::class)->create();
+        $user = User::factory()->create();
         $user->role = 2;
 
         $response = $this->actingAs($user)->post('/projects', [
@@ -103,7 +103,7 @@ class ProjectsControllerTest extends TestCase
 
     public function testAddedProjectsNameHasToBeUnique()
     {
-        $user = \factory(User::class)->create();
+        $user = User::factory()->create();
         $user->role = 2;
 
         $name = 'name';
@@ -122,7 +122,7 @@ class ProjectsControllerTest extends TestCase
 
     public function testAddedProjectsNameCannotBeTooLong()
     {
-        $user = \factory(User::class)->create();
+        $user = User::factory()->create();
         $user->role = 2;
 
         $response = $this->actingAs($user)->post('/projects', [

@@ -2,12 +2,16 @@
 
 namespace Polyglot;
 
+use Database\Factories\UserFactory;
+
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -46,5 +50,10 @@ class User extends Authenticatable
     public static function search($query) {
         return self::where('name', 'LIKE', '%' . $query . '%')
             ->orWhere('email', 'LIKE', '%' . $query . '%');
+    }
+
+    protected static function newFactory()
+    {
+        return UserFactory::new();
     }
 }
