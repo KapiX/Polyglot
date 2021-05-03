@@ -7,18 +7,131 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Models\User;
 use App\Models\Project;
+use App\Models\Language;
+use App\Models\File;
+use App\Models\Text;
+use App\Models\Translation;
 
 class ProjectsControllerTest extends TestCase
 {
     use RefreshDatabase;
-    
-    public function testIndexShowsProjectsList()
+
+    public function testProjectsListWorksWithNoProjects()
     {
         $user = User::factory()->create();
         $response = $this->actingAs($user)->get('/projects');
 
-        $response->assertStatus(200);
+        $response->assertSuccessful();
         $response->assertViewIs('projects.index');
+
+        $response->assertSeeText('No projects');
+    }
+    
+    public function testProjectsListWithNoPreferredLanguages()
+    {
+        $user = User::factory()->create();
+        $projects = Project::factory()->count(3)->create();
+
+        $response = $this->actingAs($user)->get('/projects');
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.index');
+
+        $response->assertSeeText($projects[0]->name);
+        $response->assertSeeText($projects[1]->name);
+        $response->assertSeeText($projects[2]->name);
+    }
+
+    public function testProjectsListShowsDefaultIconIfNotProvided()
+    {
+        $user = User::factory()->create();
+        $project = Project::factory()->create();
+
+        $response = $this->actingAs($user)->get('/projects');
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.index');
+
+        $response->assertSeeInOrder(['img src=', 'default-project']);
+    }
+
+    public function testProjectsListShowsEditButtonOnAllProjectsForAdmin()
+    {
+        $user = User::factory()->admin()->create();
+        $projects = Project::factory()->count(3)->create();
+
+        $response = $this->actingAs($user)->get('/projects');
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.index');
+
+        $response->assertSeeInOrder([$projects[0]->name, route('projects.edit', $projects[0]->id), 'Edit']);
+        $response->assertSeeInOrder([$projects[1]->name, route('projects.edit', $projects[1]->id), 'Edit']);
+        $response->assertSeeInOrder([$projects[2]->name, route('projects.edit', $projects[2]->id), 'Edit']);
+    }
+
+    public function testProjectsListShowsEditButtonOnlyOnOwnedProjectsForDeveloper()
+    {
+        $projects = Project::factory()->count(3)->create();
+        $user = User::factory()->developer()
+            ->hasAttached(
+                [$projects[0], $projects[1]],
+                ['role' => 2]
+            )->create();
+
+        $response = $this->actingAs($user)->get('/projects');
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.index');
+
+        $response->assertSeeInOrder([$projects[0]->name, route('projects.edit', $projects[0]->id), 'Edit']);
+        $response->assertSeeInOrder([$projects[1]->name, route('projects.edit', $projects[1]->id), 'Edit']);
+        $response->assertDontSee(route('projects.edit', $projects[2]->id));
+    }
+
+    public function testProjectsListDoesntShowEditButtonsForUsers()
+    {
+        $projects = Project::factory()->count(3)->create();
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get('/projects');
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.index');
+
+        $response->assertDontSee(route('projects.edit', $projects[0]->id));
+        $response->assertDontSee(route('projects.edit', $projects[1]->id));
+        $response->assertDontSee(route('projects.edit', $projects[2]->id));
+    }
+
+    public function testProjectsListHighlightsIncompleteProjectsWithOnePreferredLanguageAndNoTranslations()
+    {
+        $project = Project::factory()->create();
+        $language = Language::factory()->create();
+        $user = User::factory()->preferredLanguages([$language->id])->create();
+        $file = File::factory()->hasTexts(3)->for($project)->create();
+        
+        $response = $this->actingAs($user)->get('/projects');
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.index');
+
+        $response->assertSeeInOrder(['class="warning"', $project->name], false);
+    }
+
+    public function testProjectsListHighlightsIncompleteProjectsWithManyPreferredLanguagesAndNoTranslations()
+    {
+        $project = Project::factory()->create();
+        $language = Language::factory()->count(3)->create();
+        $user = User::factory()->preferredLanguages([$language[0]->id, $language[2]->id])->create();
+        $file = File::factory()->hasTexts(3)->for($project)->create();
+        
+        $response = $this->actingAs($user)->get('/projects');
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.index');
+
+        $response->assertSeeInOrder(['class="warning"', $project->name], false);
     }
 
     public function testAddingProjectSetsProjectAdminAndRedirectsToEdit()
