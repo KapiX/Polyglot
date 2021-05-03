@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Auth;
 class UsersController extends Controller
 {
     const ROLES = [
-        0 => 'User',
-        1 => 'Developer',
-        2 => 'Admin'
+        User::ROLE_USER => 'User',
+        User::ROLE_DEVELOPER => 'Developer',
+        User::ROLE_ADMIN => 'Admin'
     ];
 
     public function __construct()
