@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Text;
@@ -10,6 +11,8 @@ use App\Models\Translation;
 
 class Project extends Model
 {
+    use HasFactory;
+
     const DEFAULT_ICON = 'images/default-project_32.png';
 
     public function files()

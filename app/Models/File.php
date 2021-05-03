@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use \DateTime;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\FileTypes\CatkeysFile;
@@ -11,6 +12,8 @@ use App\FileTypes\LineSeparatedFile;
 
 class File extends Model
 {
+    use HasFactory;
+
     // formats
     const CATKEYS = 1;
     const LINE_SEPARATED = 2;
