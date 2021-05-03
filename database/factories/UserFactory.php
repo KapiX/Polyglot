@@ -17,9 +17,30 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'provider' => 'github',
             'provider_id' => 0,
-            'role' => 0,
+            'role' => User::ROLE_USER,
             'preferred_languages' => [],
             'remember_token' => Str::random(10),
         ];
+    }
+
+    public function admin()
+    {
+        return $this->state([
+            'role' => User::ROLE_ADMIN
+        ]);
+    }
+
+    public function developer()
+    {
+        return $this->state([
+            'role' => User::ROLE_DEVELOPER
+        ]);
+    }
+
+    public function preferredLanguages($languages)
+    {
+        return $this->state([
+            'preferred_languages' => $languages
+        ]);
     }
 }

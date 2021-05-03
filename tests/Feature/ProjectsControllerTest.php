@@ -23,8 +23,7 @@ class ProjectsControllerTest extends TestCase
 
     public function testAddingProjectSetsProjectAdminAndRedirectsToEdit()
     {
-        $user = User::factory()->create();
-        $user->role = 2;
+        $user = User::factory()->admin()->create();
 
         $name = 'test';
 
@@ -46,8 +45,7 @@ class ProjectsControllerTest extends TestCase
 
     public function testDeveloperCanAddProjectsAndIsSetAsItsAdmin()
     {
-        $user = User::factory()->create();
-        $user->role = 1;
+        $user = User::factory()->developer()->create();
 
         $name = 'test';
 
@@ -90,8 +88,7 @@ class ProjectsControllerTest extends TestCase
     
     public function testAddedProjectHasToHaveAName()
     {
-        $user = User::factory()->create();
-        $user->role = 2;
+        $user = User::factory()->admin()->create();
 
         $response = $this->actingAs($user)->post('/projects', [
             'name' => ''
@@ -103,8 +100,7 @@ class ProjectsControllerTest extends TestCase
 
     public function testAddedProjectsNameHasToBeUnique()
     {
-        $user = User::factory()->create();
-        $user->role = 2;
+        $user = User::factory()->admin()->create();
 
         $name = 'name';
 
@@ -122,8 +118,7 @@ class ProjectsControllerTest extends TestCase
 
     public function testAddedProjectsNameCannotBeTooLong()
     {
-        $user = User::factory()->create();
-        $user->role = 2;
+        $user = User::factory()->admin()->create();
 
         $response = $this->actingAs($user)->post('/projects', [
             'name' => str_repeat('a', 512)

@@ -14,8 +14,8 @@ class TextFactory extends Factory
     {
         return [
             'text' => $this->faker->paragraph($this->faker->randomDigitNotZero()),
-            'comment' => $this->faker->boolean(80) ? null : $this->faker->paragraph(1),
-            'context' => $this->faker->randomElement([null, 'a', 'b', 'c']),
+            'comment' => $this->faker->boolean(80) ? '' : $this->faker->paragraph(1),
+            'context' => $this->faker->randomElement(['', 'a', 'b', 'c']),
         ];
     }
 }
