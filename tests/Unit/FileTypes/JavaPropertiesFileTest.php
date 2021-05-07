@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\FileTypes;
 
 use App\FileTypes\JavaPropertiesFile;
 use PHPUnit\Framework\TestCase;

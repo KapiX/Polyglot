@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\FileTypes;
 
 use Tests\TestCase;
 use App\FileTypes\CatkeysFile;
