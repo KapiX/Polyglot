@@ -70,6 +70,28 @@ class TranslationTest extends TestCase
         ]);
     }
 
+    public function testUpdateTranslationPreservesOriginalCreationDate()
+    {
+        $this->translation->translation = 'test';
+        $this->translation->needs_work = 0;
+        $this->translation->save();
+        $updatedAt = $this->translation->updated_at;
+
+        $this->travel(5)->minutes();
+
+        $this->translation->translation = 'test update';
+        $this->translation->save();
+
+        $this->assertDatabaseHas('translations', [
+            'translation' => 'test update'
+        ]);
+        $this->assertDatabaseHas('past_translations', [
+            'translation_id' => $this->translation->id,
+            'translation' => 'test',
+            'created_at' => $updatedAt
+        ]);
+    }
+
     public function testUpdateTranslationPreservesOriginalAuthor()
     {
         $this->translation->translation = 'test';

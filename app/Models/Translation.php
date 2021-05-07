@@ -15,15 +15,15 @@ class Translation extends Model
     static protected function booted()
     {
         static::updating(function($translation) {
-            $originalTranslation = $translation->getOriginal('translation');
-            $originalAuthor = $translation->getOriginal('author_id');
-            if($originalTranslation === $translation->translation) {
-                $translation->author_id = $originalAuthor;
+            $original = $translation->getOriginal();
+            if($original['translation'] === $translation->translation) {
+                $translation->author_id = $original['author_id'];
             } else {
                 $pastTranslation = new PastTranslation;
                 $pastTranslation->translation_id = $translation->id;
-                $pastTranslation->author_id = $originalAuthor;
-                $pastTranslation->translation = $originalTranslation;
+                $pastTranslation->author_id = $original['author_id'];
+                $pastTranslation->translation = $original['translation'];
+                $pastTranslation->created_at = $original['updated_at'];
                 $pastTranslation->save();
             }
         });
