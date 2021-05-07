@@ -6,25 +6,27 @@
 {% block translationEditor %}
 <div class="container-fluid">
     <div class="row">
-        <textarea>${translationCell.html()}</textarea>
-    </div>
-    <div class="row">
-        <small>Press Shift+Enter to enter a newline.</small>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" id="needswork" value="1">
-                    Needs work
-                </label>
+        <div class="form-group">
+            <textarea class="form-control">${translationCell.html()}</textarea>
+            <span class="help-block"><small>Press Shift+Enter to enter a newline.</small></span>
+        </div>
+        <div class="form-group">
+            <div class="btn-group btn-group-justified">
+                <div class="btn-group">
+                    <input class="btn btn-primary" id="save" type="button" value="Save">
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-default" id="needswork">Needs work</button>
+                </div>
+                <div class="btn-group">
+                    <input class="btn btn-danger" id="cancel" type="button" value="Cancel">
+                </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <input class="btn btn-primary" id="save" type="button" value="Save">
-        </div>
-        <div class="col-md-4">
-            <input class="btn" id="cancel" type="button" value="Cancel">
+        <div class="form-group">
+            <ul class="list-group">
+                <li class="list-group-item" id="history">Click to load past translations...</button>
+            </ul>
         </div>
     </div>
 </div>
@@ -36,26 +38,74 @@
 $(document).ready(function() {
     $('tr').click(function trclick() {
         var translationCell = $(this).find('td.translation');
+        var _translationCell = this.querySelector('td.translation');
         var id = $(this).attr('id');
         var lang = $(this).parents('table').attr('id');
         var form = `{{ block('translationEditor') }}`;
         translationCell.addClass('translation-active');
         translationCell.html(form);
-        $(this).removeClass('warning');
         $(this).unbind('click');
         var sendButton = $(translationCell).find('input#save');
         var cancelButton = $(translationCell).find('input#cancel');
-        var needsWorkCheckbox = $(translationCell).find('input#needswork');
         var textarea = $(translationCell).find('textarea');
         var tr = $(this);
+        var _tr = this;
+
+        var historyButton = _translationCell.querySelector('li#history');
+        historyButton.onclick = function() {
+            var list = _translationCell.querySelector('ul.list-group');
+            list.children[0].innerHTML = 'Loading...';
+            fetch('{{ url('/') }}/texts/' + id + '/lang/' + lang + '/history')
+                .then(response => {
+                    if(response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Reponse has wrong status code: ' + response.status);
+                    }
+                })
+                .then(data => {
+                    var content = '';
+                    if(data.length === 0) {
+                        content += '<li class="list-group-item">';
+                        content += '<em>No past translations.</em>';
+                        content += '</li>';
+                    } else {
+                        for(var entry in data) {
+                            content += '<li class="list-group-item">';
+                            content += '<span class="badge">' + (new Date(data[entry].created_at)).toLocaleString() + '</span>';
+                            content += data[entry].translation;
+                            content += '</li>';
+                        }
+                    }
+                    list.innerHTML = content;
+                })
+                .catch((error) => {
+                    list.children[0].innerHTML = error;
+                });
+        }
+
+        var needsWorkButton = _translationCell.querySelector('button#needswork');
+
+        if(_tr.classList.contains('warning')) {
+            needsWorkButton.classList.add('btn-warning');
+        } else {
+            needsWorkButton.classList.remove('btn-warning');
+        }
+
+        needsWorkButton.onclick = function() {
+            _tr.classList.toggle('warning');
+            needsWorkButton.classList.toggle('btn-warning');
+        };
+
         textarea.prop('disabled', true);
         $.ajax({
             type: 'GET',
             dataType: 'json',
             url: '{{ url('/') }}/texts/' + id + '/lang/' + lang,
             success: function (data) {
+                _tr.classList.remove('warning');
+                needsWorkButton.classList.remove('btn-warning');
                 textarea.val(data.translation);
-                needsWorkCheckbox.prop('checked', false);
                 textarea.prop('disabled', false);
                 textarea.focus();
                 textarea.select();
@@ -72,7 +122,11 @@ $(document).ready(function() {
             textarea.prop('disabled', true);
             $.ajax({
                 type: 'POST',
-                data: { '_token': '{{ csrf_token() }}', 'translation': textarea.val(), 'needswork': needsWorkCheckbox.prop('checked') },
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'translation': textarea.val(),
+                    'needswork': _tr.classList.contains('warning')
+                },
                 url: '{{ url('/') }}/texts/' + id + '/lang/' + lang,
                 success: function (data) {
                     if(data.needswork)

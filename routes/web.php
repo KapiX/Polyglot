@@ -65,9 +65,12 @@ Route::post('/files/{file}/lang/{lang}/import', 'FilesController@import')
 Route::get('/texts/{text}/lang/{lang}', 'TextsController@show')
     ->name('texts.show')
     ->middleware('can:translate-text,text,lang');
+Route::get('/texts/{text}/lang/{lang}/history', 'TextsController@history')
+    ->name('texts.history')
+    ->middleware('can:translate-text,text,lang');
 Route::post('/texts/{text}/lang/{lang}', 'TextsController@store')
     ->name('texts.store')
-    ->middleware('can:translate-text,text,lang');
+    ->middleware('can:translate-text,text,lang');    
 
 Route::get('/languages', 'LanguagesController@index')
     ->name('languages.index')

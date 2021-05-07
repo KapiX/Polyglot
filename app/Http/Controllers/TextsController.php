@@ -95,6 +95,18 @@ class TextsController extends Controller
         return \Response::json($response);
     }
 
+    public function history(Text $text, Language $lang)
+    {
+        $translation = $text->translations()->where('language_id', $lang->id)->get();
+        $response = [];
+        if($translation->count() > 0) {
+            $response = $translation->first()->pastTranslations()
+                ->orderBy('id', 'desc')->get(['author_id', 'translation', 'created_at']);
+        }
+
+        return \Response::json($response);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
