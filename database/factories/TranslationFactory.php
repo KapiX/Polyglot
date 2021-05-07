@@ -13,7 +13,8 @@ class TranslationFactory extends Factory
     public function definition()
     {
         return [
-            'text' => $this->faker->paragraph($this->faker->randomDigitNotZero())
+            'translation' => $this->faker->paragraph($this->faker->randomDigitNotZero()),
+            'needs_work' => 0
         ];
     }
 
