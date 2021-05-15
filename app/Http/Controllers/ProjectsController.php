@@ -73,15 +73,9 @@ class ProjectsController extends Controller
      */
     public function show(Project $project, $display = 'active')
     {
-        $languages = Language::orderBy('name')->get()->keyBy('id');
-        // pull the preferred languages to the top
         $preferred_languages = Auth::user()->preferred_languages ?? [];
-        $prepend = [];
-        foreach($preferred_languages as $id) {
-            $prepend[] = $languages->pull($id);
-        }
-        $prepend = collect($prepend)->sortBy('iso_code')->keyBy('id');
-        $languages = $languages->prepend($prepend)->flatten();
+        $languages = Language::allWithPrioritized(
+            $preferred_languages, ['id', 'name', 'iso_code'])->get();
 
         // count progress
         $status = [];
