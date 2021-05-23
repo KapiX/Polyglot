@@ -1,0 +1,37 @@
+{% extends "layouts.master" %}
+
+{% block title %}Glossary - {{ glossary.name }} - Edit entry{% endblock %}
+
+{% block content %}
+<ol class="breadcrumb">
+    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li>{{ link_to_route('glossaries', 'Glossaries') }}</li>
+    <li>{{ link_to_route('glossaries.entries.index', glossary.name, {glossary: glossary.id}) }}</li>
+    <li>{{ entry.text }}</li>
+    <li class="active">Edit</li>
+</ol>
+
+{% if errors.all() %}
+<div class="alert alert-danger" role="alert">
+    {% for error in errors.all() %}
+    <p>{{ error }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+{{ form_open({url: route('glossaries.entries.update', {glossary: glossary.id, entry: entry.id}), method: 'PUT'}) }}
+<div class="row form-group">
+    <div class="col-md-6">
+        {{ form_textarea('text', entry.text, {class: 'form-control', placeholder: 'Text'}) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_textarea('translation', entry.translation, {class: 'form-control', placeholder: 'Translation'}) }}
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-md-12">
+        {{ form_submit('Save', {class: 'btn btn-primary', style: 'width: 100%'}) }}
+    </div>
+</div>
+{{ form_close() }}
+{% endblock %}

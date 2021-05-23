@@ -7,6 +7,8 @@ use App\Models\Language;
 use App\Models\Project;
 use App\Models\Text;
 use App\Models\User;
+use App\Models\GlossaryEntry;
+use App\Policies\GlossaryEntryPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -19,7 +21,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        App\Models\GlossaryEntry::class => App\Policies\GlossaryEntryPolicy::class,
     ];
 
     /**
@@ -81,6 +83,14 @@ class AuthServiceProvider extends ServiceProvider
                 return true;
             }
             return false;
+        });
+
+        Gate::define('modify-glossary', function($user, Language $language) {
+            if($user->role === User::ROLE_ADMIN)
+                return true;
+            
+            $languages = $user->languages->pluck('id')->toArray();
+            return in_array($language->id, $languages);
         });
     }
 }

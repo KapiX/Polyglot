@@ -1,3 +1,16 @@
+table.glossary td.letter {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+table.glossary td.entry {
+    width: 50%;
+}
+
+table.glossary td > form {
+    width: 100px;
+}
+
 td.translation {
     width: 50%;
     cursor: pointer;

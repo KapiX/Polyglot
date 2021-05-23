@@ -100,3 +100,6 @@ Route::get('/login', 'IndexController@login')
     ->name('login');
 Route::get('/logout', 'Auth\LoginController@logout')
     ->name('auth.logout');
+
+Route::get('/glossaries', 'GlossaryEntryController@list')->name('glossaries');
+Route::resource('glossaries.entries', 'GlossaryEntryController')->except(['show']);

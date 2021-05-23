@@ -1,0 +1,48 @@
+{% extends "layouts.master" %}
+
+{% block title %}Glossary - {{ glossary.name }} - Add entries{% endblock %}
+
+{% block content %}
+<ol class="breadcrumb">
+    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li>{{ link_to_route('glossaries', 'Glossaries') }}</li>
+    <li>{{ link_to_route('glossaries.entries.index', glossary.name, {glossary: glossary.id}) }}</li>
+    <li class="active">Add entries</li>
+</ol>
+
+{% if errors.all() %}
+<div class="alert alert-danger" role="alert">
+    {% for error in errors.all() %}
+    <p>{{ error }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+{{ form_open({url: route('glossaries.entries.store', {glossary: glossary.id}), method: 'POST'}) }}
+<div class="row form-group">
+    <div class="col-md-12">
+        <p class="message bg-info text-info">
+            In the text areas below you can input texts with their translations to be added to the glossary.<br>
+            Multiple entries can be added at once, each in their own line. Polyglot will match text in line 1 with translation in line 1, and so on.<br>
+            If the batch contains already existing or duplicated entries it will be rejected as a whole.<br>
+            Any entries where either text or translation is empty will be dropped, with the rest added normally.<br>
+            Only full phrases should be added here, no partial matches.<br>
+            Limit per batch: 500 entries.
+        </p>
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-md-6">
+        {{ form_textarea('text', null, {class: 'form-control', placeholder: 'Texts'}) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_textarea('translation', null, {class: 'form-control', placeholder: 'Translations'}) }}
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-md-12">
+        {{ form_submit('Add', {class: 'btn btn-primary', style: 'width: 100%'}) }}
+    </div>
+</div>
+{{ form_close() }}
+{% endblock %}

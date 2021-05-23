@@ -53,4 +53,14 @@ class User extends Authenticatable
         return self::where('name', 'LIKE', '%' . $query . '%')
             ->orWhere('email', 'LIKE', '%' . $query . '%');
     }
+
+    public function isAdministrator()
+    {
+        return $this->role == self::ROLE_ADMIN;
+    }
+
+    public function isDeveloper()
+    {
+        return $this->role == self::ROLE_DEVELOPER;
+    }
 }

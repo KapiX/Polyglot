@@ -1,0 +1,26 @@
+{% extends "layouts.master" %}
+
+{% block title %}Glossaries{% endblock %}
+
+{% block content %}
+
+<ol class="breadcrumb">
+    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li class="active">Glossaries</li>
+</ol>
+
+<table class="table table-striped">
+<thead>
+    <th colspan="2">Language</th>
+    <th>Entries</th>
+</thead>
+{% for glossary in glossaries if glossary.iso_code != 'en' %}
+<tr>
+    <td class="iso-code"><b>{{ glossary.iso_code }}</b></td>
+    <td>{{ link_to_route('glossaries.entries.index', glossary.name, {glossary: glossary.id}) }}</td>
+    <td>{{ glossary.entries }}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "layouts.master" %}
+
+{% block title %}Glossary - {{ glossary.name }}{% endblock %}
+
+{% block content %}
+<ol class="breadcrumb">
+    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li>{{ link_to_route('glossaries', 'Glossaries') }}</li>
+    {% if not search %}
+        <li class="active">{{ glossary.name }}</li>
+    {% else %}
+        <li>{{ link_to_route('glossaries.entries.index', glossary.name, {glossary: glossary.id}) }}</li>
+        <li class="active">Search: {{ search }}</li>
+    {% endif %}
+</ol>
+
+{% if errors.all() %}
+<div class="alert alert-danger" role="alert">
+    {% for error in errors.all() %}
+    <p>{{ error }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+{% if session('success') %}
+    <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+{% endif %}
+
+{{ form_open({url: route('glossaries.entries.index', {glossary: glossary.id}), method: 'GET'}) }}
+<div class="input-group form-group">
+    {{ form_text('search', search, {class: 'form-control', placeholder: 'Text or translation...'}) }}
+    <span class="input-group-btn">
+        {{ form_submit('Search', {class: 'btn btn-default'}) }}
+    </span>
+</div>
+{{ form_close() }}
+
+<ol class="breadcrumb text-center">
+    {% for l in entries.pluck('letter').unique() %}
+        <li><a href="#letter-{{ l|lower }}">{{ l }}</a></li>
+    {% endfor %}
+</ol>
+
+{% set letter = "" %}
+<table class="table table-striped glossary">
+    <thead>
+    <tr>
+        <th>Text</th>
+        <th>Translation</th>
+        <th>
+            {% if auth_user().can('create', ['App\\Models\\GlossaryEntry']) %}
+                {{ link_to_route('glossaries.entries.create', 'Add', {glossary: glossary.id},
+                    {class: 'btn btn-primary btn-xs' }) }}
+            {% endif %}
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entry in entries %}
+    {% if letter != entry.letter %}
+        {% set letter = entry.letter %}
+        <tr>
+            <td colspan="3" class="letter" id="letter-{{ entry.letter|lower }}">{{ entry.letter }}</td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td class="entry">{{ entry.text }}</td>
+        <td class="entry">{{ entry.translation }}</td>
+        <td>
+            {{ form_open({url: route('glossaries.entries.destroy', {glossary: glossary.id, entry: entry.id}), method: 'DELETE'}) }}
+            {% if auth_user().can('update', [entry]) %}
+                {{ link_to_route('glossaries.entries.edit', 'Edit', {glossary: glossary.id, entry: entry.id},
+                    {class: 'btn btn-default btn-xs' }) }}
+            {% endif %}
+            {% if auth_user().can('delete', [entry]) %}
+                {{ form_submit('Delete', {class: 'btn btn-danger btn-xs'}) }}
+            {% endif %}
+            {{ form_close() }}
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="3"><em>Glossary is empty.</em></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{{ entries.appends({'search': search}).links() | raw }}
+{% endblock %}
