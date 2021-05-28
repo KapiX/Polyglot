@@ -277,8 +277,9 @@ class FilesController extends Controller
             ->with('success', 'Translations uploaded.');
     }
 
-    public function translate(File $file, Language $lang, $type = 'all')
+    public function translate(Request $request, File $file, Language $lang, $type = 'all')
     {
+        $search = $request->input('search');
         $perPage = 30;
         $translationsCount = 0;
         $translations = Text::select('texts.id as text_id', 'file_id', 'text', 'comment', 'context')
@@ -297,6 +298,12 @@ class FilesController extends Controller
             $translations->orderBy('context', 'asc')
                 ->orderBy('text', 'asc');
         }
+        if($search != '' && $type == 'all') {
+            $translations = DB::table($translations)
+                ->where('text', 'LIKE', '%' . $search . '%')
+                ->orWhere('comment', 'LIKE', '%' . $search . '%')
+                ->orWhere('translation', 'LIKE', '%' . $search . '%');
+        }
         if($type == 'continue') {
             $translations = $translations->having('needs_work', 1)
                 ->get();
@@ -308,6 +315,7 @@ class FilesController extends Controller
         $filename = str_replace('%lang%', $lang->iso_code, basename($file->path));
 
         return view('files.translate')
+            ->with('search', $search)
             ->with('perPage', $perPage)
             ->with('type', $type)
             ->with('file', $file)

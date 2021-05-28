@@ -176,9 +176,14 @@ $(document).ready(function() {
     <li>{{ link_to_route('projects.index', 'Home') }}</li>
     <li>{{ html_image(file.project.icon, null, {class: 'breadcrumb-icon'}) }} {{ link_to_route('projects.show', file.project.name, {project: file.project}) }}</li>
     <li>{{ link_to_route('projects.show', file.name, {project: file.project}) }}</li>
-    <li class="active">{{ lang.name }}</li>
-    {% if type == 'continue' %}
-        <li class="active">Continue translation</li>
+    {% if not search %}
+        <li class="active">{{ lang.name }}</li>
+        {% if type == 'continue' %}
+            <li class="active">Continue translation</li>
+        {% endif %}
+    {% else %}
+        <li>{{ link_to_route('files.translate', lang.name, {file: file.id, lang: lang.id}) }}</li>
+        <li class="active">Search: {{ search }}</li>
     {% endif %}
 </ol>
 <div class="container-fluid">
@@ -220,6 +225,16 @@ $(document).ready(function() {
         </div>
     </div>
 </div>
+{% if type == 'all' %}
+{{ form_open({url: route('files.translate', {file: file.id, lang: lang.id}), method: 'GET'}) }}
+<div class="input-group form-group">
+    {{ form_text('search', search, {class: 'form-control', placeholder: 'Text or translation...'}) }}
+    <span class="input-group-btn">
+        {{ form_submit('Search', {class: 'btn btn-default'}) }}
+    </span>
+</div>
+{{ form_close() }}
+{% endif %}
 {% if translations.count() > 0 %}
     {% for context, translationsGrouped in translations.groupBy('context') %}
         <h3>{{ context }}</h3>
@@ -237,6 +252,8 @@ $(document).ready(function() {
     {% else %}
         {{ translations.links() | raw }}
     {% endif %}
+{% elseif search != '' and type == 'all' %}
+<div class="alert alert-warning">No matches.</div>
 {% else %}
 <div class="alert alert-success"><strong>Well done!</strong> Translation complete!</div>
 {% endif %}
