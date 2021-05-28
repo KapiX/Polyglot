@@ -34,8 +34,8 @@
     </div>
 </div>
 {% if projects.count != 0 %}
-{% for chunk in projects.chunk((projects.count() / 2)|round(0, 'ceil')) %}
-<div class="col-md-6">
+{% for chunk in projects.chunk((projects.count() / 3)|round(0, 'ceil')) %}
+<div class="col-md-4">
 <table class="table table-striped">
     <tbody>
     {% for project in chunk %}
