@@ -7,5 +7,26 @@
     <h1>Welcome to Polyglot!</h1>
     <p>We're translating Haiku 3rd-party applications here.</p>
     <p>{{ link_to_route('auth.provider', 'Sign in with GitHub to join', {provider: 'github'}, {'class': 'btn btn-primary btn-lg', 'role': 'button'}) }}</p>
+</div>
+{% for chunk in projects.chunk((projects.count() / 3)|round(0, 'ceil')) %}
+<div class="col-md-4">
+<table class="table">
+    <tbody>
+    {% for project in chunk %}
+    <tr>
+        <td>
+            {{ html_image(project.icon) }}
+            {% if project.url %}
+                <a href="{{ project.url }}">{{ project.name }}</a>
+            {% else %}
+                {{ project.name }}
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endfor %}
 {% endblock %}
 

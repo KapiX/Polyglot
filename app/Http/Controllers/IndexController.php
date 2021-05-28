@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Language;
+use App\Models\Project;
 use App\Models\User;
 use App\Http\Requests\EditProfile;
 use Illuminate\Http\Request;
@@ -11,7 +12,9 @@ use Illuminate\Support\Facades\Auth;
 class IndexController extends Controller
 {
     function index() {
-        return view('index.index');
+        $projects = Project::orderBy('name')->get();
+        return view('index.index')
+            ->with('projects', $projects);
     }
 
     function login() {
