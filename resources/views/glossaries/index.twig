@@ -27,6 +27,11 @@
 
 {{ form_open({url: route('glossaries.entries.index', {glossary: glossary.id}), method: 'GET'}) }}
 <div class="input-group form-group">
+    {% if search != '' %}
+    <span class="input-group-btn">
+        {{ link_to_route('glossaries.entries.index', '&#x2715;', {glossary: glossary.id}, {class: 'btn btn-default'}) }}
+    </span>
+    {% endif %}
     {{ form_text('search', search, {class: 'form-control', placeholder: 'Text or translation...'}) }}
     <span class="input-group-btn">
         {{ form_submit('Search', {class: 'btn btn-default'}) }}

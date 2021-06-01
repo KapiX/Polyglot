@@ -15,6 +15,11 @@
 
 {{ form_open({url: route('users.index'), method: 'GET'}) }}
 <div class="input-group">
+    {% if search != '' %}
+    <span class="input-group-btn">
+        {{ link_to_route('users.index', '&#x2715;', {}, {class: 'btn btn-default'}) }}
+    </span>
+    {% endif %}
     {{ form_text('search', search, {class: 'form-control', placeholder: 'Name or e-mail...'}) }}
     <span class="input-group-btn">
         {{ form_submit('Search', {class: 'btn btn-default'}) }}
@@ -47,6 +52,10 @@
             {{ link_to_route('users.edit', 'Edit', user.id,
                 {class: 'btn btn-default' ~ (user.id == auth_user().id ? ' disabled') }) }}
         </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="4"><em>No users to show.</em></td>
     </tr>
     {% endfor %}
     </tbody>
