@@ -20,7 +20,7 @@ class GlossaryEntryControllerTest extends TestCase
     {
         parent::setUp();
 
-        $names = ['lang-1', 'lang-2', 'lang-3'];
+        $names = ['a-lang-1', 'b-lang-2', 'c-lang-3', 'a-lang-4'];
         $this->languages = [];
         foreach($names as $name) {
             $language = new Language;
@@ -39,9 +39,9 @@ class GlossaryEntryControllerTest extends TestCase
         $response->assertSuccessful();
         $response->assertViewIs('glossaries.list');
 
-        $response->assertSeeText('lang-1');
-        $response->assertSeeText('lang-2');
-        $response->assertSeeText('lang-3');
+        $response->assertSeeTextInOrder([
+            'a-lang-1', 'a-lang-4', 'b-lang-2', 'c-lang-3'
+        ]);
         $response->assertSee('<td>0</td>', false);
     }
 
@@ -68,6 +68,23 @@ class GlossaryEntryControllerTest extends TestCase
             $entries[0]->text,
             $entries[0]->translation,
             'Edit', 'Delete'
+        ]);
+    }
+
+    public function testIndexLotsOfEntries()
+    {
+        $language = $this->languages[0];
+        $user = User::factory()->admin()->create();
+        $entries = GlossaryEntry::factory()->count(1000)->for($language)->create();
+    
+        $response = $this->actingAs($user)->get(
+            route('glossaries.entries.index', [$language->id]));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('glossaries.index');
+
+        $response->assertSeeInOrder([
+            'Add', 'Edit', 'Delete'
         ]);
     }
 
@@ -151,9 +168,13 @@ class GlossaryEntryControllerTest extends TestCase
     {
         $language = $this->languages[0];
         $user = User::factory()->create();
-        $needle = GlossaryEntry::factory()->for($language)->create([
+        GlossaryEntry::factory()->for($language)->create([
             'text' => 'abcdefg',
             'translation' => 'tuvwxyz'
+        ]);
+        GlossaryEntry::factory()->for($language)->create([
+            'text' => 'hijk',
+            'translation' => 'oprs'
         ]);
     
         $response = $this->actingAs($user)->get(
@@ -164,15 +185,21 @@ class GlossaryEntryControllerTest extends TestCase
 
         $response->assertSeeText('abcdefg');
         $response->assertSeeText('tuvwxyz');
+        $response->assertDontSeeText('hijk');
+        $response->assertDontSeeText('oprs');
     }
 
     public function testIndexSearchTranslation()
     {
         $language = $this->languages[0];
         $user = User::factory()->create();
-        $needle = GlossaryEntry::factory()->for($language)->create([
+        GlossaryEntry::factory()->for($language)->create([
             'text' => 'abcdefg',
             'translation' => 'tuvwxyz'
+        ]);
+        GlossaryEntry::factory()->for($language)->create([
+            'text' => 'hijk',
+            'translation' => 'oprs'
         ]);
     
         $response = $this->actingAs($user)->get(
@@ -183,6 +210,8 @@ class GlossaryEntryControllerTest extends TestCase
 
         $response->assertSeeText('abcdefg');
         $response->assertSeeText('tuvwxyz');
+        $response->assertDontSeeText('hijk');
+        $response->assertDontSeeText('oprs');
     }
 
     public function testUpdate()

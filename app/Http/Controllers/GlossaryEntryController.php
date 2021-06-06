@@ -28,7 +28,7 @@ class GlossaryEntryController extends Controller
         $columns = ['id', 'name', 'iso_code'];
         $glossaries = GlossaryEntry::glossaries(
             Language::allWithPrioritized($preferred_languages, $columns),
-            $columns)->get();
+            $columns)->orderBy('name')->get();
 
         return view('glossaries.list')
             ->with('glossaries', $glossaries);
