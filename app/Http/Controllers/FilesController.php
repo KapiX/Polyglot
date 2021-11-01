@@ -325,6 +325,15 @@ class FilesController extends Controller
             ->with('filename', $filename);
     }
 
+    public function pretranslate(File $file, Language $lang)
+    {
+        $translations = Text::pretranslated($file, $lang, false)->get();
+        return view('files.pretranslate')
+            ->with('file', $file)
+            ->with('lang', $lang)
+            ->with('translations', $translations);
+    }
+
     public function export(File $file, Language $lang)
     {
         $catkeys = $file->export($lang);

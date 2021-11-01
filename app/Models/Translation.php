@@ -12,6 +12,8 @@ class Translation extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['text_id', 'language_id', 'author_id', 'translation', 'needs_work'];
+
     static protected function booted()
     {
         static::updating(function($translation) {

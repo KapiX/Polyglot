@@ -1,0 +1,40 @@
+{% extends "layouts.master" %}
+
+{% block title %}{{ file.project.name }} - {{ file.name }} - Edit{% endblock %}
+
+{% block content %}
+<ol class="breadcrumb">
+    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li>{{ html_image(file.project.icon, null, {class: 'breadcrumb-icon'}) }} {{ link_to_route('projects.show', file.project.name, {project: file.project}) }}</li>
+    <li>{{ link_to_route('projects.show', file.name, {project: file.project}) }}</li>
+    <li class="active">{{ lang.name }}</li>
+    <li class="active">Pretranslate</li>
+</ol>
+
+{{ form_open({url: route('texts.bulkTranslate', {lang: lang.id}), method: 'PUT'}) }}
+{{ form_hidden('project', file.project.id) }}
+<table class="table table-striped">
+<thead>
+<tr>
+    <th></th>
+    <th>Context</th>
+    <th>Text</th>
+    <th>Proposed translation</th>
+    <th>Comment</th>
+</tr>
+</thead>
+<tbody>
+{% for translation in translations %}
+<tr>
+    <td><input type="checkbox" name="text-ids[]" value="{{ translation.text_id }}" checked></td>
+    <td style="width:10%">{{ translation.context }}</td>
+    <td style="width:20%">{{ translation.text }}</td>
+    <td>{{ form_textarea('translation-' ~ translation.text_id, translation.translation, {class: 'form-control', style: 'height:4em'}) }}</td>
+    <td style="max-width:20%">{{ translation.comment ?: '<i>None</i>' }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{{ form_submit('Save', {class: 'btn btn-primary btn-block'}) }}
+{{ form_close() }}
+{% endblock %}

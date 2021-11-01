@@ -140,4 +140,40 @@ class TextsController extends Controller
     {
         //
     }
+
+    public function bulkTranslate(Request $request, Language $lang)
+    {
+        $texts = $request->get('text-ids');
+        $affected = 0;
+        foreach($texts as $id) {
+            if(Auth::user()->can('translate-text', [Text::find($id), $lang])) {
+                $translation = $request->get('translation-' . $id);
+                if($translation === '') {
+                    continue;
+                }
+                Translation::updateOrCreate(
+                    ['text_id' => $id, 'language_id' => $lang->id],
+                    ['author_id' => Auth::id(), 'translation' => $translation, 'needs_work' => 0]);
+                $affected++;
+            }
+        }
+        // this endpoint will be used by pretranslate and scripts,
+        // we need to know who made the change, but this is not necessarily a
+        // contribution, so don't add author to contributors list
+        if($request->wantsJson()) {
+            return \Response::json(['status' => 'success', 'affected' => $affected]);
+        } else {
+            $project = $request->get('project');
+            $message = $affected . ' translations created or changed.';
+            if($project !== null) {
+                return redirect()->route('projects.show', [$project])
+                    ->with('success', $message);
+            } else {
+                // all browser requests should have project id included
+                // so this shouldn't ever be executed
+                return redirect()->route('projects.index')
+                    ->with('success', $message);
+            }
+        }
+    }
 }

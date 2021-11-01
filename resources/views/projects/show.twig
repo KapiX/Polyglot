@@ -18,6 +18,9 @@
 {% if session('error') %}
     <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
 {% endif %}
+{% if session('success') %}
+    <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+{% endif %}
 {% set manyFiles = project.files.count() > 4 %}
 {% if project.files.count() > 0 %}
 {% set chunks = project.files.chunk(4) %}
@@ -85,6 +88,7 @@
             <ul class="dropdown-menu">
                 {% if unfinished %}
                     <li>{{ link_to_route('files.translate', allLabel, parameters, {}) }}</li>
+                    <li>{{ link_to_route('files.pretranslate', 'Pretranslate', parameters, {}) }}</li>
                 {% endif %}
                 <li>{{ link_to_route('files.export', 'Export', parameters, {}) }}</li>
             </ul>

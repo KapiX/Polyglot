@@ -54,6 +54,9 @@ Route::post('/files/{file}/upload', 'FilesController@upload')
 Route::get('/files/{file}/lang/{lang}/{type?}', 'FilesController@translate')
     ->where('type', 'all|continue')
     ->name('files.translate');
+Route::get('/files/{file}/lang/{lang}/pretranslate', 'FilesController@pretranslate')
+    ->name('files.pretranslate')
+    ->middleware('can:translate-file,file,lang');
 Route::get('/files/{file}/lang/{lang}/export', 'FilesController@export')
     ->name('files.export');
 Route::get('/files/{file}/export', 'FilesController@exportAll')
@@ -70,7 +73,9 @@ Route::get('/texts/{text}/lang/{lang}/history', 'TextsController@history')
     ->middleware('can:translate-text,text,lang');
 Route::post('/texts/{text}/lang/{lang}', 'TextsController@store')
     ->name('texts.store')
-    ->middleware('can:translate-text,text,lang');    
+    ->middleware('can:translate-text,text,lang');
+Route::put('/texts/lang/{lang}', 'TextsController@bulkTranslate')
+    ->name('texts.bulkTranslate');
 
 Route::get('/languages', 'LanguagesController@index')
     ->name('languages.index')
