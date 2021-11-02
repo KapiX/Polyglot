@@ -8,7 +8,7 @@
     <li>{{ html_image(file.project.icon, null, {class: 'breadcrumb-icon'}) }} {{ link_to_route('projects.show', file.project.name, {project: file.project}) }}</li>
     <li>{{ link_to_route('projects.show', file.name, {project: file.project}) }}</li>
     <li class="active">{{ lang.name }}</li>
-    <li class="active">Pretranslate</li>
+    <li class="active">Pre-translate</li>
 </ol>
 
 {{ form_open({url: route('texts.bulkTranslate', {lang: lang.id}), method: 'PUT'}) }}

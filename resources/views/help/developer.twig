@@ -62,7 +62,8 @@ Strings that aren't in the new <i>en.catkeys</i> anymore get removed (together w
 <p>{{ html_image('images/help/dev-upload-en-catkeys.png', 'Uploading the en.catkeys') }}</p>
 
 <p>After you've uploaded a file, you'll see for all kinds of files:</p>
-<p>{{ html_image('images/help/dev-catkeys-properties.png', 'Uploading the en.catkeys') }}</p>
+
+<p>{{ html_image('images/help/dev-catkeys-properties.png', 'The properties of en.catkeys') }}</p>
 <ul>
 <li><i>Name</i> - the name of the translation module.</li>
 <li><i>Path</i> - the path that'll be used in the ZIP archive that's generated when exporting all languages.</li>
@@ -75,7 +76,7 @@ Strings that aren't in the new <i>en.catkeys</i> anymore get removed (together w
 </ul>
 
 <p>Additionally for line-separated files:</p>
-<p>{{ html_image('images/help/dev-upload-line-separated.png', 'Uploading the line-separated file') }}</p>
+<p>{{ html_image('images/help/dev-line-separated-properties.png', 'The properties of a line-separated file') }}</p>
 <ul>
 <li><i>Extension</i> - the file extension of the uploaded file.</li>
 <li><i>Separator</i> - the characters used to separate translation blocks. Leave empty to use an empty line.</li>
@@ -94,7 +95,7 @@ Strings that aren't in the new <i>en.catkeys</i> anymore get removed (together w
 <p>{{ html_image('images/help/dev-upload-xx-catkeys.png', 'The "Translation" page') }}</p>
 
 <p>At the top, you can now upload the translated file for that language.<br />
-When you read the info box, you see that you now have to un-set the <i>Needs work</i> checkbox and click <i>Save</i> for all strings that didn't need translation, because they are the same as the English original. Depending on the language, this is quite common e.g. for <i>OK</i> buttons or the name of the application.</p>
+When you read the info box, you see that you now have to deactivate the <i>Needs work</i> button and click <i>Save</i> for all strings that didn't need translation, because they are the same as the English original. Depending on the language, this is quite common e.g. for <i>OK</i> buttons or the name of the application.</p>
 
 <p>Uploading translated files has no effect on English original. Changes always go from the original to the translations, never the other way around.<br />
 If the uploaded translated file is outdated and contains additional, now obsolete strings, those strings are simply discarded. Only strings that have the counterpart of their English original in Polyglot's database are imported.</p>
