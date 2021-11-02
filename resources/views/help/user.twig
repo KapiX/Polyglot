@@ -29,8 +29,11 @@ Before you can start translating, an admin has to grant you the necessary permis
 <p>By default, only languages that are being actively translated are listed. If yours isn't among them, it means that nobody has started a translation yet: Click <i>Show all languages</i> to see it.</p>
 
 <p>If the progress of a translation is below 100% the menu <i>Continue</i> beside the progress bar is highlighted blue and a click brings you to a page with all still unfinished text blocks.<br />
-In the menu, the item <i>All text blocks</i> opens that page with all text blocks, the ones already translated and the ones still needing work.<br />
-<i>Export</i> lets you download the catkeys of that particular language, just like <i>Export all</i> at the bottom of the list of languages lets you download the catkeys of all languages. The downloaded file can then be edited in a text editor or <a href="https://depot.haiku-os.org/#!/pkg/catkeyseditor/haikuports/0/1/2/-/3/x86_gcc2">CatKeysEditor</a>, if you prefer that.</p>
+In the menu, the item <i>All blocks</i> opens that page with all text blocks, the ones already translated and the ones still needing work.</p>
+
+<p><i>Pre-translate</i> opens a page with all the text blocks that have been automatically translated according to the <i>Glossaries<i> (see below).</p>
+
+<p><i>Export</i> lets you download the catkeys of that particular language, just like <i>Export languages: all | only completed</i> at the bottom of the list of languages lets you download the catkeys of all languages or just the 100% completed ones (as a ZIP archive). The downloaded file can then be edited in a text editor or <a href="https://depot.haiku-os.org/#!/pkg/catkeyseditor/haikuports/0/1/2/-/3/x86_gcc2">CatKeysEditor</a>, if you prefer that.</p>
 
 <p>You can only edit text blocks for the languages you have permissions for. All others you can only <i>Export</i> or <i>View all</i> the text blocks.</p>
 
@@ -41,13 +44,34 @@ In the menu, the item <i>All text blocks</i> opens that page with all text block
 <p>At the top, you can upload a previously exported and edited catkeys file of your language. Be aware: if the developer has updated the original English catkeys of his project, they take precedence. If it has changed - more or fewer text blocks - only the ones of yours that still match will be imported.<br />
 So everthing's safe, but you may want to prefer leaving the exporting/uploading to the developer and stick to the Polyglot web interface...</p>
 
-<p>Below the catkeys upload, there's a table with all the GUI texts that need localization. Clicking in a row expands it to the editing mode (last row in this example):</p>
+<p>{{ html_image('images/help/user-translation-search.png', 'Search for text in the original or translation') }}</p>
+
+<p>Next is a search bar if you need to find a specific string in either the original or the translation. To get back to the unfiltered list, you have to click the "X" button that appears at the left of the text box when you started your search.</p>
+
+<p>Below the search bar, there's a table with all the GUI texts that need localization. Clicking in a row expands it to the editing mode (last row in this example):</p>
 
 <p>{{ html_image('images/help/user-translation-edit.png', 'A translation block while editing with a legend of its elements') }}</p>
 
-<p>Yet untouched rows are highlighted yellow and have an active checkmark <i>Needs work</i>. As long as it's set, the text isn't counted as being translated and the percentage status won't increase.<br />
-If you are not sure about your translation yet, keep the checkmark set until you are.</p>
-<p>On the other hand: Some texts may be the same in the English original and your language; <i>OK</i> buttons are a good example. <i>Don't forget to go into editing mode and unset the checkmark in that case!</i></p>
+<p>Yet untouched rows are highlighted yellow, and the <i>Needs work</i> button of the editing mode is yellow, too. This means that the text isn't counted as being translated and the percentage status won't increase.<br />
+If you are not sure about your translation yet, keep the <i>Needs work</i> yellow until you are.</p>
+
+<p>On the other hand: Some texts may be the same in the English original and your language; <i>OK</i> buttons are a good example. <i>Don't forget to go into editing mode and click <i>Save</i> in that case!</i></p>
+
+<h2 class="help">Glossaries</h2>
+
+<p>Polyglot 'pre-translates' common strings that are defined in the <i>Glossaries</i>, linked at the top of the page.
+
+<p>{{ html_image('images/help/user-glossaries.png', 'The Glossary for German') }}</p>
+
+<p>Clicking on <i>Add</i> opens a page with one text box for the English original and a second for the translation. You can add several string pairs at the same time, just make sure that each line of English text has a corresponding line with the translated string.<br />
+This 'pre-translation' works only for full phrases, no partial matches.</p>
+
+<p>Choosing <i>Pre-translate</i> for a language of a project instead of <i>Continue</i> or <i>All blocks</i> should be the first thing you do when starting the translation of a project. That way you'll quickly get through the most common strings of many apps. The <i>Pre-translate</i> page:</p>
+
+<p>{{ html_image('images/help/user-pretranslate.png', 'The list of pre-translated strings') }}</p>
+
+<p>Here you can quickly move through the list and correct any flawed proposed translations. If that happens a lot, you may want to edit the Glossary... The <i>Context</i> column shows where in the source these texts are found, and sometimes there's a <i>Comment</i> that provides additional information.<br />
+All entries with a ticked checkbox are committed to the project's database when you finally click the <i>Save</i> button at the bottom.</p>
 
 <h2 class="help">Tips</h2>
 
