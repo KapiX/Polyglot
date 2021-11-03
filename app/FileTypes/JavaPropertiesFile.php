@@ -166,7 +166,7 @@ class JavaPropertiesFile implements TranslationFile
 
     public static function getTypeName() : string
     {
-        return 'Java properties';
+        return '.properties (Java)';
     }
 
     public function matchTranslationsBy(): array
