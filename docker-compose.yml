@@ -1,0 +1,46 @@
+version: '3.9'
+services:
+  db:
+    container_name: mysql
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+    ports:
+      - 3307:3306
+    volumes:
+      - ./docker/testing-db.sql:/docker-entrypoint-initdb.d/testing-db.sql
+      - db-vol:/var/lib/mysql
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+  
+  app:
+    build:
+      args:
+        user: polyglot
+        uid: 1000
+        APACHE_DOCUMENT_ROOT: /var/www/public
+      context: ./docker/php-apache
+      dockerfile: Dockerfile
+    image: php-apache
+    container_name: polyglot-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - db
+
+volumes:
+  db-vol:
