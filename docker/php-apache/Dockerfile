@@ -4,8 +4,9 @@ ARG user
 ARG uid
 ARG APACHE_DOCUMENT_ROOT
 
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y git unzip
 RUN docker-php-ext-install pdo_mysql
+RUN pecl install xdebug && docker-php-ext-enable xdebug
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 

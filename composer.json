@@ -21,7 +21,8 @@
         "filp/whoops": "~2.0",
         "fakerphp/faker": "~1.14",
         "mockery/mockery": "~1.4.0",
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.0",
+        "nunomaduro/collision": "^5.0"
     },
     "autoload": {
         "classmap": [
