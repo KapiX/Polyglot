@@ -17,6 +17,8 @@ services:
     container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin:latest
     restart: always
+    environment:
+      UPLOAD_LIMIT: 200M
     ports:
       - 8080:80
     depends_on:

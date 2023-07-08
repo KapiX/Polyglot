@@ -43,7 +43,11 @@
 				"ryannaddy.laravel-artisan",
 				"EditorConfig.EditorConfig",
 				"ikappas.composer"
-			]
+			],
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "bash",
+				"terminal.integrated.env.linux": {"LC_ALL": "C.UTF-8"}
+			}
 		}
 	}
 }
