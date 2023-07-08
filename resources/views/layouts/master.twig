@@ -3,13 +3,13 @@
     <head>
         <meta charset="utf-8">
         <title>{% block title %}{% endblock %}</title>
-        {% spaceless %}
+        {% apply spaceless %}
         {{ html_favicon('favicon.ico') }}
         {{ html_style('css/bootstrap.min.css') }}
         {{ html_style('css/style.css') }}
         {{ html_script('js/jquery-3.2.1.min.js') }}
         {{ html_script('js/bootstrap.min.js') }}
-        {% endspaceless %}
+        {% endapply %}
         {% block scripts %}{% endblock %}
     </head>
     <body>

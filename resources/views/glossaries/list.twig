@@ -14,7 +14,7 @@
     <th colspan="2">Language</th>
     <th>Entries</th>
 </thead>
-{% for glossary in glossaries if glossary.iso_code != 'en' %}
+{% for glossary in glossaries|filter(g => g.iso_code != 'en') %}
 <tr>
     <td class="iso-code"><b>{{ glossary.iso_code }}</b></td>
     <td>{{ link_to_route('glossaries.entries.index', glossary.name, {glossary: glossary.id}) }}</td>

@@ -4,6 +4,9 @@
     <include>
       <directory suffix=".php">./app</directory>
     </include>
+    <report>
+      <html outputDirectory="tests/Coverage/html"/>
+    </report>
   </coverage>
   <testsuites>
     <testsuite name="Feature">

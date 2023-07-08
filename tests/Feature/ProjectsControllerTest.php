@@ -240,4 +240,18 @@ class ProjectsControllerTest extends TestCase
         $response->assertStatus(302);
         $response->assertSessionHasErrors('name');
     }
+
+    public function testProjectViewWithPreferredLanguage() {
+        $project = Project::factory()->create();
+        $language = Language::factory()->create();
+        $user = User::factory()->preferredLanguages([$language->id])->create();
+        $file = File::factory()->hasTexts(3)->for($project)->create();
+        
+        $response = $this->actingAs($user)->get(route('projects.show', [$project->id]));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.show');
+
+        $response->assertSeeInOrder([$file->name, $language->name], false);
+    }
 }

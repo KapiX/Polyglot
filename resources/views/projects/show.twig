@@ -48,12 +48,12 @@
     {% endfor %}
     {{ _self.fill_table(chunk.count(), 'th') }}
 </tr>
-{% for language in languages
-    if language.iso_code != 'en' and
+{% for language in languages|filter(l =>
+    l.iso_code != 'en' and
         (display == 'active' and (
-            (modifiedKeys[language.id] > 0 and not manyFiles) or
-            language.id in auth_user().preferred_languages))
-        or (display == 'all') %}
+            (modifiedKeys[l.id] > 0 and not manyFiles) or
+            l.id in auth_user().preferred_languages))
+        or (display == 'all')) %}
 <tr>
     <td class="iso-code"><b>{{ language.iso_code }}</b></td>
     <td>{{ language.name }}</td>
