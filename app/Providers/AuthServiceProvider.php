@@ -31,8 +31,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerPolicies();
-
         Gate::define('global-settings', function($user) {
             return $user->role === 2; // global admin
         });

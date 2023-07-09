@@ -14,4 +14,5 @@ yarn-error.log
 /_ide_helper.php
 /.phpstorm.meta.php
 /.phpunit.result.cache
+.phpunit.cache/
 tests/Coverage/
