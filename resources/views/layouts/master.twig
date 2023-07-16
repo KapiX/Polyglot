@@ -4,7 +4,15 @@
         <meta charset="utf-8">
         <title>{% block title %}{% endblock %}</title>
         {% apply spaceless %}
-        {{ html_favicon('favicon.ico') }}
+        <link rel="icon" href="{{ url('images/favicon16.png') }}" sizes="16x16">
+        <link rel="icon" href="{{ url('images/favicon24.png') }}" sizes="24x24">
+        <link rel="icon" href="{{ url('images/favicon32.png') }}" sizes="32x32">
+        <link rel="icon" href="{{ url('images/favicon48.png') }}" sizes="48x48">
+        <link rel="icon" href="{{ url('images/favicon64.png') }}" sizes="64x64">
+        <link rel="icon" href="{{ url('images/favicon96.png') }}" sizes="96x96">
+        <link rel="icon" href="{{ url('images/favicon128.png') }}" sizes="128x128">
+        <link rel="shortcut icon" href="{{ url('images/favicon128.png') }}">
+        <link rel="apple-touch-icon" href="{{ url('images/favicon128.png') }}">
         {{ html_style('css/bootstrap.min.css') }}
         {{ html_style('css/style.css') }}
         {{ html_script('js/jquery-3.2.1.min.js') }}
