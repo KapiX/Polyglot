@@ -99,4 +99,27 @@ class CatkeysFileTest extends TestCase
         $this->instance->setMetaData(CatkeysFile::CHECKSUM, '2518152396');
         $this->assertEquals($expected, $this->instance->assemble($keys));
     }
+
+    public function testAssembleWithEscapingTest()
+    {
+        $keys = [
+            0 => [
+                'text' => 'Quit',
+                'context' => 'MainWindow',
+                'comment' => 'testcomment',
+                'translation' => "\n" . 'Quit'
+            ],
+            1 => [
+                'text' => 'Quit application',
+                'context' => 'MainWindow',
+                'comment' => 'testcomment',
+                'translation' => 'Quit' . "\t" . 'application'
+            ]
+        ];
+        $expected = file_get_contents(self::RESOURCES_DIR . 'escaped.catkeys');
+        $this->instance->setLanguage('English');
+        $this->instance->setMetaData(CatkeysFile::MIME_TYPE, 'application/x-vnd.tipster');
+        $this->instance->setMetaData(CatkeysFile::CHECKSUM, '2518152396');
+        $this->assertEquals($expected, $this->instance->assemble($keys));
+    }
 }

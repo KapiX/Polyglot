@@ -100,7 +100,11 @@ class CatkeysFile implements TranslationFile
     {
         $contents = implode(self::SEPARATOR, ['1', $this->language, $this->mime_type, $this->checksum]) . self::LINE_SEPARATOR;
         foreach($keys as $key) {
-            $contents .= implode(self::SEPARATOR, [$key['text'], $key['context'], $key['comment'], $key['translation']]);
+            $translation = str_replace(
+                [self::LINE_SEPARATOR, self::SEPARATOR],
+                ['\n', '\t'],
+                $key['translation']);
+            $contents .= implode(self::SEPARATOR, [$key['text'], $key['context'], $key['comment'], $translation]);
             $contents .= self::LINE_SEPARATOR;
         }
         return $contents;
