@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Language;
 use App\Models\User;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -53,12 +54,10 @@ class UsersController extends Controller
         $user->role = (integer) $request->input('role')[0];
         $user->save();
 
-        $languages = $request->input('languages');
-        if($languages !== null && count($languages) > 0) {
-            $user->languages()->sync($languages);
-        }
+        $languages = $request->input('languages', []);
+        $user->languages()->sync($languages);
 
-        return \Redirect::route('users.index')
-            ->with('message', 'User data saved.');
+        return redirect()->route('users.index')
+            ->with('success', 'User data saved.');
     }
 }

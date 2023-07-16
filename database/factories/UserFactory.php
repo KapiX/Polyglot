@@ -37,6 +37,13 @@ class UserFactory extends Factory
         ]);
     }
 
+    public function user()
+    {
+        return $this->state([
+            'role' => User::ROLE_USER
+        ]);
+    }
+
     public function preferredLanguages($languages)
     {
         return $this->state([

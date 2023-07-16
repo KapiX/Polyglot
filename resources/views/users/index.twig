@@ -13,6 +13,10 @@
     {% endif %}
 </ol>
 
+{% if session('success') %}
+    <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+{% endif %}
+
 {{ form_open({url: route('users.index'), method: 'GET'}) }}
 <div class="input-group">
     {% if search != '' %}
