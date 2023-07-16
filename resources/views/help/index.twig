@@ -23,4 +23,10 @@
 
 	<li>{{ link_to_route('help', 'For the developers', {article: 'developer'}) }} - How to use Polyglot: add projects, upload and update catkeys, and export the localized results.</li>
 </ol>
+
+{% if hash != '' %}
+<h2>Version</h2>
+
+<p>This instance is running commit {{ hash }}.</p>
+{% endif %}
 {% endblock %}

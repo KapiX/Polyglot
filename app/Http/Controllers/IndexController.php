@@ -29,7 +29,8 @@ class IndexController extends Controller
         ];
         if(!in_array($article, $allowed))
             $article = 'index';
-        return view('help.' . $article);
+        return view('help.' . $article)
+            ->with('hash', $this->getCurrentCommitHash());
     }
 
     function profile() {
@@ -48,5 +49,16 @@ class IndexController extends Controller
         $user->save();
 
         return redirect('profile');
+    }
+
+    private function getCurrentCommitHash() : string {
+        $git = base_path('.git/');
+
+        if(!file_exists($git)) {
+            return '';
+        }
+
+        $head = trim(substr(file_get_contents($git . 'HEAD'), 4));
+        return trim(file_get_contents($git . $head));
     }
 }
