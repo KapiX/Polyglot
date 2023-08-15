@@ -14,6 +14,7 @@
         <link rel="shortcut icon" href="{{ url('images/favicon128.png') }}">
         <link rel="apple-touch-icon" href="{{ url('images/favicon128.png') }}">
         {{ html_style('css/bootstrap.min.css') }}
+        {{ html_style('css/bootstrap.dark.min.css', {'media': '(prefers-color-scheme: dark)'})}}
         {{ html_style('css/style.css') }}
         {{ html_script('js/jquery-3.2.1.min.js') }}
         {{ html_script('js/bootstrap.min.js') }}
@@ -24,7 +25,12 @@
             <nav class="navbar navbar-default navbar-static-top">
                 <div class="container">
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="{{ url('/') }}">{{ html_image('images/Polyglot_40px.png') }}</a>
+                        <a class="navbar-brand" href="{{ url('/') }}">
+                            <picture>
+                                <source srcset="{{ url('images/Polyglot_dark_40px.png') }}" media="(prefers-color-scheme: dark)">
+                                {{ html_image('images/Polyglot_40px.png') }}
+                            </picture>
+                        </a>
                     </div>
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav">
