@@ -4,7 +4,7 @@
 
 {% block content %}
 <ol class="breadcrumb">
-    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li><a href="{{ route('projects.index') }}">Home</a></li>
     <li class="active">Languages</li>
 </ol>
 
@@ -32,23 +32,26 @@
     </thead>
     <tbody>
     <tr>
-        {{ form_open({url: route('languages.store'), method: 'POST'}) }}
-        <td class="iso-code">{{ form_text('iso_code', null, {'class': 'form-control'}) }}</td>
-        <td>{{ form_text('name', null, {'class': 'form-control'}) }}
-        <td>{{ form_text('style_guide_url', null, {'class': 'form-control'}) }}</td>
-        <td>{{ form_text('terminology_url', null, {'class': 'form-control'}) }}</td>
-        <td>{{ form_submit('Add', {'class': 'btn btn-default'}) }}</td>
-        {{ form_close() }}
+        <form action="{{ route('languages.store') }}" method="post">
+        {{ csrf_field() }}
+        <td class="iso-code"><input type="text" name="iso_code" id="iso_code" class="form-control"></td>
+        <td><input type="text" name="name" id="name" class="form-control">
+        <td><input type="text" name="style_guide_url" id="style_guide_url" class="form-control"></td>
+        <td><input type="text" name="terminology_url" id="terminology_url" class="form-control"></td>
+        <td><input type="submit" value="Add" class="btn btn-default"></td>
+        </form>
     </tr>
     {% for language in languages %}
     <tr>
-        {{ form_open({url: route('languages.update', language.id), method: 'PUT'}) }}
-        <td class="iso-code">{{ form_text('iso_code_' ~ language.id, language.iso_code, {'class': 'form-control'}) }}</td>
-        <td>{{ form_text('name_' ~ language.id, language.name, {'class': 'form-control'}) }}</td>
-        <td>{{ form_text('style_guide_url_' ~ language.id, language.style_guide_url, {'class': 'form-control'}) }}</td>
-        <td>{{ form_text('terminology_url_' ~ language.id, language.terminology_url, {'class': 'form-control'}) }}</td>
-        <td>{{ form_submit('Save', {'class': 'btn btn-default'}) }}</td>
-        {{ form_close() }}
+        <form action="{{ route('languages.update', language.id) }}" method="post">
+        {{ method_field('PUT') }}
+        {{ csrf_field() }}
+        <td class="iso-code"><input type="text" name="iso_code_{{ language.id }}" id="iso_code_{{ language.id }}" value="{{ language.iso_code }}" class="form-control"></td>
+        <td><input type="text" name="name_{{ language.id }}" id="name_{{ language.id }}" value="{{ language.name }}" class="form-control"></td>
+        <td><input type="text" name="style_guide_url_{{ language.id }}" id="style_guide_url_{{ language.id }}" value="{{ language.style_guide_url }}" class="form-control"></td>
+        <td><input type="text" name="terminology_url_{{ language.id }}" id="terminology_url_{{ language.id }}" value="{{ language.terminology_url }}" class="form-control"></td>
+        <td><input type="submit" value="Save" class="btn btn-default"></td>
+        </form>
     </tr>
     {% endfor %}
     </tbody>

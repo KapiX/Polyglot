@@ -4,11 +4,11 @@
 
 {% block content %}
 <ol class="breadcrumb">
-    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li><a href="{{ route('projects.index') }}">Home</a></li>
     {% if not search %}
         <li class="active">Users</li>
     {% else %}
-        <li>{{ link_to_route('users.index', 'Users') }}</li>
+        <li><a href="{{ route('users.index') }}">Users</a></li>
         <li class="active">Search: {{ search }}</li>
     {% endif %}
 </ol>
@@ -17,19 +17,20 @@
     <div class="alert alert-success" role="alert">{{ session('success') }}</div>
 {% endif %}
 
-{{ form_open({url: route('users.index'), method: 'GET'}) }}
+<form action="{{ route('users.index') }}" method="get">
 <div class="input-group">
     {% if search != '' %}
     <span class="input-group-btn">
-        {{ link_to_route('users.index', '&#x2715;', {}, {class: 'btn btn-default'}) }}
+        <a href="{{ route('users.index') }}" class="btn btn-default">&#x2715;</a>
     </span>
     {% endif %}
-    {{ form_text('search', search, {class: 'form-control', placeholder: 'Name or e-mail...'}) }}
+    <input type="text" name="search" id="search" value="{{ search }}" class="form-control" placeholder="Name or e-mail...">
+
     <span class="input-group-btn">
-        {{ form_submit('Search', {class: 'btn btn-default'}) }}
+        <input type="submit" value="Search" class="btn btn-default">
     </span>
 </div>
-{{ form_close() }}
+</form>
 
 <table class="table table-striped">
     <thead>
@@ -53,8 +54,7 @@
             {% endfor %}
         </td>
         <td>
-            {{ link_to_route('users.edit', 'Edit', user.id,
-                {class: 'btn btn-default' ~ (user.id == auth_user().id ? ' disabled') }) }}
+            <a href="{{ route('users.edit', user.id) }}" class="btn btn-default {{ user.id == auth_user().id ? 'disabled' }}">Edit</a>
         </td>
     </tr>
     {% else %}

@@ -4,9 +4,9 @@
 
 {% block content %}
 <ol class="breadcrumb">
-    <li>{{ link_to_route('projects.index', 'Home') }}</li>
-    <li>{{ html_image(file.project.icon, null, {class: 'breadcrumb-icon'}) }} {{ link_to_route('projects.show', file.project.name, {project: file.project}) }}</li>
-    <li>{{ link_to_route('projects.show', file.name, {project: file.project}) }}</li>
+    <li><a href="{{ route('projects.index') }}">Home</a></li>
+    <li><img src="{{ asset(file.project.icon) }}" class="breadcrumb-icon"> <a href="{{ route('projects.show', {project: file.project}) }}">{{ file.project.name }}</a></li>
+    <li><a href="{{ route('projects.show', {project: file.project}) }}">{{ file.name }}</a></li>
     <li class="active">Edit</li>
 </ol>
 
@@ -26,38 +26,40 @@
                     <p class="message bg-info text-info">
                         When an updated {{ filename }}.{{ fileInstance.getExtension() }} file is uploaded, the unchanged strings are kept in the database (along with their translations) and all new strings are added (with no translations yet, of course). Strings that aren't in the new {{ filename }}.{{ fileInstance.getExtension() }} anymore get removed (together with all their attached translations: just fixing a typo is then very costly, because the whole string has to be re-translated!).
                     </p>
-                    {{ form_open({url: route('files.upload', {file: file.id}), method: POST, files: true}) }}
+                    <form action="{{ route('files.upload', {file: file.id}) }}" method="post" enctype="multipart/form-data">
+                    {{ csrf_field() }}
                     <div class="form-group {{ errors.has('catkeys') ? ' has-error' }}">
                         <div class="input-group">
-                            {{ form_file('catkeys', {class: 'form-control'}) }}
+                            <input type="file" name="catkeys" id="catkeys" class="form-control">
                             <span class="input-group-btn">
-                                {{ form_submit('Upload', {class: 'btn btn-primary'}) }}
+                                <input type="submit" value="Upload" class="btn btn-primary">
                             </span>
                         </div>
                         {% for error in errors.get('catkeys') %}
                             <span class="help-block">{{ error }}</span>
                         {% endfor %}
                     </div>
-                    {{ form_close() }}
+                    </form>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            {{ form_open({url: route('files.update', file.id), method: 'PUT'},
-                {class: 'form-horizontal'}) }}
+            <form action="{{ route('files.update', file.id) }}" method="post">
+            {{ method_field('PUT') }}
+            {{ csrf_field() }}
             <div class="panel panel-default">
                 <div class="panel-heading">{{ fileInstance.getTypeName() }} properties</div>
                 <div class="panel-body">
                     <div class="form-group {{ errors.has('name') ? ' has-error' }}">
-                        {{ form_label('name', 'Name') }}
-                        {{ form_text('name', file.name, {class: 'form-control'}) }}
+                        <label for="name">Name</label>
+                        <input type="text" name="name" id="name" value="{{ file.name }}" class="form-control">
                         {% for error in errors.get('name') %}
                             <span class="help-block">{{ error }}</span>
                         {% endfor %}
                     </div>
                     <div class="form-group {{ errors.has('path') ? ' has-error' }}">
-                        {{ form_label('path', 'Path') }}
-                        {{ form_text('path', file.path, {class: 'form-control'}) }}
+                        <label for="path">Path</label>
+                        <input type="text" name="path" id="path" value="{{ file.path }}" class="form-control">
                         {% for error in errors.get('path') %}
                             <span class="help-block">{{ error }}</span>
                         {% endfor %}
@@ -65,22 +67,16 @@
                     </div>
                     {% for prop, data in file.metadata %}
                     <div class="form-group">
-                        {{ form_label(prop, fileInstance.getLabelForMetaData(prop)) }}
-                        {% if prop in fileInstance.editableMetaData() %}
-                            {{ form_text(prop, data, {class: 'form-control'}) }}
-                        {% else %}
-                            {{ form_text(prop, data, {class: 'form-control', disabled: ''}) }}
-                        {% endif %}
+                        <label for="{{ prop }}">{{ fileInstance.getLabelForMetaData(prop) }}</label>
+                        <input type="text" name="{{ prop }}" id="{{ prop }}" value="{{ data }}" class="form-control"{{ not (prop in fileInstance.editableMetaData()) ? ' disabled' }}>
                     </div>
                     {% endfor %}
-                    <div class="form-group">
-                    </div>
                 </div>
                 <div class="panel-footer">
-                    {{ form_submit('Save', {class: 'btn btn-primary btn-block'}) }}
+                    <input type="submit" value="Save" class="btn btn-primary btn-block">
                 </div>
             </div>
-            {{ form_close() }}
+            </form>
         </div>
     </div>
 </div>

@@ -11,8 +11,8 @@
     {% endif %}
 {% endmacro %}
 <ol class="breadcrumb">
-    <li>{{ link_to_route('projects.index', 'Home') }}</li>
-    <li>{{ html_image(project.icon, null, {class: 'breadcrumb-icon'}) }} {{ link_to_route('projects.show', project.name, {project: project}) }}</li>
+    <li><a href="{{ route('projects.index') }}">Home</a></li>
+    <li><img src="{{ asset(project.icon) }}" class="breadcrumb-icon"> <a href="{{ route('projects.show', {project: project}) }}">{{ project.name }}</a></li>
     <li class="active">Translation modules</li>
 </ol>
 {% if session('error') %}
@@ -30,9 +30,9 @@
 <tr>
     <th colspan="2">
         {% if loop.first %}
-        {% set label = 'Show ' ~ (display == 'all' ? 'only ' ~ (manyFiles ? 'preferred' : 'active') : 'all') ~ ' languages' %}
-        {{ link_to_route('projects.show', label,
-            { 'project': project.id, 'display': display == 'active' ? 'all' : '' }) }}
+        <a href="{{ route('projects.show', { 'project': project.id, 'display': display == 'active' ? 'all' : '' }) }}">
+            Show {{ (display == 'all' ? 'only ' ~ (manyFiles ? 'preferred' : 'active') : 'all') }} languages
+        </a>
         {% endif %}
     </th>
     {% for file in chunk %}
@@ -41,7 +41,7 @@
             {{ file.name }}
         </span>
         {% if auth_user().can('modify-file', file) %}
-            {{ link_to_route('files.edit', 'Edit', file.id, {}) }}
+            <a href="{{ route('files.edit', file.id) }}">Edit</a>
         {% endif %}
         <br>
     </th>
@@ -77,20 +77,18 @@
             {% set parameters = {file: file.id, lang: language.id} %}
             {% set unfinished = canTranslate and lang_stat['translated'] < 100 %}
             {% set buttonClass = unfinished ? 'btn-primary' : 'btn-default' %}
-            {{ link_to_route('files.translate',
-                unfinished ? continueLabel : allLabel,
-                unfinished ? parameters|merge({type: 'continue'}) : parameters,
-                {class: 'btn btn-xs ' ~ buttonClass}) }}
+            <a href="{{ route('files.translate', unfinished ? parameters|merge({type: 'continue'}) : parameters) }}"
+                class="btn btn-xs {{ buttonClass }}">{{ unfinished ? continueLabel : allLabel }}</a>
             <a href="#" class="btn {{ buttonClass }} btn-xs dropdown-toggle" data-toggle="dropdown">
                 <span class="caret"></span>
                 <span class="sr-only">Toggle dropdown</span>
             </a>
             <ul class="dropdown-menu">
                 {% if unfinished %}
-                    <li>{{ link_to_route('files.translate', allLabel, parameters, {}) }}</li>
-                    <li>{{ link_to_route('files.pretranslate', 'Pre-translate', parameters, {}) }}</li>
+                    <li><a href="{{ route('files.translate', parameters) }}">{{ allLabel }}</a></li>
+                    <li><a href="{{ route('files.pretranslate', parameters) }}">Pre-translate</a></li>
                 {% endif %}
-                <li>{{ link_to_route('files.export', 'Export', parameters, {}) }}</li>
+                <li><a href="{{ route('files.export', parameters) }}">Export</a></li>
             </ul>
         </div>
     </td>
@@ -100,12 +98,12 @@
 {% endfor %}
 <tr>
     <td colspan="2">Export languages:
-        {{ link_to_route('projects.export', 'all', {'project': project.id, 'status': 'all'}) }} |
-        {{ link_to_route('projects.export', 'only completed', {'project': project.id, 'status': 'complete'}) }}
+        <a href="{{ route('projects.export', {project: project.id, status: 'all'}) }}">all</a> |
+        <a href="{{ route('projects.export', {project: project.id, status: 'complete'}) }}">only completed</a>
     </td>
     {% for file in chunk %}
     <td>
-        {{ link_to_route('files.exportAll', 'Export file', file.id, {}) }}
+        <a href="{{ route('files.exportAll', file.id) }}">Export file</a>
     </td>
     {% endfor %}
     {{ _self.fill_table(chunk.count()) }}
@@ -164,14 +162,18 @@
 Some apps generate several catkeys files, one for each "module" of the software, like for the main "Application", a "Preference" panel, a "Library" or "Tracker-addon" it comes with.<br />
 Here you can add those different translation modules and their catkeys (or Java properties or general line-separated files). Normal "single-catkeys" projects should be named simply "Application" for consistency.
 </p>
-{{ form_open({url: route('files.store', {project: project.id}), method: POST}) }}
+<form action="{{ route('files.store', {project: project.id}) }}" method="post">
+{{ csrf_field() }}
 <div class="input-group">
-    {{ form_text('name', null, {'placeholder': 'Module name', 'class': 'form-control'}) }}
+    <input type="text" name="name" id="name" class="form-control" placeholder="Module name">
     <span class="input-group-btn">
-        {{ form_submit('Add', {'class': 'btn btn-primary'}) }}
+        <input type="submit" value="Add" class="btn btn-primary">
     </span>
 </div>
-{{ form_select('type', file_types, 1,
-    {class: 'form-control', name: 'type[]'}) }}
-{{ form_close() }}
+<select class="form-control" name="type[]" id="type">
+    {% for id, name in file_types %}
+        <option value="{{ id }}"{{ id == 1 ? ' selected' }}>{{ name }}</option>
+    {% endfor %}
+    </select>
+</form>
 {% endblock %}

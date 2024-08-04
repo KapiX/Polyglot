@@ -4,27 +4,28 @@
 
 {% block content %}
 <ol class="breadcrumb">
-    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li><a href="{{ route('projects.index') }}">Home</a></li>
     <li class="active">Projects</li>
 </ol>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-6 col-md-push-6">
             {% if auth_user().can('add-project') %}
-            {{ form_open({url: route('projects.store'), method: POST}) }}
+            <form action="{{ route('projects.store') }}" method="post">
+            {{ csrf_field() }}
             <div class="form-group {{ errors.has('name') ? ' has-error' }}">
-                {{ form_label('name', 'Add project') }}
+                <label for="name">Add project</label>
                 <div class="input-group">
-                    {{ form_text('name', null, {placeholder: 'Name', class: 'form-control'}) }}
+                    <input type="text" name="name" placeholder="Name" class="form-control">
                     <span class="input-group-btn">
-                        {{ form_submit('Add', {class: 'btn btn-primary'}) }}
+                        <input type="submit" class="btn btn-primary" value="Add">
                     </span>
                 </div>
                 {% for error in errors.get('name') %}
                     <span class="help-block">{{ error }}</span>
                 {% endfor %}
             </div>
-            {{ form_close() }}
+            </form>
             {% endif %}
         </div>
         <div class="col-md-6 col-md-pull-6">
@@ -41,8 +42,8 @@
     {% for project in chunk %}
     <tr{{ project_needs_work ? (project_needs_work[project.id] == 1 ? ' class="warning"') }}>
         <td class="project">
-            {{ html_image(project.icon) }}
-            {{ link_to_route('projects.show', project.name, project.id, {}) }}
+            <img src="{{ asset(project.icon) }}">
+            <a href="{{ route('projects.show', project.id) }}">{{ project.name }}</a>
             {% if project.url %}
                 <a href="{{ project.url }}" title="Website">
                     <span class="glyphicon glyphicon-globe" aria-hidden="true"></span></a>
@@ -61,8 +62,7 @@
         </td>
         <td>
             {% if auth_user().can('modify-project', project) %}
-                {{ link_to_route('projects.edit', 'Edit', project.id,
-                    {class: 'btn btn-default'}) }}
+                <a href="{{ route('projects.edit', project.id) }}" class="btn btn-default">Edit</a>
             {% endif %}
         </td>
     </tr>

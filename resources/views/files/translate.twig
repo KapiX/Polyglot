@@ -173,16 +173,16 @@ $(document).ready(function() {
 
 {% block content %}
 <ol class="breadcrumb">
-    <li>{{ link_to_route('projects.index', 'Home') }}</li>
-    <li>{{ html_image(file.project.icon, null, {class: 'breadcrumb-icon'}) }} {{ link_to_route('projects.show', file.project.name, {project: file.project}) }}</li>
-    <li>{{ link_to_route('projects.show', file.name, {project: file.project}) }}</li>
+    <li><a href="{{ route('projects.index') }}">Home</a></li>
+    <li><img src="{{ asset(file.project.icon) }}" class="breadcrumb-icon"> <a href="{{ route('projects.show', {project: file.project}) }}">{{ file.project.name }}</a></li>
+    <li><a href="{{ route('projects.show', {project: file.project}) }}">{{ file.name }}</a></li>
     {% if not search %}
         <li class="active">{{ lang.name }}</li>
         {% if type == 'continue' %}
             <li class="active">Continue translation</li>
         {% endif %}
     {% else %}
-        <li>{{ link_to_route('files.translate', lang.name, {file: file.id, lang: lang.id}) }}</li>
+        <li><a href="{{ route('files.translate', {file: file.id, lang: lang.id}) }}">{{ lang.name }}</a></li>
         <li class="active">Search: {{ search }}</li>
     {% endif %}
 </ol>
@@ -196,20 +196,21 @@ $(document).ready(function() {
     <div class="row">
         <div class="col-md-6 col-md-push-6">
             {% if canTranslate %}
-            {{ form_open({url: route('files.import', {file: file.id, lang: lang.id}), method: POST, files: true, 'id': 'upload-form'}) }}
+            <form action="{{ route('files.import', {file: file.id, lang: lang.id}) }}" id="upload-form" method="post" enctype="multipart/form-data">
+            {{ csrf_field() }}
             <div class="form-group {{ errors.has('catkeys') ? ' has-error' }}">
-                {{ form_label('catkeys', 'Upload ' ~ filename ~ '.' ~ file.getFileInstance().getExtension()) }}
+                <label for="catkeys">Upload {{ filename }}.{{ file.getFileInstance().getExtension() }}</label>
                 <div class="input-group">
-                    {{ form_file('catkeys', {class: 'form-control'}) }}
+                    <input type="file" name="catkeys" id="catkeys" class="form-control">
                     <span class="input-group-btn">
-                        {{ form_submit('Upload', {class: 'btn btn-primary'}) }}
+                        <input type="submit" value="Upload" class="btn btn-primary">
                     </span>
                 </div>
                 {% for error in errors.get('catkeys') %}
                     <span class="help-block">{{ error }}</span>
                 {% endfor %}
             </div>
-            {{ form_close() }}
+            </form>
             {% endif %}
             {% if lang.style_guide_url or lang.terminology_url %}
                 <p>Remember to
@@ -226,19 +227,19 @@ $(document).ready(function() {
     </div>
 </div>
 {% if type == 'all' %}
-{{ form_open({url: route('files.translate', {file: file.id, lang: lang.id}), method: 'GET'}) }}
+<form action="{{ route('files.translate', {file: file.id, lang: lang.id}) }}" method="get">
 <div class="input-group form-group">
     {% if search != '' %}
     <span class="input-group-btn">
-        {{ link_to_route('files.translate', '&#x2715;', {file: file.id, lang: lang.id}, {class: 'btn btn-default'}) }}
+        <a href="{{ route('files.translate', {file: file.id, lang: lang.id}) }}" class="btn btn-default">&#x2715;</a>
     </span>
     {% endif %}
-    {{ form_text('search', search, {class: 'form-control', placeholder: 'Text or translation...'}) }}
+    <input type="text" name="search" id="search" value="{{ search }}" class="form-control">
     <span class="input-group-btn">
-        {{ form_submit('Search', {class: 'btn btn-default'}) }}
+        <input type="submit" value="Search" class="btn btn-default">
     </span>
 </div>
-{{ form_close() }}
+</form>
 {% endif %}
 {% if translations.count() > 0 %}
     {% for context, translationsGrouped in translations.groupBy('context') %}

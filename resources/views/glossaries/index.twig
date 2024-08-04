@@ -4,12 +4,12 @@
 
 {% block content %}
 <ol class="breadcrumb">
-    <li>{{ link_to_route('projects.index', 'Home') }}</li>
-    <li>{{ link_to_route('glossaries', 'Glossaries') }}</li>
+    <li><a href="{{ route('projects.index') }}">Home</a></li>
+    <li><a href="{{ route('glossaries') }}">Glossaries</a></li>
     {% if not search %}
         <li class="active">{{ glossary.name }}</li>
     {% else %}
-        <li>{{ link_to_route('glossaries.entries.index', glossary.name, {glossary: glossary.id}) }}</li>
+        <li><a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}">{{ glossary.name }}</a></li>
         <li class="active">Search: {{ search }}</li>
     {% endif %}
 </ol>
@@ -25,19 +25,19 @@
     <div class="alert alert-success" role="alert">{{ session('success') }}</div>
 {% endif %}
 
-{{ form_open({url: route('glossaries.entries.index', {glossary: glossary.id}), method: 'GET'}) }}
+<form action="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}" method="get">
 <div class="input-group form-group">
     {% if search != '' %}
     <span class="input-group-btn">
-        {{ link_to_route('glossaries.entries.index', '&#x2715;', {glossary: glossary.id}, {class: 'btn btn-default'}) }}
+        <a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}" class="btn btn-default">&#x2715;</a>
     </span>
     {% endif %}
-    {{ form_text('search', search, {class: 'form-control', placeholder: 'Text or translation...'}) }}
+    <input type="text" name="search" id="search" value="{{ search }}" class="form-control">
     <span class="input-group-btn">
-        {{ form_submit('Search', {class: 'btn btn-default'}) }}
+        <input type="submit" value="Search" class="btn btn-default">
     </span>
 </div>
-{{ form_close() }}
+</form>
 
 <ol class="breadcrumb text-center">
     {% for l in entries.pluck('letter').unique() %}
@@ -53,8 +53,7 @@
         <th>Translation</th>
         <th>
             {% if auth_user().can('create', ['App\\Models\\GlossaryEntry']) %}
-                {{ link_to_route('glossaries.entries.create', 'Add', {glossary: glossary.id},
-                    {class: 'btn btn-primary btn-xs' }) }}
+                <a href="{{ route('glossaries.entries.create', {glossary: glossary.id}) }}" class="btn btn-primary btn-xs">Add</a>
             {% endif %}
         </th>
     </tr>
@@ -71,15 +70,16 @@
         <td class="entry">{{ entry.text }}</td>
         <td class="entry">{{ entry.translation }}</td>
         <td>
-            {{ form_open({url: route('glossaries.entries.destroy', {glossary: glossary.id, entry: entry.id}), method: 'DELETE'}) }}
+            <form action="{{ route('glossaries.entries.destroy', {glossary: glossary.id, entry: entry.id}) }}" method="post">
+            {{ method_field('DELETE') }}
+            {{ csrf_field() }}
             {% if auth_user().can('update', [entry]) %}
-                {{ link_to_route('glossaries.entries.edit', 'Edit', {glossary: glossary.id, entry: entry.id},
-                    {class: 'btn btn-default btn-xs' }) }}
+                <a href="{{ route('glossaries.entries.edit', {glossary: glossary.id, entry: entry.id}) }}" class="btn btn-default btn-xs">Edit</a>
             {% endif %}
             {% if auth_user().can('delete', [entry]) %}
-                {{ form_submit('Delete', {class: 'btn btn-danger btn-xs'}) }}
+                <input type="submit" value="Delete" class="btn btn-danger btn-xs">
             {% endif %}
-            {{ form_close() }}
+            </form>
         </td>
     </tr>
     {% else %}

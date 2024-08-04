@@ -4,32 +4,36 @@
 
 {% block content %}
 <ol class="breadcrumb">
-    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li><a href="{{ route('projects.index') }}">Home</a></li>
     <li class="active">Edit profile</li>
 </ol>
-{{ form_open({url: route('profile.update'), method: 'PUT'},
-    {class: 'form-horizontal'}) }}
+<form action="{{ route('profile.update') }}" method="post">
+{{ method_field('PUT') }}
+{{ csrf_field() }}
 <div class="form-group{{ errors.has('name') ? ' has-error' }}">
-    {{ form_label('name', 'Name', {class: 'control-label'}) }}
-    {{ form_text('name', user.name, {class: 'form-control'}) }}
+    <label for="name" class="control-label">Name</label>
+    <input type="text" name="name" id="name" value="{{ user.name }}" class="form-control">
     {% for error in errors.get('name') %}
         <span class="help-block">{{ error }}</span>
     {% endfor %}
 </div>
 <div class="form-group{{ errors.has('email') ? ' has-error' }}">
-    {{ form_label('email', 'E-mail', {class: 'control-label'}) }}
-    {{ form_text('email', user.email, {class: 'form-control'}) }}
+    <label for="email" class="control-label">E-mail</label>
+    <input type="text" name="email" id="email" value="{{ user.email }}" class="form-control">
     {% for error in errors.get('email') %}
         <span class="help-block">{{ error }}</span>
     {% endfor %}
 </div>
 <div class="form-group">
-    {{ form_label('languages', 'Preferred languages') }}
-    {{ form_select('languages', languages, user.preferred_languages,
-        {class: 'form-control', multiple: 'multiple', name: 'languages[]'}) }}
+    <label for="languages">Preferred languages</label>
+    <select multiple="multiple" class="form-control" name="languages[]" id="languages">
+    {% for id, name in languages %}
+        <option value="{{ id }}"{{ id in user.preferred_languages ? ' selected' }}>{{ name }}</option>
+    {% endfor %}
+    </select>
 </div>
 <div class="form-group">
-    {{ form_submit('Save', {class: 'btn btn-default'}) }}
+    <input type="submit" value="Save" class="btn btn-default">
 </div>
-{{ form_close() }}
+</form>
 {% endblock %}

@@ -5,7 +5,7 @@
 {% block content %}
 
 <ol class="breadcrumb">
-    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li><a href="{{ route('projects.index') }}">Home</a></li>
     <li class="active">Glossaries</li>
 </ol>
 
@@ -17,7 +17,7 @@
 {% for glossary in glossaries|filter(g => g.iso_code != 'en') %}
 <tr>
     <td class="iso-code"><b>{{ glossary.iso_code }}</b></td>
-    <td>{{ link_to_route('glossaries.entries.index', glossary.name, {glossary: glossary.id}) }}</td>
+    <td><a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}">{{ glossary.name }}</a></td>
     <td>{{ glossary.entries }}</td>
 </tr>
 {% endfor %}

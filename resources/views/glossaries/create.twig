@@ -4,9 +4,9 @@
 
 {% block content %}
 <ol class="breadcrumb">
-    <li>{{ link_to_route('projects.index', 'Home') }}</li>
-    <li>{{ link_to_route('glossaries', 'Glossaries') }}</li>
-    <li>{{ link_to_route('glossaries.entries.index', glossary.name, {glossary: glossary.id}) }}</li>
+    <li><a href="{{ route('projects.index') }}">Home</a></li>
+    <li><a href="{{ route('glossaries') }}">Glossaries</a></li>
+    <li><a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}">{{ glossary.name }}</a></li>
     <li class="active">Add entries</li>
 </ol>
 
@@ -18,7 +18,8 @@
 </div>
 {% endif %}
 
-{{ form_open({url: route('glossaries.entries.store', {glossary: glossary.id}), method: 'POST'}) }}
+<form action="{{ route('glossaries.entries.store', {glossary: glossary.id}) }}" method="post">
+{{ csrf_field() }}
 <div class="row form-group">
     <div class="col-md-12">
         <p class="message bg-info text-info">
@@ -33,16 +34,16 @@
 </div>
 <div class="row form-group">
     <div class="col-md-6">
-        {{ form_textarea('text', null, {class: 'form-control', placeholder: 'Texts'}) }}
+        <textarea name="text" id="text" class="form-control" placeholder="Texts"></textarea>
     </div>
     <div class="col-md-6">
-        {{ form_textarea('translation', null, {class: 'form-control', placeholder: 'Translations'}) }}
+        <textarea name="translation" id="translation" class="form-control" placeholder="Translations"></textarea>
     </div>
 </div>
 <div class="row form-group">
     <div class="col-md-12">
-        {{ form_submit('Add', {class: 'btn btn-primary', style: 'width: 100%'}) }}
+        <input type="submit" value="Add" class="btn btn-primary" style="width: 100%">
     </div>
 </div>
-{{ form_close() }}
+</form>
 {% endblock %}

@@ -4,15 +4,15 @@
 
 {% block content %}
 <ol class="breadcrumb">
-    <li>{{ link_to_route('projects.index', 'Home') }}</li>
-    <li>{{ link_to_route('help', 'Help') }}</li>
+    <li><a href="{{ route('projects.index') }}">Home</a></li>
+    <li><a href="{{ route('help') }}">Help</a></li>
     <li class="active">Translators</li>
 </ol>
 
 <p>For translators, Polyglot should be pretty much self-explanatory with only very few things that need explaining.<br />
 Before you can start translating, an admin has to grant you the necessary permissions. Please see the Haiku forum post <a href="https://discuss.haiku-os.org/t/help-translating-applications-with-polyglot">Help translating applications with Polyglot</a>.</p>
 
-<p>{{ html_image('images/help/user-startpage.png', 'The start page with a list of all projects') }}</p>
+<p><img src="{{ asset('images/help/user-startpage.png') }}" alt="The start page with a list of all projects"></p>
 
 <p>After logging into Polyglot, the start page shows a list of all the hosted projects. After a project's name you may see a globe symbol, linking the it's website and a sheet icon linking to its bugtracker. Some developers also include the date of the next planned release, so translators can cram to get in their translations in time.</p>
 
@@ -20,7 +20,7 @@ Before you can start translating, an admin has to grant you the necessary permis
 
 <p>Click on a project to go to its translation page:</p>
 
-<p>{{ html_image('images/help/user-project-files.png', 'The "Translation modules" page of a project, with the status of all translations') }}</p>
+<p><img src="{{ asset('images/help/user-project-files.png') }}" alt="The &quot;Translation modules&quot; page of a project, with the status of all translations"></p>
 
 <p>Most projects have only one <i>Translation module</i> (one "catkeys" file) per language, i.e. there's only one column with the language progress for the main application. If the software, however, includes for example a Tracker add-on or a library or consists of several applications, you'll see more columns that you'll have to get to 100%.</p>
 
@@ -39,18 +39,18 @@ In the menu, the item <i>All blocks</i> opens that page with all text blocks, th
 
 <p>This is the translation page:</p>
 
-<p>{{ html_image('images/help/user-translation-upload.png', 'Upload translated catkeys at the top of the "Translation" page') }}</p>
+<p><img src="{{ asset('images/help/user-translation-upload.png') }}" alt="Upload translated catkeys at the top of the &quot;Translation&quot; page"></p>
 
 <p>At the top, you can upload a previously exported and edited catkeys file of your language. Be aware: if the developer has updated the original English catkeys of his project, they take precedence. If it has changed - more or fewer text blocks - only the ones of yours that still match will be imported.<br />
 So everthing's safe, but you may want to prefer leaving the exporting/uploading to the developer and stick to the Polyglot web interface...</p>
 
-<p>{{ html_image('images/help/user-translation-search.png', 'Search for text in the original or translation') }}</p>
+<p><img src="{{ asset('images/help/user-translation-search.png') }}" alt="Search for text in the original or translation"></p>
 
 <p>Next is a search bar if you need to find a specific string in either the original or the translation. To get back to the unfiltered list, you have to click the "X" button that appears at the left of the text box when you started your search.</p>
 
 <p>Below the search bar, there's a table with all the GUI texts that need localization. Clicking in a row expands it to the editing mode (last row in this example):</p>
 
-<p>{{ html_image('images/help/user-translation-edit.png', 'A translation block while editing with a legend of its elements') }}</p>
+<p><img src="{{ asset('images/help/user-translation-edit.png') }}" alt="A translation block while editing with a legend of its elements"></p>
 
 <p>Yet untouched rows are highlighted yellow, and the <i>Needs work</i> button of the editing mode is yellow, too. This means that the text isn't counted as being translated and the percentage status won't increase.<br />
 If you are not sure about your translation yet, keep the <i>Needs work</i> yellow until you are.</p>
@@ -61,14 +61,14 @@ If you are not sure about your translation yet, keep the <i>Needs work</i> yello
 
 <p>Polyglot 'pre-translates' common strings that are defined in the <i>Glossaries</i>, linked at the top of the page.
 
-<p>{{ html_image('images/help/user-glossaries.png', 'The Glossary for German') }}</p>
+<p><img src="{{ asset('images/help/user-glossaries.png') }}" alt="The Glossary for German"></p>
 
 <p>Clicking on <i>Add</i> opens a page with one text box for the English original and a second for the translation. You can add several string pairs at the same time, just make sure that each line of English text has a corresponding line with the translated string.<br />
 This 'pre-translation' works only for full phrases, no partial matches. However, punctuation at the end ("...", "…", "." and ":") will be separated and applied to the translation, so you only need one glossary entry for "Add" and "Add:" - both will be pre-translated.</p>
 
 <p>Choosing <i>Pre-translate</i> for a language of a project instead of <i>Continue</i> or <i>All blocks</i> should be the first thing you do when starting the translation of a project. That way you'll quickly get through the most common strings of many apps. The <i>Pre-translate</i> page:</p>
 
-<p>{{ html_image('images/help/user-pretranslate.png', 'The list of pre-translated strings') }}</p>
+<p><img src="{{ asset('images/help/user-pretranslate.png') }}" alt="The list of pre-translated strings"></p>
 
 <p>Here you can quickly move through the list and correct any flawed proposed translations. If that happens a lot, you may want to edit the Glossary... The <i>Context</i> column shows where in the source these texts are found, and sometimes there's a <i>Comment</i> that provides additional information.<br />
 All entries with a ticked checkbox are committed to the project's database when you finally click the <i>Save</i> button at the bottom.</p>

@@ -4,12 +4,12 @@
 
 {% block content %}
 <ol class="breadcrumb">
-    <li>{{ link_to_route('projects.index', 'Home') }}</li>
+    <li><a href="{{ route('projects.index') }}">Home</a></li>
     <li class="active">Help</li>
 </ol>
 <picture>
-    <source srcset="{{ url('images/Polyglot_dark_100px.png') }}" media="(prefers-color-scheme: dark)">
-    {{ html_image('images/Polyglot_100px.png', 'Polyglot logo', {'class': 'center-block'}) }}
+    <source srcset="{{ asset('images/Polyglot_dark_100px.png') }}" media="(prefers-color-scheme: dark)">
+    <img src="{{ asset('images/Polyglot_100px.png') }}" alt="Polyglot logo" class="center-block">
 </picture>
 
 <p><br /></p>
@@ -23,9 +23,9 @@
 <h2 class="help">Help</h2>
 
 <ol type="A">
-	<li>{{ link_to_route('help', 'For the translators', {article: 'user'}) }} - Read up on using Polyglot and some tips on localization in general.</li>
+	<li><a href="{{ route('help', {article: 'user'}) }}">For the translators</a> - Read up on using Polyglot and some tips on localization in general.</li>
 
-	<li>{{ link_to_route('help', 'For the developers', {article: 'developer'}) }} - How to use Polyglot: add projects, upload and update catkeys, and export the localized results.</li>
+	<li><a href="{{ route('help', {article: 'developer'}) }}">For the developers</a> - How to use Polyglot: add projects, upload and update catkeys, and export the localized results.</li>
 </ol>
 
 {% if hash != '' %}
