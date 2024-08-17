@@ -13,7 +13,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN a2enmod rewrite
 RUN a2enmod ssl
 
-RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini" && sed -i "s/memory_limit = 128M/memory_limit = 4096M/" "$PHP_INI_DIR/php.ini"
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
