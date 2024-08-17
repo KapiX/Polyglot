@@ -76,7 +76,7 @@ class GlossaryEntryController extends Controller
      * @param  \App\Models\Language  $language
      * @return \Illuminate\Http\Response
      */
-    public function store(AddGlossaryEntry $request, Language $glossary)
+    public function store(AddGlossaryEntry $request, Language $glossary, GlossaryEntry $glossaryEntry)
     {
         $text = $request->input('text');
         $translation = $request->input('translation');
@@ -100,7 +100,7 @@ class GlossaryEntryController extends Controller
         });
         $addingSanitized = $data->count();
 
-        if(GlossaryEntry::insert($data->toArray()) === true) {
+        if($glossaryEntry::insert($data->toArray()) === true) {
             return redirect()->route('glossaries.entries.index', [$glossary])
                 ->with('success', 'Added ' . $addingSanitized . ' glossary entries with '
                     . ($adding - $addingSanitized) . ' entries rejected for having empty fields.');

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Mockery\MockInterface;
 
 use App\Models\User;
 use App\Models\Language;
@@ -86,6 +87,24 @@ class GlossaryEntryControllerStoreTest extends TestCase
         ]);
 
         $this->assertSuccess($response);
+    }
+
+    public function testSingleLineInsertFail()
+    {
+        $this->mock(GlossaryEntry::class, function (MockInterface $mock) {
+            $mock->shouldReceive('insert')->once()->andReturn(false);
+        });
+
+        $language = $this->languages[0];
+        $user = User::factory()->admin()->create();
+        $response = $this->storeRequest($user, [
+            'text' => 'test',
+            'translation' => 'test-translation'
+        ]);
+
+        $this->assertDatabaseCount('glossary', 0);
+
+        $this->assertErrors($response, []);
     }
 
     public function testRegularUser()
