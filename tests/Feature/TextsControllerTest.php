@@ -160,7 +160,7 @@ class TextsControllerTest extends TestCase
         $translation->needs_work = 0;
         $translation->save();
         $updatedAt = $translation->updated_at;
-    
+
         $translation->translation = 'test';
         $translation->save();
 
@@ -195,11 +195,11 @@ class TextsControllerTest extends TestCase
         $translation->translation = 'test2';
         $translation->save();
         $updated3 = $translation->updated_at;
-    
+
         $translation->translation = 'test3';
         $translation->save();
 
-        $route = route('texts.history', [$this->text->id, $this->language->id]); 
+        $route = route('texts.history', [$this->text->id, $this->language->id]);
         $response = $this->actingAs($this->user)->get($route);
 
         $response->assertSuccessful();

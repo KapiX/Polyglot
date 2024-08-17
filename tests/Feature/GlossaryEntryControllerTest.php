@@ -50,7 +50,7 @@ class GlossaryEntryControllerTest extends TestCase
         $language = $this->languages[0];
         $user = User::factory()->admin()->create();
         $entries = GlossaryEntry::factory()->count(5)->for($language)->create();
-    
+
         $response = $this->actingAs($user)->get(
             route('glossaries.entries.index', [$language->id]));
 
@@ -76,7 +76,7 @@ class GlossaryEntryControllerTest extends TestCase
         $language = $this->languages[0];
         $user = User::factory()->admin()->create();
         $entries = GlossaryEntry::factory()->count(1000)->for($language)->create();
-    
+
         $response = $this->actingAs($user)->get(
             route('glossaries.entries.index', [$language->id]));
 
@@ -93,7 +93,7 @@ class GlossaryEntryControllerTest extends TestCase
         $language = $this->languages[0];
         $user = User::factory()->create();
         $entries = GlossaryEntry::factory()->count(5)->for($language)->create();
-    
+
         $response = $this->actingAs($user)->get(
             route('glossaries.entries.index', [$language->id]));
 
@@ -118,7 +118,7 @@ class GlossaryEntryControllerTest extends TestCase
             [$this->languages[1]]
         )->create();
         $entries = GlossaryEntry::factory()->count(5)->for($language)->create();
-    
+
         $response = $this->actingAs($user)->get(
             route('glossaries.entries.index', [$language->id]));
 
@@ -143,7 +143,7 @@ class GlossaryEntryControllerTest extends TestCase
             [$this->languages[0]]
         )->create();
         $entries = GlossaryEntry::factory()->count(5)->for($language)->create();
-    
+
         $response = $this->actingAs($user)->get(
             route('glossaries.entries.index', [$language->id]));
 
@@ -176,7 +176,7 @@ class GlossaryEntryControllerTest extends TestCase
             'text' => 'hijk',
             'translation' => 'oprs'
         ]);
-    
+
         $response = $this->actingAs($user)->get(
             route('glossaries.entries.index', [$language->id]) . '?search=abc');
 
@@ -201,7 +201,7 @@ class GlossaryEntryControllerTest extends TestCase
             'text' => 'hijk',
             'translation' => 'oprs'
         ]);
-    
+
         $response = $this->actingAs($user)->get(
             route('glossaries.entries.index', [$language->id]) . '?search=vwx');
 

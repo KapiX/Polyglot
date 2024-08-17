@@ -94,7 +94,7 @@ class UsersControllerTest extends TestCase
         $languages = Language::factory(5)->create();
         $admin = User::factory()->admin()->create();
         $user = User::factory()->user()->create();
-        
+
         $user->languages()->sync([$languages[0]->id, $languages[2]->id]);
 
         $this->assertDatabaseCount('language_user', 2);

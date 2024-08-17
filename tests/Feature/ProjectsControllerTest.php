@@ -9,8 +9,6 @@ use App\Models\User;
 use App\Models\Project;
 use App\Models\Language;
 use App\Models\File;
-use App\Models\Text;
-use App\Models\Translation;
 
 class ProjectsControllerTest extends TestCase
 {
@@ -26,7 +24,7 @@ class ProjectsControllerTest extends TestCase
 
         $response->assertSeeText('No projects');
     }
-    
+
     public function testProjectsListWithNoPreferredLanguages()
     {
         $user = User::factory()->create();
@@ -110,7 +108,7 @@ class ProjectsControllerTest extends TestCase
         $language = Language::factory()->create();
         $user = User::factory()->preferredLanguages([$language->id])->create();
         $file = File::factory()->hasTexts(3)->for($project)->create();
-        
+
         $response = $this->actingAs($user)->get('/projects');
 
         $response->assertSuccessful();
@@ -125,7 +123,7 @@ class ProjectsControllerTest extends TestCase
         $language = Language::factory()->count(3)->create();
         $user = User::factory()->preferredLanguages([$language[0]->id, $language[2]->id])->create();
         $file = File::factory()->hasTexts(3)->for($project)->create();
-        
+
         $response = $this->actingAs($user)->get('/projects');
 
         $response->assertSuccessful();
@@ -152,7 +150,7 @@ class ProjectsControllerTest extends TestCase
             'project_id' => $project->id,
             'role' => 2
         ]);
-        
+
         $response->assertRedirect(route('projects.edit', $project->id));
     }
 
@@ -174,7 +172,7 @@ class ProjectsControllerTest extends TestCase
             'project_id' => $project->id,
             'role' => 2
         ]);
-        
+
         $response->assertRedirect(route('projects.edit', $project->id));
     }
 
@@ -195,10 +193,10 @@ class ProjectsControllerTest extends TestCase
             'user_id' => $user->id,
             'role' => 2
         ]);
-        
+
         $response->assertStatus(403);
     }
-    
+
     public function testAddedProjectHasToHaveAName()
     {
         $user = User::factory()->admin()->create();
@@ -246,7 +244,7 @@ class ProjectsControllerTest extends TestCase
         $language = Language::factory()->create();
         $user = User::factory()->preferredLanguages([$language->id])->create();
         $file = File::factory()->hasTexts(3)->for($project)->create();
-        
+
         $response = $this->actingAs($user)->get(route('projects.show', [$project->id]));
 
         $response->assertSuccessful();
