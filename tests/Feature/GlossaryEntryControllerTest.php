@@ -214,6 +214,41 @@ class GlossaryEntryControllerTest extends TestCase
         $response->assertDontSeeText('oprs');
     }
 
+    public function testCreate()
+    {
+        $language = $this->languages[0];
+        $user = User::factory()->hasAttached(
+            [$this->languages[0]]
+        )->create();
+
+        $response = $this->actingAs($user)->get(
+            route('glossaries.entries.create', [$language->id]));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('glossaries.create');
+    }
+
+    public function testEdit()
+    {
+        $language = $this->languages[0];
+        $user = User::factory()->hasAttached(
+            [$this->languages[0]]
+        )->create();
+        $entry = GlossaryEntry::factory()->for($language)->create([
+            'text' => 'abcdefg',
+            'translation' => 'tuvwxyz'
+        ]);
+
+        $response = $this->actingAs($user)->get(
+            route('glossaries.entries.edit', [$language->id, $entry->id]));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('glossaries.edit');
+
+        $response->assertSeeText('abcdefg');
+        $response->assertSeeText('tuvwxyz');
+    }
+
     public function testUpdate()
     {
         $language = $this->languages[0];

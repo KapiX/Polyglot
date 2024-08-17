@@ -254,4 +254,17 @@ class ProjectsControllerTest extends TestCase
 
         $response->assertSeeInOrder([$file->name, $language->name], false);
     }
+
+    public function testProjectEdit() {
+        $project = Project::factory()->create();
+        Language::factory()->count(3)->create();
+        $user = User::factory()->admin()->create();
+
+        $response = $this->actingAs($user)->get(route('projects.edit', [$project->id]));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.edit');
+
+        $response->assertSeeInOrder(['<form', 'enctype="multipart/form-data"', 'value="PUT"', $project->name], false);
+    }
 }

@@ -13,7 +13,7 @@ class FileFactory extends Factory
     public function definition()
     {
         return [
-            'type' => 0,
+            'type' => mt_rand(1, 3),
             'name' => $this->faker->unique()->word(),
         ];
     }

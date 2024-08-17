@@ -13,6 +13,29 @@ class UsersControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function testIndex() {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->get(route('users.index'));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('users.index');
+
+        $response->assertSeeInOrder([$admin->name], false);
+    }
+
+    public function testEdit() {
+        $admin = User::factory()->admin()->create();
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($admin)->get(route('users.edit', [$user->id]));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('users.edit');
+
+        $response->assertSeeInOrder(['<form', 'value="PUT"', $user->name], false);
+    }
+
     public function testRegularUserCannotUpdateUsers(): void
     {
         $users = User::factory(2)->create();

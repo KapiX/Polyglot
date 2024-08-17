@@ -11,7 +11,8 @@
 |
 */
 
-Route::get('/', 'IndexController@index')->middleware('guest');
+Route::get('/', 'IndexController@index')->middleware('guest')
+    ->name('index');
 Route::get('/help/{article?}', 'IndexController@help')
     ->name('help');
 Route::get('/profile', 'IndexController@profile')
