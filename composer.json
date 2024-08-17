@@ -6,21 +6,20 @@
     "type": "project",
     "require": {
         "php": "^8.2",
-        "doctrine/dbal": "^3.0",
-        "laravel/framework": "^10.0",
-        "laravel/socialite": "^5.6",
-        "laravel/tinker": "^2.8",
-        "laravel/ui": "^4.2.0",
-        "rcrowe/twigbridge": "^0.14.1"
+        "laravel/framework": "^11.0",
+        "laravel/socialite": "^5.11",
+        "laravel/tinker": "^2.9",
+        "laravel/ui": "^4.5",
+        "rcrowe/twigbridge": "^0.14.2"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.8",
-        "barryvdh/laravel-ide-helper": "^2.13.0",
+        "barryvdh/laravel-debugbar": "^3.13",
+        "barryvdh/laravel-ide-helper": "^3.1.0",
         "filp/whoops": "~2.0",
-        "fakerphp/faker": "~1.21",
+        "fakerphp/faker": "~1.23",
         "mockery/mockery": "~1.6",
-        "phpunit/phpunit": "^10.0",
-        "nunomaduro/collision": "^7.0"
+        "phpunit/phpunit": "^11.0",
+        "nunomaduro/collision": "^8.0"
     },
     "autoload": {
         "classmap": [
