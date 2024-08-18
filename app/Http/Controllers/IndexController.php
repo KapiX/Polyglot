@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Language;
 use App\Models\Project;
-use App\Models\User;
 use App\Http\Requests\EditProfile;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class IndexController extends Controller
 {
@@ -48,13 +47,13 @@ class IndexController extends Controller
         $user->preferred_languages = $request->input('languages');
         $user->save();
 
-        return redirect('profile');
+        return redirect()->route('profile');
     }
 
     private function getCurrentCommitHash() : string {
         $git = base_path('.git/');
 
-        if(!file_exists($git)) {
+        if(!File::exists($git)) {
             return '';
         }
 
