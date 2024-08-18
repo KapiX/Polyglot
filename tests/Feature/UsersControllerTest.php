@@ -24,6 +24,24 @@ class UsersControllerTest extends TestCase
         $response->assertSeeInOrder([$admin->name], false);
     }
 
+    public function testIndexSearchName() {
+        $admin = User::factory()->admin()->create();
+        User::factory()->create([
+            'name' => 'deabcf'
+        ]);
+        User::factory()->create([
+            'name' => 'uxyabw'
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('users.index') . '?search=abc');
+
+        $response->assertSuccessful();
+        $response->assertViewIs('users.index');
+
+        $response->assertSeeText('deabcf');
+        $response->assertDontSeeText('uxyabw');
+    }
+
     public function testEdit() {
         $admin = User::factory()->admin()->create();
         $user = User::factory()->create();
@@ -34,6 +52,14 @@ class UsersControllerTest extends TestCase
         $response->assertViewIs('users.edit');
 
         $response->assertSeeInOrder(['<form', 'value="PUT"', $user->name], false);
+    }
+
+    public function testEditOneself() {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->get(route('users.edit', [$admin->id]));
+
+        $response->assertRedirectToRoute('users.index');
     }
 
     public function testRegularUserCannotUpdateUsers(): void
