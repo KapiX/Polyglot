@@ -10,12 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
-    const ROLES = [
-        User::ROLE_USER => 'User',
-        User::ROLE_DEVELOPER => 'Developer',
-        User::ROLE_ADMIN => 'Admin'
-    ];
-
     public function __construct()
     {
         $this->middleware('auth');
@@ -31,7 +25,6 @@ class UsersController extends Controller
         }
         return view('users.index')
             ->with('users', $users)
-            ->with('roles', self::ROLES)
             ->with('search', $search);
     }
 
@@ -43,7 +36,6 @@ class UsersController extends Controller
         $languages = Language::orderBy('iso_code')->pluck('name', 'id');
         return view('users.edit')
             ->with('user', $user)
-            ->with('roles', self::ROLES)
             ->with('languages', $languages);
     }
 

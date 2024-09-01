@@ -43,12 +43,22 @@
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             {% if auth_check() %}
+                                <li><p class="navbar-text">{{ auth_user().roleName() }}</p></li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ auth_user().name }} <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
                                         <li><a href="{{ route('profile') }}">Edit profile</a></li>
                                         <li role="separator" class="divider"></li>
                                         <li><a href="{{ route('auth.logout') }}">Logout</a></li>
+                                        {% if auth_user().role != 2 %}
+                                            <li role="separator" class="divider"></li>
+                                            <li class="dropdown-header">Language permissions</li>
+                                            {% for language in auth_user().languages %}
+                                            <li class="disabled"><a href="#">{{ language.iso_code }}</a></li>
+                                            {% else %}
+                                            <li class="disabled"><a href="#">None</a></li>
+                                            {% endfor %}
+                                        {% endif %}
                                     </ul>
                                 </li>
                             {% else %}

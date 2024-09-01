@@ -15,6 +15,12 @@ class User extends Authenticatable
     const ROLE_DEVELOPER = 1;
     const ROLE_ADMIN = 2;
 
+    private const ROLES_STRINGS = [
+        User::ROLE_USER => 'User',
+        User::ROLE_DEVELOPER => 'Developer',
+        User::ROLE_ADMIN => 'Admin'
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -62,5 +68,13 @@ class User extends Authenticatable
     public function isDeveloper()
     {
         return $this->role == self::ROLE_DEVELOPER;
+    }
+
+    public function roleName() {
+        return self::ROLES_STRINGS[$this->role];
+    }
+
+    static public function rolesNames() {
+        return self::ROLES_STRINGS;
     }
 }

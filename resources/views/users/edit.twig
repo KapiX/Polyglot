@@ -24,7 +24,7 @@
 <div class="form-group">
     <label for="role">Role</label>
     <select class="form-control" name="role[]" id="role">
-    {% for id, name in roles %}
+    {% for id, name in user.rolesNames() %}
         <option value="{{ id }}"{{ id == user.role ? ' selected' }}>{{ name }}</option>
     {% endfor %}
     </select>

@@ -202,4 +202,56 @@ class IndexControllerTest extends TestCase
         $response->assertSuccessful();
         $response->assertViewIs('help.index');
     }
+
+    public function testNavbarDisplaysSignIn(): void
+    {
+        $response = $this->get(route('help'));
+
+        $response->assertSuccessful();
+        $response->assertSeeInOrder(['<nav', 'Sign in', '</nav>'], false);
+    }
+
+    public function testNavbarDisplaysRole(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('help'));
+
+        $response->assertSuccessful();
+        $response->assertSeeInOrder(['<nav', 'User', '</nav>'], false);
+    }
+
+    public function testNavbarDisplaysNoLanguagePermissions(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('help'));
+
+        $response->assertSuccessful();
+        $response->assertSeeInOrder(['<nav', 'permissions', 'None', '</nav>'], false);
+    }
+
+    public function testNavbarDisplaysLanguagePermissions(): void
+    {
+        $language = Language::factory()->create();
+        $user = User::factory()->hasAttached([$language])->create();
+
+        $response = $this->actingAs($user)->get(route('help'));
+
+        $response->assertSuccessful();
+        $response->assertSeeInOrder(['<nav', $language->iso_code, '</nav>'], false);
+    }
+
+    public function testNavbarDisplaysMultipleLanguagePermissions(): void
+    {
+        $languages = Language::factory()->count(3)->create();
+        $user = User::factory()->hasAttached($languages)->create();
+
+        $response = $this->actingAs($user)->get(route('help'));
+
+        $response->assertSuccessful();
+        $response->assertSeeInOrder(['<nav', $languages[0]->iso_code, '</nav>'], false);
+        $response->assertSeeInOrder(['<nav', $languages[1]->iso_code, '</nav>'], false);
+        $response->assertSeeInOrder(['<nav', $languages[2]->iso_code, '</nav>'], false);
+    }
 }

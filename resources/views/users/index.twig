@@ -47,7 +47,7 @@
     <tr>
         <td>{{ user.name }}</td>
         <td>{{ user.email }}</td>
-        <td>{{ roles[user.role] }}</td>
+        <td>{{ user.roleName() }}</td>
         <td>
             {% for language in user.languages %}
             {{ language.iso_code }}{% if loop.last == false %}, {% endif %}
