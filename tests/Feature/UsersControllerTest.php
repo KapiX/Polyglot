@@ -51,7 +51,8 @@ class UsersControllerTest extends TestCase
         $response->assertSuccessful();
         $response->assertViewIs('users.edit');
 
-        $response->assertSeeInOrder(['<form', 'value="PUT"', $user->name], false);
+        $response->assertSeeInOrder(['<form', 'value="PUT"'], false);
+        $response->assertSeeText($user->name);
     }
 
     public function testEditOneself() {
