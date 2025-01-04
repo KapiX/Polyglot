@@ -30,9 +30,14 @@ class ProjectsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Project::orderBy('name')->get();
+        $sort = $request->input('sort', 'name');
+        if($sort === 'updated') {
+            $projects = Project::lastUpdated()->get();
+        } else {
+            $projects = Project::orderBy('name')->get();
+        }
         $preferred_languages = Auth::user()->preferred_languages ?? [];
         $project_needs_work = null;
         if(!empty($preferred_languages)) {
@@ -40,6 +45,7 @@ class ProjectsController extends Controller
                 ->pluck('needs_work', 'id');
         }
         return view('projects.index')
+            ->with('sort', $sort)
             ->with('projects', $projects)
             ->with('project_needs_work', $project_needs_work);
     }

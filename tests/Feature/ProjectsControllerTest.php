@@ -3,12 +3,14 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\File;
 
+use App\Models\Text;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\Language;
-use App\Models\File;
+use App\Models\Translation;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProjectsControllerTest extends TestCase
 {
@@ -38,6 +40,89 @@ class ProjectsControllerTest extends TestCase
         $response->assertSeeText($projects[0]->name);
         $response->assertSeeText($projects[1]->name);
         $response->assertSeeText($projects[2]->name);
+    }
+
+    public function testProjectsListSortedByNameByDefault()
+    {
+        $user = User::factory()->create();
+        $projects = Project::factory()->count(3)->sequence(['name' => 'c'], ['name' => 'a'], ['name' => 'b'])->create();
+
+        $response = $this->actingAs($user)->get('/projects');
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.index');
+
+        $response->assertSeeTextInOrder([$projects[1]->name, $projects[2]->name, $projects[0]->name]);
+    }
+
+    public function testProjectsListSortedByLastUpdated()
+    {
+        $user = User::factory()->create();
+        $projects = Project::factory()->count(3)->sequence(['name' => 'a'], ['name' => 'b'], ['name' => 'c'])->create();
+
+        $files = array();
+        $files[] = File::factory()->for($projects[0])->create();
+        $files[] = File::factory()->for($projects[1])->create();
+        $files[] = File::factory()->for($projects[2])->create();
+        Text::factory()->for($files[0])->create();
+        $this->travel(5)->seconds();
+        Text::factory()->for($files[2])->create();
+        $this->travel(5)->seconds();
+        Text::factory()->for($files[1])->create();
+
+        $response = $this->actingAs($user)->get('/projects?sort=updated');
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.index');
+
+        $response->assertSeeTextInOrder([$projects[1]->name, $projects[2]->name, $projects[0]->name]);
+    }
+
+    public function testProjectsListSortedByLastUpdatedAndEmptyProjectsAreLast()
+    {
+        $user = User::factory()->create();
+        $projects = Project::factory()->count(4)->sequence(['name' => 'a'], ['name' => 'b'], ['name' => 'c'], ['name' => 'd'])->create();
+
+        $files = array();
+        $files[] = File::factory()->for($projects[0])->create();
+        $files[] = File::factory()->for($projects[1])->create();
+        $files[] = File::factory()->for($projects[2])->create();
+        Text::factory()->for($files[0])->create();
+        $this->travel(5)->seconds();
+        Text::factory()->for($files[2])->create();
+
+        $response = $this->actingAs($user)->get('/projects?sort=updated');
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.index');
+
+        $response->assertSeeTextInOrder([$projects[2]->name, $projects[0]->name, $projects[1]->name, $projects[3]->name]);
+    }
+
+    public function testProjectsListSortedByLastUpdatedNotAffectedByTranslations()
+    {
+        $user = User::factory()->create();
+        $projects = Project::factory()->count(4)->sequence(['name' => 'a'], ['name' => 'b'], ['name' => 'c'], ['name' => 'd'])->create();
+
+        $files = array();
+        $files[] = File::factory()->for($projects[0])->create();
+        $files[] = File::factory()->for($projects[1])->create();
+        $files[] = File::factory()->for($projects[2])->create();
+        $text = Text::factory()->for($files[0])->create();
+        $language = Language::factory()->create();
+        $this->travel(5)->seconds();
+        Text::factory()->for($files[2])->create();
+        $this->travel(5)->seconds();
+        Translation::factory()->for($text)->for($language)->create([
+            'author_id' => $user->id
+        ]);
+
+        $response = $this->actingAs($user)->get('/projects?sort=updated');
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.index');
+
+        $response->assertSeeTextInOrder([$projects[2]->name, $projects[0]->name, $projects[1]->name, $projects[3]->name]);
     }
 
     public function testProjectsListShowsDefaultIconIfNotProvided()

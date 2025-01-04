@@ -130,4 +130,17 @@ class Project extends Model
             ->selectRaw('sum(needs_work) > 0 as needs_work')
             ->groupBy('id');
     }
+
+    public static function lastUpdated($direction = 'desc') {
+        $lastUpdated = Text::selectRaw('ANY_VALUE(project_id) AS pid')
+            ->selectRaw('MAX(texts.updated_at) AS last_updated')
+            ->join('files', 'file_id', '=', 'files.id')
+            ->groupBy('project_id');
+        return self::select()
+                ->leftJoinSub($lastUpdated, 'updates', function($join) {
+                    $join->on('pid', '=', 'projects.id');
+                })
+                ->orderBy('last_updated', $direction)
+                ->orderBy('name', 'asc');
+    }
 }

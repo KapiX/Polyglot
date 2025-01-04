@@ -30,7 +30,14 @@
         </div>
         <div class="col-md-6 col-md-pull-6">
             <p>Polyglot allows developers to upload the GUI strings ("catkeys", Java properties, or Line-separated files) of their applications and have their users translate them into their native language.</p>
-            <p><strong>These projects are currently available:</strong></p>
+            <p>
+                <strong>These projects are currently available:</strong>
+                {% if sort == 'updated' %}
+                    (sort by <a href="{{ url_current() }}?sort=name">name</a> | <strong>last updated</strong>)
+                {% else %}
+                    (sort by <strong>name</strong> | <a href="{{ url_current() }}?sort=updated">last updated</a>)
+                {% endif %}
+            </p>
         </div>
     </div>
 </div>
