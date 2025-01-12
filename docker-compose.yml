@@ -1,4 +1,3 @@
-version: '3.9'
 services:
   db:
     container_name: mysql
@@ -34,6 +33,8 @@ services:
       dockerfile: Dockerfile
     image: php-apache
     container_name: polyglot-app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
     working_dir: /var/www
     volumes:
