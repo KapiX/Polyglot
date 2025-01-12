@@ -12,6 +12,7 @@ use App\Models\Translation;
 use App\Http\Requests\AddProject;
 use App\Http\Requests\EditProject;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -83,44 +84,8 @@ class ProjectsController extends Controller
         $languages = Language::allWithPrioritized(
             $preferred_languages, ['id', 'name', 'iso_code'])->get();
 
-        // count progress
-        $status = [];
-        $modified = [];
-        foreach($project->files as $file) {
-            $status[$file->id] = [];
-            $texts = $file->texts()->select('id');
-            $count = $texts->count();
-            $translations = Translation::whereIn('text_id', $texts->getQuery())
-                ->select('language_id', 'needs_work')
-                ->selectRaw('count(id) as count')
-                ->groupBy('language_id', 'needs_work');
-            $file_status = DB::table(DB::raw("({$translations->toSql()}) as temp"))
-                ->mergeBindings($translations->getQuery())
-                ->select('language_id')
-                ->selectRaw('max(case when needs_work = 0 then temp.count else 0 end) translated')
-                ->selectRaw('max(case when needs_work = 1 then temp.count else 0 end) needs_work')
-                ->groupBy('language_id')
-                ->get()
-                ->mapWithKeys(function($item) use ($count) {
-                    return [
-                        $item->language_id => [
-                            'needs_work' => floor($item->needs_work / $count * 100),
-                            'translated' => floor($item->translated / $count * 100)
-                        ]
-                    ];
-                })->toArray();
-            foreach($languages as $language) {
-                $lang_status = ['needs_work' => 0, 'translated' => 0];
-                if(array_key_exists($language->id, $file_status))
-                    $lang_status = $file_status[$language->id];
-
-                $status[$file->id][$language->id] = $lang_status;
-
-                if(array_key_exists($language->id, $modified) === false)
-                    $modified[$language->id] = 0;
-                $modified[$language->id] += array_sum($lang_status);
-            }
-        }
+        $status = $project->translationStatus()->get()
+            ->groupBy(['language_id', 'file_id'])->toArray();
         $contributorRoles = [
             0 => 'past-translator',
             1 => 'translator',
@@ -138,7 +103,6 @@ class ProjectsController extends Controller
             ->with('display', $display)
             ->with('project', $project)
             ->with('status', $status)
-            ->with('modifiedKeys', $modified)
             ->with('displayLinkLabel', $displayLinkLabel)
             ->with('languages', $languages)
             ->with('roleClass', $contributorRoles)

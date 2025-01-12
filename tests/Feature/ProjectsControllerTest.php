@@ -338,6 +338,100 @@ class ProjectsControllerTest extends TestCase
         $response->assertSeeInOrder([$file->name, $language->name], false);
     }
 
+    public function testProjectViewWithEmptyLanguagesDefaultNotShown()
+    {
+        $project = Project::factory()->create();
+        $languages = Language::factory()->count(3)
+            ->sequence(['iso_code' => 'a'], ['iso_code' => 'b'], ['iso_code' => 'c'])->create();
+        $user = User::factory()->create();
+        $file = File::factory()->for($project)->create();
+        $texts = Text::factory()->count(3)->for($file)->create();
+        $author = ['author_id' => $user->id];
+        Translation::factory()->for($texts[0])->for($languages[0])->create($author);
+        Translation::factory()->for($texts[1])->for($languages[2])->create($author);
+
+        $response = $this->actingAs($user)->get(route('projects.show', [$project->id]));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.show');
+
+        $response->assertSeeInOrder([
+            $file->name,
+            $languages[0]->name, $languages[2]->name], false);
+        $response->assertDontSeeText($languages[1]->name);
+    }
+
+    public function testProjectViewWithEmptyLanguagesAllShown()
+    {
+        $project = Project::factory()->create();
+        $languages = Language::factory()->count(3)
+            ->sequence(['iso_code' => 'a'], ['iso_code' => 'b'], ['iso_code' => 'c'])->create();
+        $user = User::factory()->create();
+        $file = File::factory()->for($project)->create();
+        $texts = Text::factory()->count(3)->for($file)->create();
+        $author = ['author_id' => $user->id];
+        Translation::factory()->for($texts[0])->for($languages[0])->create($author);
+        Translation::factory()->for($texts[1])->for($languages[2])->create($author);
+
+        $response = $this->actingAs($user)->get(route('projects.show', [$project->id, 'all']));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.show');
+
+        $response->assertSeeTextInOrder([
+            $file->name,
+            $languages[0]->name, $languages[1]->name, $languages[2]->name], false);
+    }
+
+    public function testProjectViewWithMultipleFilesAndEmptyLanguagesDefaultNotShown()
+    {
+        $project = Project::factory()->create();
+        $languages = Language::factory()->count(3)
+            ->sequence(['iso_code' => 'a'], ['iso_code' => 'b'], ['iso_code' => 'c'])->create();
+        $user = User::factory()->create();
+        $files = File::factory()->for($project)->count(3)->create();
+        $texts0 = Text::factory()->count(3)->for($files[0])->create();
+        $texts1 = Text::factory()->count(3)->for($files[1])->create();
+        $texts2 = Text::factory()->count(3)->for($files[2])->create();
+        $author = ['author_id' => $user->id];
+        Translation::factory()->for($texts0[0])->for($languages[0])->create($author);
+        Translation::factory()->for($texts1[1])->for($languages[2])->create($author);
+
+        $response = $this->actingAs($user)->get(route('projects.show', [$project->id]));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.show');
+
+        $response->assertSeeInOrder([
+            $files[0]->name, $files[1]->name, $files[2]->name,
+            $languages[0]->name, $languages[2]->name], false);
+        $response->assertDontSeeText($languages[1]->name);
+    }
+
+    public function testProjectViewWithMultipleFilesAndEmptyLanguagesAllShown()
+    {
+        $project = Project::factory()->create();
+        $languages = Language::factory()->count(3)
+            ->sequence(['iso_code' => 'a'], ['iso_code' => 'b'], ['iso_code' => 'c'])->create();
+        $user = User::factory()->create();
+        $files = File::factory()->for($project)->count(3)->create();
+        $texts0 = Text::factory()->count(3)->for($files[0])->create();
+        $texts1 = Text::factory()->count(3)->for($files[1])->create();
+        $texts2 = Text::factory()->count(3)->for($files[2])->create();
+        $author = ['author_id' => $user->id];
+        Translation::factory()->for($texts0[0])->for($languages[0])->create($author);
+        Translation::factory()->for($texts1[1])->for($languages[2])->create($author);
+
+        $response = $this->actingAs($user)->get(route('projects.show', [$project->id, 'all']));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.show');
+
+        $response->assertSeeInOrder([
+            $files[0]->name, $files[1]->name, $files[2]->name,
+            $languages[0]->name, $languages[1]->name, $languages[2]->name], false);
+    }
+
     public function testProjectEdit() {
         $project = Project::factory()->create();
         Language::factory()->count(3)->create();

@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use \DateTime;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\FileTypes\CatkeysFile;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
+use App\FileTypes\LineSeparatedFile;
+use App\FileTypes\JavaPropertiesFile;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use App\FileTypes\CatkeysFile;
-use App\FileTypes\JavaPropertiesFile;
-use App\FileTypes\LineSeparatedFile;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class File extends Model
 {
@@ -86,6 +88,44 @@ class File extends Model
             Storage::put($filename, $result);
         }
         return $filename;
+    }
+
+    public function translationStatus($language = null): Builder {
+        return self::translationStatuses($this->id, $language);
+    }
+
+    public static function translationStatuses($file, $language = null): Builder {
+        $texts = Text::whereNotNull('file_id');
+        if(is_int($file)) {
+            $texts->where('file_id', $file);
+        } elseif($file instanceof File) {
+            $texts->where('file_id', $file->id);
+        } else {
+            $texts->whereIn('file_id', $file);
+        }
+        $counts = Translation::whereIn('text_id', $texts->select('id'))
+            ->select('file_id', 'language_id', 'needs_work')
+            ->selectRaw('count(translations.id) as count')
+            ->leftJoin('texts', 'text_id', '=', 'texts.id')
+            ->groupBy('file_id', 'language_id', 'needs_work');
+        if(is_int($language)) {
+            $counts->where('language_id', $language);
+        } elseif($language instanceof Language) {
+            $counts->where('language_id', $language->id);
+        } elseif(!is_null($language)) {
+            $counts->whereIn('language_id', $language);
+        }
+        $grouped = DB::query()->fromSub($counts, 'temp')
+            ->select('temp.file_id', 'language_id', 'all_count')
+            ->selectRaw('max(case when needs_work = 0 then temp.count else 0 end) translated')
+            ->selectRaw('max(case when needs_work = 1 then temp.count else 0 end) needs_work')
+            ->leftJoinSub($texts->select('file_id')->selectRaw('count(id) as all_count')->groupBy('file_id'), 'temp2', 'temp2.file_id', '=', 'temp.file_id')
+            ->groupBy('file_id', 'language_id');
+        return DB::query()->from($grouped)
+            ->select('file_id', 'language_id', 'translated', 'needs_work', 'all_count')
+            ->selectRaw('cast(floor(translated / all_count * 100) as signed) as translated_percent')
+            ->selectRaw('cast(floor(needs_work / all_count * 100) as signed) as needs_work_percent')
+            ->selectRaw('cast(floor((needs_work + translated) / all_count * 100) as signed) as total_percent');
     }
 
     public function getFileInstance() {

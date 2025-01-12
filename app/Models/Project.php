@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Text;
@@ -72,6 +73,10 @@ class Project extends Model
                 ->where('project_id', $this->id)
                 ->having('needs_work', 0))
             ->select('language_id'));
+    }
+
+    public function translationStatus(Language|array|null $language = null): Builder {
+        return File::translationStatuses($this->files()->select('id')->getQuery(), $language);
     }
 
     public static function textsCountPerProject()
