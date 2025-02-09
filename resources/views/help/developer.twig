@@ -24,7 +24,7 @@
 
 <h2 class="help">
 <a href="#"><img src="{{ asset('images/up.png') }}" alt="Go up" class="go-up"></a>
-<a id="overview" name="overview"></a>Overview</h2>
+<a id="overview"></a>Overview</h2>
 
 <p>The whole localization business hinges around the <i>en.catkeys</i> that are collected from a project's source files.</p>
 
@@ -38,18 +38,18 @@ Strings that aren't in the new <i>en.catkeys</i> anymore get removed (together w
 
 <p>When all the languages you need are 100% finished, you can export and download their <i>xx.catkeys</i> to use when building your application.</p>
 
-<h2>Non-catkeys translations</h3>
+<h3>Non-catkeys translations</h3>
 
 <p>Polyglot can be used for the translation of other files than Haiku catkeys:</p>
 <ul>
-<li><p><b>Line separated files</b> are any text files where the to-be-translated text blocks are separated by lines with certain characters (e.g. a <tt>#</tt>) or just an empty line. As an example, see an export of the tips files of <i>Tipster</i> here at Polyglot. ReadMe texts and other documentation are other candidates for this type of file.</p></li>
+<li><p><b>Line separated files</b> are any text files where the to-be-translated text blocks are separated by lines with certain characters (e.g. a <samp>#</samp>) or just an empty line. As an example, see an export of the tips files of <i>Tipster</i> here at Polyglot. ReadMe texts and other documentation are other candidates for this type of file.</p></li>
 
 <li><p><b>Java properties</b> are used by Java projects to assign a translatable text to a specially named variable. As an example, see an export of the WebMessages file of <i>HaikuDepotServer</i> here at Polyglot.</p></li>
 </ul>
 
 <h2 class="help">
 <a href="#"><img src="{{ asset('images/up.png') }}" alt="Go up" class="go-up"></a>
-<a id="adding" name="adding"></a>Adding a project</h2>
+<a id="adding"></a>Adding a project</h2>
 
 <p>Simply enter the new project name into the <i>Add project</i> text box on the Polyglot start page, click <i>Add</i> and it'll appear in the list of projects. Click on it and you get to the <i>Translation modules</i> page of your project:</p>
 
@@ -88,7 +88,7 @@ Strings that aren't in the new <i>en.catkeys</i> anymore get removed (together w
 
 <h2 class="help">
 <a href="#"><img src="{{ asset('images/up.png') }}" alt="Go up" class="go-up"></a>
-<a id="uploading" name="uploading"></a>Uploading existing, already translated files</h2>
+<a id="uploading"></a>Uploading existing, already translated files</h2>
 
 <p>If you already have some (partially) translated <i>xx.catkeys</i> (or line-separated files, or Java properties), you can upload those too: Just like your translating collegues, you click on your project on the start page, and then on the <i>Continue</i> or <i>All text blocks</i> link of each language you have already translated files for.</p>
 
@@ -102,7 +102,7 @@ If the uploaded translated file is outdated and contains additional, now obsolet
 
 <h2 class="help">
 <a href="#"><img src="{{ asset('images/up.png') }}" alt="Go up" class="go-up"></a>
-<a id="updating" name="updating"></a>Updating the English original file</h2>
+<a id="updating"></a>Updating the English original file</h2>
 
 <p>It's practically the same as when you created your new project.<br />
 You click on your project on the start page to get to your <i>Translation modules</i> page and then click on the <i>Edit</i> link of the identifying name (default "Application") and you're back where you can upload an English original file.</p>
@@ -111,13 +111,13 @@ You click on your project on the start page to get to your <i>Translation module
 
 <h2 class="help">
 <a href="#"><img src="{{ asset('images/up.png') }}" alt="Go up" class="go-up"></a>
-<a id="exporting" name="exporting"></a>Exporting translated files</h2>
+<a id="exporting"></a>Exporting translated files</h2>
 
 <p>On the <i>Translation modules</i> page, each language has an <i>Export</i> item in the <i>Continue</i> menu beside its progress bar. With it you download the translated file of that particular language. To download a ZIP archive containing all languages (with the folder hierarchy defined in the "Path" text field), click on the <i>Export all</i> at the bottom of the list of languages on that page.</p>
 
 <h2 class="help">
 <a href="#"><img src="{{ asset('images/up.png') }}" alt="Go up" class="go-up"></a>
-<a id="tips" name="tips"></a>Tips</h2>
+<a id="tips"></a>Tips</h2>
 
 <ul>
 	<li><p>As said before, be careful not to needlessly update the English original. Removing or adding completely new strings don't impact translations at all, so those are always OK. Though, it may be wise to do those in batches as well, or translators will see the progress meter of their language keep dropping below 100% every time, and may feel some frustration...</p>
@@ -144,7 +144,7 @@ You click on your project on the start page to get to your <i>Translation module
 
 <h2 class="help">
 <a href="#"><img src="{{ asset('images/up.png') }}" alt="Go up" class="go-up"></a>
-<a id="tldr" name="tldr"></a>TL;DR (catkeys)</h2>
+<a id="tldr"></a>TL;DR (catkeys)</h2>
 
 <p>Getting a catkeys project going, in a nutshell:</p>
 
