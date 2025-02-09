@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Facades\DB;
 
 class GlossaryEntry extends Model
@@ -28,7 +29,7 @@ class GlossaryEntry extends Model
             ->orWhere('translation', 'LIKE', '%' . $string . '%');
     }
 
-    static public function glossaries(Builder $languages, ?array $columns = null)
+    static public function glossaries(QueryBuilder|EloquentBuilder $languages, ?array $columns = null): QueryBuilder
     {
         $entries = GlossaryEntry::select('language_id')
             ->selectRaw('count(id) as entries')

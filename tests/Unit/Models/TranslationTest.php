@@ -233,14 +233,14 @@ class TranslationTest extends TestCase
 
         $this->travel(5)->minutes();
     
-        Text::factory()->for($this->file)->hasTranslations([
+        Text::factory()->for($this->file)->hasTranslations(1, [
             'language_id' => $this->language->id,
             'author_id' => $this->user->id
         ])->create();
 
         $this->travel(5)->minutes();
 
-        $lastText = Text::factory()->for($this->file)->hasTranslations([
+        $lastText = Text::factory()->for($this->file)->hasTranslations(1, [
             'language_id' => $this->language->id,
             'author_id' => $this->user->id
         ])->create();
@@ -258,14 +258,14 @@ class TranslationTest extends TestCase
 
         $this->travel(5)->minutes();
     
-        Text::factory()->for($this->file)->hasTranslations([
+        Text::factory()->for($this->file)->hasTranslations(1, [
             'language_id' => $this->language->id,
             'author_id' => $this->user->id
         ])->create();
 
         $this->travel(5)->minutes();
 
-        Text::factory()->for($this->file)->hasTranslations([
+        Text::factory()->for($this->file)->hasTranslations(1, [
             'language_id' => $this->language->id,
             'author_id' => $this->user->id
         ])->create();
