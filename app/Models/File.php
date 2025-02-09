@@ -90,6 +90,10 @@ class File extends Model
         return $filename;
     }
 
+    public function translationCounts(Language $language): Builder {
+        return Translation::counts($this->texts()->select('id')->getQuery(), $language);
+    }
+
     public function translationStatus($language = null): Builder {
         return self::translationStatuses($this->id, $language);
     }
@@ -103,18 +107,10 @@ class File extends Model
         } else {
             $texts->whereIn('file_id', $file);
         }
-        $counts = Translation::whereIn('text_id', $texts->select('id'))
-            ->select('file_id', 'language_id', 'needs_work')
-            ->selectRaw('count(translations.id) as count')
+        $counts = Translation::counts($texts, $language)
+            ->addSelect('file_id')
             ->leftJoin('texts', 'text_id', '=', 'texts.id')
-            ->groupBy('file_id', 'language_id', 'needs_work');
-        if(is_int($language)) {
-            $counts->where('language_id', $language);
-        } elseif($language instanceof Language) {
-            $counts->where('language_id', $language->id);
-        } elseif(!is_null($language)) {
-            $counts->whereIn('language_id', $language);
-        }
+            ->groupBy('file_id');
         $grouped = DB::query()->fromSub($counts, 'temp')
             ->select('temp.file_id', 'language_id', 'all_count')
             ->selectRaw('max(case when needs_work = 0 then temp.count else 0 end) translated')

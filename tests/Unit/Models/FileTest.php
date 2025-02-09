@@ -51,6 +51,25 @@ class FileTest extends TestCase
         }
     }
 
+    public function testTranslationCounts()
+    {
+        $this->insertTexts();
+
+        $author = ['author_id' => $this->user->id];
+        Translation::factory()->for($this->texts[0][0])->for($this->languages[0])->create($author);
+        $counts = $this->files[0]->translationCounts($this->languages[0])->get()->toArray();
+
+        $expectedCounts = [
+            0 => [
+                'language_id' => $this->languages[0]->id,
+                'needs_work' => 0,
+                'count' => 1
+            ]
+        ];
+        $this->assertCount(1, $counts);
+        $this->assertEquals($expectedCounts[0], (array) $counts[0]);
+    }
+
     public function testTranslationStatusEmptyFileAllLanguages()
     {
         $status = $this->files[0]->translationStatus()->get()->toArray();

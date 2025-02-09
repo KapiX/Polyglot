@@ -364,4 +364,341 @@ class TranslationTest extends TestCase
         $lastUpdatedAt = Translation::lastUpdatedAt($this->file->id, $language->id);
         $this->assertEquals($lastUpdatedAt['updated_at'], $translation4->updated_at);
     }
+
+    public function testTranslationCountsOneTextOneLanguage()
+    {
+        $this->translation->translation = 'test';
+        $this->translation->needs_work = 0;
+        $this->translation->save();
+
+        $counts = Translation::counts($this->text)->get()->toArray();
+
+        $expectedCounts = [0 => [
+            'language_id' => $this->language->id,
+            'needs_work' => 0,
+            'count' => 1
+        ]];
+        $this->assertCount(1, $counts);
+        $this->assertEquals($expectedCounts[0], (array) $counts[0]);
+    }
+
+    public function testTranslationCountsManyTextsOneLanguage()
+    {
+        $this->translation->translation = 'test';
+        $this->translation->needs_work = 0;
+        $this->translation->save();
+
+        $texts = Text::factory(3)->for($this->file)->create();
+
+        Translation::factory()->for($this->language)->forEachSequence(
+            ['text_id' => $texts[0]->id],
+            ['text_id' => $texts[1]->id],
+        )->create([
+            'author_id' => $this->user->id
+        ]);
+
+        $counts = Translation::counts(
+            [$this->text->id, $texts[0]->id, $texts[1]->id, $texts[2]->id])->get()->toArray();
+
+        $expectedCounts = [0 => [
+            'language_id' => $this->language->id,
+            'needs_work' => 0,
+            'count' => 3
+        ]];
+        $this->assertCount(1, $counts);
+        $this->assertEquals($expectedCounts[0], (array) $counts[0]);
+    }
+
+    public function testTranslationCountsManyTextsOneLanguageAndSomeNeedsWork()
+    {
+        $this->translation->translation = 'test';
+        $this->translation->needs_work = 0;
+        $this->translation->save();
+
+        $texts = Text::factory(3)->for($this->file)->create();
+
+        Translation::factory()->for($this->language)->forEachSequence(
+            ['text_id' => $texts[0]->id, 'needs_work' => 1],
+            ['text_id' => $texts[1]->id],
+        )->create([
+            'author_id' => $this->user->id
+        ]);
+
+        $counts = Translation::counts(
+            [$this->text->id, $texts[0]->id, $texts[1]->id, $texts[2]->id])->get()->toArray();
+
+        $expectedCounts = [
+            0 => [
+                'language_id' => $this->language->id,
+                'needs_work' => 0,
+                'count' => 2
+            ],
+            1 => [
+                'language_id' => $this->language->id,
+                'needs_work' => 1,
+                'count' => 1
+            ]
+        ];
+        $this->assertCount(2, $counts);
+        $this->assertEquals($expectedCounts[0], (array) $counts[0]);
+        $this->assertEquals($expectedCounts[1], (array) $counts[1]);
+    }
+
+    public function testTranslationCountsManyTextsManyLanguages()
+    {
+        $this->translation->translation = 'test';
+        $this->translation->needs_work = 0;
+        $this->translation->save();
+
+        $texts = Text::factory(3)->for($this->file)->create();
+        $languages = Language::factory(3)->create();
+
+        Translation::factory()->for($this->language)->forEachSequence(
+            ['text_id' => $texts[0]->id],
+            ['text_id' => $texts[1]->id],
+        )->create([
+            'author_id' => $this->user->id
+        ]);
+
+        Translation::factory()->for($languages[0])->forEachSequence(
+            ['text_id' => $texts[1]->id],
+            ['text_id' => $texts[2]->id],
+        )->create([
+            'author_id' => $this->user->id
+        ]);
+
+        $counts = Translation::counts(
+            [$this->text->id, $texts[0]->id, $texts[1]->id, $texts[2]->id])->get()->toArray();
+
+        $expectedCounts = [
+            0 => [
+                'language_id' => $this->language->id,
+                'needs_work' => 0,
+                'count' => 3
+            ],
+            1 => [
+                'language_id' => $languages[0]->id,
+                'needs_work' => 0,
+                'count' => 2
+            ]
+        ];
+        $this->assertCount(2, $counts);
+        $this->assertEquals($expectedCounts[0], (array) $counts[0]);
+        $this->assertEquals($expectedCounts[1], (array) $counts[1]);
+    }
+
+    public function testTranslationCountsManyTextsManyLanguagesAndSomeNeedsWork()
+    {
+        $this->translation->translation = 'test';
+        $this->translation->needs_work = 0;
+        $this->translation->save();
+
+        $texts = Text::factory(3)->for($this->file)->create();
+        $languages = Language::factory(3)->create();
+
+        Translation::factory()->for($this->language)->forEachSequence(
+            ['text_id' => $texts[0]->id, 'needs_work' => 1],
+            ['text_id' => $texts[1]->id],
+        )->create([
+            'author_id' => $this->user->id
+        ]);
+
+        Translation::factory()->for($languages[1])->forEachSequence(
+            ['text_id' => $texts[1]->id, 'needs_work' => 1],
+            ['text_id' => $texts[2]->id],
+        )->create([
+            'author_id' => $this->user->id
+        ]);
+
+        $counts = Translation::counts(
+            [$this->text->id, $texts[0]->id, $texts[1]->id, $texts[2]->id])->get()->toArray();
+
+        $expectedCounts = [
+            0 => [
+                'language_id' => $this->language->id,
+                'needs_work' => 0,
+                'count' => 2
+            ],
+            1 => [
+                'language_id' => $this->language->id,
+                'needs_work' => 1,
+                'count' => 1
+            ],
+            2 => [
+                'language_id' => $languages[1]->id,
+                'needs_work' => 0,
+                'count' => 1
+            ],
+            3 => [
+                'language_id' => $languages[1]->id,
+                'needs_work' => 1,
+                'count' => 1
+            ]
+        ];
+        $this->assertCount(4, $counts);
+        $this->assertEquals($expectedCounts[0], (array) $counts[0]);
+        $this->assertEquals($expectedCounts[1], (array) $counts[1]);
+        $this->assertEquals($expectedCounts[2], (array) $counts[2]);
+        $this->assertEquals($expectedCounts[3], (array) $counts[3]);
+    }
+
+    public function testTranslationCountsManyTextsManyLanguagesAndSomeNeedsWorkForOneLanguage()
+    {
+        $this->translation->translation = 'test';
+        $this->translation->needs_work = 0;
+        $this->translation->save();
+
+        $texts = Text::factory(3)->for($this->file)->create();
+        $languages = Language::factory(3)->create();
+
+        Translation::factory()->for($this->language)->forEachSequence(
+            ['text_id' => $texts[0]->id, 'needs_work' => 1],
+            ['text_id' => $texts[1]->id],
+        )->create([
+            'author_id' => $this->user->id
+        ]);
+
+        Translation::factory()->for($languages[1])->forEachSequence(
+            ['text_id' => $texts[1]->id, 'needs_work' => 1],
+            ['text_id' => $texts[2]->id],
+        )->create([
+            'author_id' => $this->user->id
+        ]);
+
+        $counts = Translation::counts(
+            [$this->text->id, $texts[0]->id, $texts[1]->id, $texts[2]->id], $languages[1])
+            ->get()->toArray();
+
+        $expectedCounts = [
+            0 => [
+                'language_id' => $languages[1]->id,
+                'needs_work' => 0,
+                'count' => 1
+            ],
+            1 => [
+                'language_id' => $languages[1]->id,
+                'needs_work' => 1,
+                'count' => 1
+            ]
+        ];
+        $this->assertCount(2, $counts);
+        $this->assertEquals($expectedCounts[0], (array) $counts[0]);
+        $this->assertEquals($expectedCounts[1], (array) $counts[1]);
+    }
+
+    public function testTranslationCountsManyTextsManyLanguagesAndSomeNeedsWorkForManyLanguages()
+    {
+        $this->translation->translation = 'test';
+        $this->translation->needs_work = 0;
+        $this->translation->save();
+
+        $texts = Text::factory(3)->for($this->file)->create();
+        $languages = Language::factory(3)->create();
+
+        Translation::factory()->for($this->language)->forEachSequence(
+            ['text_id' => $texts[0]->id, 'needs_work' => 1],
+            ['text_id' => $texts[1]->id],
+        )->create([
+            'author_id' => $this->user->id
+        ]);
+
+        Translation::factory()->for($languages[0])->forEachSequence(
+            ['text_id' => $this->text->id],
+            ['text_id' => $texts[2]->id],
+        )->create([
+            'author_id' => $this->user->id
+        ]);
+
+        Translation::factory()->for($languages[1])->forEachSequence(
+            ['text_id' => $texts[1]->id, 'needs_work' => 1],
+            ['text_id' => $texts[2]->id],
+        )->create([
+            'author_id' => $this->user->id
+        ]);
+
+        $counts = Translation::counts(
+            [$this->text->id, $texts[0]->id, $texts[1]->id, $texts[2]->id],
+            [$languages[0]->id, $languages[1]->id]
+        )->get()->toArray();
+
+        $expectedCounts = [
+            0 => [
+                'language_id' => $languages[0]->id,
+                'needs_work' => 0,
+                'count' => 2
+            ],
+            1 => [
+                'language_id' => $languages[1]->id,
+                'needs_work' => 0,
+                'count' => 1
+            ],
+            2 => [
+                'language_id' => $languages[1]->id,
+                'needs_work' => 1,
+                'count' => 1
+            ]
+        ];
+        $this->assertCount(3, $counts);
+        $this->assertEquals($expectedCounts[0], (array) $counts[0]);
+        $this->assertEquals($expectedCounts[1], (array) $counts[1]);
+        $this->assertEquals($expectedCounts[2], (array) $counts[2]);
+    }
+
+    public function testTranslationCountsManyTextsManyLanguagesAndSomeNeedsWorkForManyLanguagesWithTextsQuery()
+    {
+        $this->translation->translation = 'test';
+        $this->translation->needs_work = 0;
+        $this->translation->save();
+
+        $texts = Text::factory(3)->for($this->file)->create();
+        $languages = Language::factory(3)->create();
+
+        Translation::factory()->for($this->language)->forEachSequence(
+            ['text_id' => $texts[0]->id, 'needs_work' => 1],
+            ['text_id' => $texts[1]->id],
+        )->create([
+            'author_id' => $this->user->id
+        ]);
+
+        Translation::factory()->for($languages[0])->forEachSequence(
+            ['text_id' => $this->text->id],
+            ['text_id' => $texts[2]->id],
+        )->create([
+            'author_id' => $this->user->id
+        ]);
+
+        Translation::factory()->for($languages[1])->forEachSequence(
+            ['text_id' => $texts[1]->id, 'needs_work' => 1],
+            ['text_id' => $texts[2]->id],
+        )->create([
+            'author_id' => $this->user->id
+        ]);
+
+        $counts = Translation::counts(
+            $this->file->texts()->select('id')->getQuery(),
+            [$languages[0]->id, $languages[1]->id]
+        )->get()->toArray();
+
+        $expectedCounts = [
+            0 => [
+                'language_id' => $languages[0]->id,
+                'needs_work' => 0,
+                'count' => 2
+            ],
+            1 => [
+                'language_id' => $languages[1]->id,
+                'needs_work' => 0,
+                'count' => 1
+            ],
+            2 => [
+                'language_id' => $languages[1]->id,
+                'needs_work' => 1,
+                'count' => 1
+            ]
+        ];
+        $this->assertCount(3, $counts);
+        $this->assertEquals($expectedCounts[0], (array) $counts[0]);
+        $this->assertEquals($expectedCounts[1], (array) $counts[1]);
+        $this->assertEquals($expectedCounts[2], (array) $counts[2]);
+    }
 }
