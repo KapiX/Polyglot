@@ -14,7 +14,7 @@ class FileFactory extends Factory
     {
         return [
             'type' => mt_rand(1, 3),
-            'name' => $this->faker->unique()->word(),
+            'name' => $this->faker->unique()->lexify('file-????'),
         ];
     }
 }

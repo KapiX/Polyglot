@@ -14,7 +14,7 @@ class LanguageFactory extends Factory
     {
         return [
             'iso_code' => $this->faker->unique()->languageCode(),
-            'name' => $this->faker->unique()->word(),
+            'name' => $this->faker->unique()->lexify('language-????'),
         ];
     }
 }
