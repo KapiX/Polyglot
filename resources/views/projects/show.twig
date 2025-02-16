@@ -75,7 +75,7 @@
             {% set continueLabel = canTranslate ? 'Continue' : 'View unfinished' %}
             {% set allLabel = canTranslate ? 'All blocks' : 'View all' %}
             {% set parameters = {file: file.id, lang: language.id} %}
-            {% set unfinished = canTranslate and lang_stat['translated'] < 100 %}
+            {% set unfinished = canTranslate and lang_stat.translated_percent < 100 %}
             {% set buttonClass = unfinished ? 'btn-primary' : 'btn-default' %}
             <a href="{{ route('files.translate', unfinished ? parameters|merge({type: 'continue'}) : parameters) }}"
                 class="btn btn-xs {{ buttonClass }}">{{ unfinished ? continueLabel : allLabel }}</a>
