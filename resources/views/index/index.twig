@@ -3,30 +3,29 @@
 {% block title %}Welcome to Polyglot{% endblock %}
 
 {% block content %}
-<div class="jumbotron">
-    <h1>Welcome to Polyglot!</h1>
-    <p>We're translating Haiku 3rd-party applications here.</p>
-    <p><a href="{{ route('auth.provider', {provider: 'github'}) }}" class="btn btn-primary btn-lg" role="button">Sign in with GitHub to join</a></p>
+<div class="card mt-3 mb-3 text-bg-light">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="card-title">Welcome to Polyglot!</h5>
+                <p class="card-text">We're translating Haiku 3rd-party applications here.</p>
+            </div>
+            <a href="{{ route('auth.provider', {provider: 'github'}) }}" class="btn btn-primary btn-lg" role="button">Sign in with GitHub to join</a>
+        </div>
+    </div>
 </div>
+<div class="row">
 {% for chunk in projects.chunk((projects.count() / 3)|round(0, 'ceil')) %}
-<div class="col-md-4">
-<table class="table">
-    <tbody>
+<div class="col"><div class="list-group mb-3">
     {% for project in chunk %}
-    <tr>
-        <td>
-            <img src="{{ asset(project.icon) }}">
-            {% if project.url %}
-                <a href="{{ project.url }}">{{ project.name }}</a>
-            {% else %}
-                {{ project.name }}
-            {% endif %}
-        </td>
-    </tr>
+    <div class="list-group-item">
+        <img src="{{ asset(project.icon) }}" width="32" height="32" class="me-2">
+        {% if project.url %}<a href="{{ project.url }}">{{ project.name }}</a>
+        {% else %}{{ project.name }}{% endif %}
+    </div>
     {% endfor %}
-    </tbody>
-</table>
-</div>
+</div></div>
 {% endfor %}
+</div>
 {% endblock %}
 
