@@ -24,7 +24,7 @@ class UsersController extends Controller
             $users = User::search($search)->paginate(15);
         }
         return view('users.index')
-            ->with('users', $users)
+            ->with('users', $users->appends(['search' => $search]))
             ->with('search', $search);
     }
 

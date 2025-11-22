@@ -311,7 +311,7 @@ class FilesController extends Controller
             $translations = $translations->forPage(1, $perPage);
         }
         else
-            $translations = $translations->paginate($perPage);
+            $translations = $translations->paginate($perPage)->appends(['search' => $search]);
         $filename = str_replace('%lang%', $lang->iso_code, basename($file->path));
 
         return view('files.translate')

@@ -53,7 +53,7 @@ class GlossaryEntryController extends Controller
 
         return view('glossaries.index')
             ->with('glossary', $glossary)
-            ->with('entries', $entries->paginate(300))
+            ->with('entries', $entries->paginate(300)->appends(['search' => $search]))
             ->with('search', $search);
     }
 
