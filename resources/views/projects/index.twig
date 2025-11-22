@@ -18,40 +18,39 @@
         <li class="breadcrumb-item active" aria-current="page">Projects</li>
     </ol>
 </nav>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-6 order-md-2">
-            {% if auth_user().can('add-project') %}
-            <form action="{{ route('projects.store') }}" method="post">
-            {{ csrf_field() }}
-            <div class="input-group has-validation">
-                {% set name_errors = errors.get('name') %}
-                <div class="form-floating {{ name_errors ? 'is-invalid' }}">
-                    <input type="text" name="name" placeholder="Name" class="form-control {{ name_errors ? 'is-invalid' }}">
-                    <label for="name">Project name</label>
-                </div>
-                <button type="submit" class="btn btn-primary">Add</button>
-                <div class="invalid-feedback">
-                {% for error in name_errors %}
-                    {{ error }}
-                {% endfor %}
-                </div>
+<div class="container">
+<div class="row mb-3">
+    <div class="col-md-6 order-md-2 d-flex flex-column justify-content-between">
+        {% if auth_user().can('add-project') %}
+        <form action="{{ route('projects.store') }}" method="post">
+        {{ csrf_field() }}
+        <div class="input-group has-validation mb-3">
+            {% set name_errors = errors.get('name') %}
+            <div class="form-floating {{ name_errors ? 'is-invalid' }}">
+                <input type="text" name="name" placeholder="Name" class="form-control {{ name_errors ? 'is-invalid' }}">
+                <label for="name">Project name</label>
             </div>
-            </form>
-            {% endif %}
+            <button type="submit" class="btn btn-primary">Add</button>
+            <div class="invalid-feedback">
+            {% for error in name_errors %}
+                {{ error }}
+            {% endfor %}
+            </div>
         </div>
-        <div class="col-md-6 order-md-1">
-            <p>Polyglot allows developers to upload the GUI strings ("catkeys", Java properties, or Line-separated files) of their applications and have their users translate them into their native language.</p>
-            <p>
-                <strong>These projects are currently available:</strong>
-                {% if sort == 'updated' %}
-                    (sort by <a href="{{ url_current() }}?sort=name">name</a> | <strong>last updated</strong>)
-                {% else %}
-                    (sort by <strong>name</strong> | <a href="{{ url_current() }}?sort=updated">last updated</a>)
-                {% endif %}
-            </p>
+        </form>
+        {% endif %}
+        <div class="text-end">sort by
+            <span class="btn-group align-baseline">
+                <a href="{{ url_current() }}?sort=name" class="btn btn-sm {{ sort == 'name' ? 'btn-secondary' : 'btn-outline-secondary' }}">name</a>
+                <a href="{{ url_current() }}?sort=updated" class="btn btn-sm {{ sort == 'updated' ? 'btn-secondary' : 'btn-outline-secondary' }}">last updated</a>
+            </span>
         </div>
     </div>
+    <div class="col-md-6 order-md-1">
+        <p>Polyglot allows developers to upload the GUI strings ("catkeys", Java properties, or Line-separated files) of their applications and have their users translate them into their native language.</p>
+        <strong>These projects are currently available:</strong>
+    </div>
+</div>
 </div>
 {% if projects.count != 0 %}
     <div class="container">
@@ -62,9 +61,8 @@
 <div class="row mb-2">
     <div class="btn-group w-100" role="group">
         <a href="{{ route('projects.show', project.id) }}" class="btn btn-outline-primary position-relative w-100 text-start" role="button">
-            <img width="32" height="32" src="{{ asset(project.icon) }}" class="me-2" alt="Icon">
+            <img width="32" height="32" src="{{ asset(project.icon) }}" class="me-2">
             <span class="align-middle">{{ project.name }}</span>
-
             {% if project_needs_work and project_needs_work[project.id] == 1 %}
                 <span class="position-absolute top-0 start-0 translate-middle p-1 bg-primary border border-light-subtle rounded-circle">
                     <span class="visually-hidden">Incomplete</span>
