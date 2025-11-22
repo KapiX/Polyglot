@@ -160,20 +160,20 @@ Here you can add those different translation modules and their catkeys (or Java 
 </p>
 <form action="{{ route('files.store', {project: project.id}) }}" method="post">
 {{ csrf_field() }}
-    <div class="row">
-        <div class="col">
-<div class="input-group">
-    <input type="text" name="name" id="name" class="form-control" placeholder="Module name">
-    <button type="submit" class="btn btn-primary">Add</button>
-</div>
-        </div>
-        <div class="col">
-<select class="form-select" name="type[]" id="type">
-    {% for id, name in file_types %}
-        <option value="{{ id }}"{{ id == 1 ? ' selected' }}>{{ name }}</option>
-    {% endfor %}
-    </select>
+<div class="row">
+    <div class="col">
+        <div class="input-group">
+            <input type="text" name="name" id="name" class="form-control" placeholder="Module name">
+            <button type="submit" class="btn btn-primary">Add</button>
         </div>
     </div>
+    <div class="col">
+        <select class="form-select" name="type[]" id="type">
+            {% for id, name in file_types %}
+                <option value="{{ id }}"{{ id == 1 ? ' selected' }}>{{ name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
 </form>
 {% endblock %}
