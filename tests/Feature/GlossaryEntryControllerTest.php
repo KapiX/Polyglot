@@ -42,7 +42,7 @@ class GlossaryEntryControllerTest extends TestCase
         $response->assertSeeTextInOrder([
             'a-lang-1', 'a-lang-4', 'b-lang-2', 'c-lang-3'
         ]);
-        $response->assertSee('<td>0</td>', false);
+        $response->assertSee('0</span>', false);
     }
 
     public function testIndex()
