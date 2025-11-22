@@ -3,12 +3,14 @@
 {% block title %}{{ file.project.name }} - {{ file.name }} - Edit{% endblock %}
 
 {% block content %}
-<ol class="breadcrumb">
-    <li><a href="{{ route('projects.index') }}">Home</a></li>
-    <li><img src="{{ asset(file.project.icon) }}" class="breadcrumb-icon"> <a href="{{ route('projects.show', {project: file.project}) }}">{{ file.project.name }}</a></li>
-    <li><a href="{{ route('projects.show', {project: file.project}) }}">{{ file.name }}</a></li>
-    <li class="active">Edit</li>
-</ol>
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+        <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
+        <li class="breadcrumb-item"><img src="{{ asset(file.project.icon) }}" class="breadcrumb-icon"> <a href="{{ route('projects.show', {project: file.project}) }}">{{ file.project.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('projects.show', {project: file.project}) }}">{{ file.name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Edit</li>
+    </ol>
+</nav>
 
 {% set fileInstance = file.getFileInstance() %}
 <div class="container-fluid">
@@ -20,23 +22,19 @@
     {% endif %}
     <div class="row">
         <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">Upload {{ filename }}.{{ fileInstance.getExtension() }}</div>
-                <div class="panel-body">
-                    <p class="message bg-info text-info">
+            <div class="card mb-3">
+                <div class="card-header">Upload {{ filename }}.{{ fileInstance.getExtension() }}</div>
+                <div class="card-body">
+                    <p class="alert alert-info">
                         When an updated {{ filename }}.{{ fileInstance.getExtension() }} file is uploaded, the unchanged strings are kept in the database (along with their translations) and all new strings are added (with no translations yet, of course). Strings that aren't in the new {{ filename }}.{{ fileInstance.getExtension() }} anymore get removed (together with all their attached translations: just fixing a typo is then very costly, because the whole string has to be re-translated!).
                     </p>
                     <form action="{{ route('files.upload', {file: file.id}) }}" method="post" enctype="multipart/form-data">
                     {{ csrf_field() }}
-                    <div class="form-group {{ errors.has('catkeys') ? ' has-error' }}">
-                        <div class="input-group">
-                            <input type="file" name="catkeys" id="catkeys" class="form-control">
-                            <span class="input-group-btn">
-                                <input type="submit" value="Upload" class="btn btn-primary">
-                            </span>
-                        </div>
+                    <div class="input-group">
+                        <input type="file" name="catkeys" id="catkeys" class="form-control {{ errors.has('catkeys') ? 'is-invalid' }}">
+                        <button type="submit" class="btn btn-primary">Upload</button>
                         {% for error in errors.get('catkeys') %}
-                            <span class="help-block">{{ error }}</span>
+                            <div class="invalid-feedback">{{ error }}</div>
                         {% endfor %}
                     </div>
                     </form>
@@ -47,33 +45,31 @@
             <form action="{{ route('files.update', file.id) }}" method="post">
             {{ method_field('PUT') }}
             {{ csrf_field() }}
-            <div class="panel panel-default">
-                <div class="panel-heading">{{ fileInstance.getTypeName() }} properties</div>
-                <div class="panel-body">
-                    <div class="form-group {{ errors.has('name') ? ' has-error' }}">
-                        <label for="name">Name</label>
-                        <input type="text" name="name" id="name" value="{{ file.name }}" class="form-control">
+            <div class="card mb-3">
+                <div class="card-header">{{ fileInstance.getTypeName() }} properties</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" name="name" id="name" value="{{ old('name', file.name) }}" class="form-control {{ errors.has('name') ? 'is-invalid' }}">
                         {% for error in errors.get('name') %}
-                            <span class="help-block">{{ error }}</span>
+                            <div class="invalid-feedback">{{ error }}</div>
                         {% endfor %}
                     </div>
-                    <div class="form-group {{ errors.has('path') ? ' has-error' }}">
-                        <label for="path">Path</label>
-                        <input type="text" name="path" id="path" value="{{ file.path }}" class="form-control">
+                    <div class="mb-3">
+                        <label for="path" class="form-label">Path</label>
+                        <input type="text" name="path" id="path" value="{{ old('path', file.path) }}" class="form-control {{ errors.has('path') ? 'is-invalid' }}">
                         {% for error in errors.get('path') %}
-                            <span class="help-block">{{ error }}</span>
+                            <div class="invalid-feedback">{{ error }}</div>
                         {% endfor %}
-                        <p class="help-block">Path to the file in the project, without extension; %lang% is replaced with language ISO code.</p>
+                        <div class="form-text">Path to the file in the project, without extension; %lang% is replaced with language ISO code.</div>
                     </div>
                     {% for prop, data in file.metadata %}
-                    <div class="form-group">
-                        <label for="{{ prop }}">{{ fileInstance.getLabelForMetaData(prop) }}</label>
+                    <div class="mb-3">
+                        <label for="{{ prop }}" class="form-label">{{ fileInstance.getLabelForMetaData(prop) }}</label>
                         <input type="text" name="{{ prop }}" id="{{ prop }}" value="{{ data }}" class="form-control"{{ not (prop in fileInstance.editableMetaData()) ? ' disabled' }}>
                     </div>
                     {% endfor %}
-                </div>
-                <div class="panel-footer">
-                    <input type="submit" value="Save" class="btn btn-primary btn-block">
+                    <input type="submit" value="Save" class="btn btn-primary w-100">
                 </div>
             </div>
             </form>

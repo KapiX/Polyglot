@@ -3,57 +3,49 @@
 {% block title %}Languages{% endblock %}
 
 {% block content %}
-<ol class="breadcrumb">
-    <li><a href="{{ route('projects.index') }}">Home</a></li>
-    <li class="active">Languages</li>
-</ol>
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+        <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Languages</li>
+    </ol>
+</nav>
 
-{% if errors.all() %}
-<div class="alert alert-danger">
-    {% for error in errors.all() %}
-    <p>{{ error }}</p>
-    {% endfor %}
-</div>
-{% elseif session('message') %}
-<div class="alert alert-success">
-    <p>{{ session('message') }}</p>
-</div>
+{% if session('message') %}
+<div class="alert alert-success">{{ session('message') }}</div>
 {% endif %}
-
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>ISO code</th>
-        <th>Language</th>
-        <th>Style guide URL</th>
-        <th>Terminology URL</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <form action="{{ route('languages.store') }}" method="post">
-        {{ csrf_field() }}
-        <td class="iso-code"><input type="text" name="iso_code" id="iso_code" class="form-control"></td>
-        <td><input type="text" name="name" id="name" class="form-control">
-        <td><input type="text" name="style_guide_url" id="style_guide_url" class="form-control"></td>
-        <td><input type="text" name="terminology_url" id="terminology_url" class="form-control"></td>
-        <td><input type="submit" value="Add" class="btn btn-default"></td>
-        </form>
-    </tr>
-    {% for language in languages %}
-    <tr>
-        <form action="{{ route('languages.update', language.id) }}" method="post">
-        {{ method_field('PUT') }}
-        {{ csrf_field() }}
-        <td class="iso-code"><input type="text" name="iso_code_{{ language.id }}" id="iso_code_{{ language.id }}" value="{{ language.iso_code }}" class="form-control"></td>
-        <td><input type="text" name="name_{{ language.id }}" id="name_{{ language.id }}" value="{{ language.name }}" class="form-control"></td>
-        <td><input type="text" name="style_guide_url_{{ language.id }}" id="style_guide_url_{{ language.id }}" value="{{ language.style_guide_url }}" class="form-control"></td>
-        <td><input type="text" name="terminology_url_{{ language.id }}" id="terminology_url_{{ language.id }}" value="{{ language.terminology_url }}" class="form-control"></td>
-        <td><input type="submit" value="Save" class="btn btn-default"></td>
-        </form>
-    </tr>
+<div class="row">
+    {% for chunk in languages.chunk(((languages.count()) / 3)|round(0, 'ceil')) %}
+    <div class="col"><div class="list-group mb-3">
+    {% for language in chunk %}
+        {% if language.name == "_Add" %}
+        <a href="{{ route('languages.create') }}" class="list-group-item list-group-item-action">
+            <h5 class="d-flex justify-content-center mt-1">+</h5>
+            <div class="d-flex justify-content-between align-items-start position-relative">
+                <button class="btn btn-sm invisible">#</button>
+                <h6 class="position-absolute start-50 translate-middle-x">Add</h6>
+            </div>
+        </a>
+        {% else %}
+        <div class="list-group-item">
+            <div class="d-flex w-100 justify-content-between align-items-start">
+                <h5>{{ language.iso_code }}</h5>
+                <h6>{{ language.name }}</h6>
+            </div>
+            <div class="d-flex w-100 justify-content-between align-items-start mb-1">
+                <div>
+                    <a href="{{ language.style_guide_url }}" class="btn btn-sm btn-outline-secondary {{ language.style_guide_url ?: 'disabled' }}">Style guide</a>
+                    <a href="{{ language.terminology_url }}" class="btn btn-sm btn-outline-secondary {{ language.terminology_url ?: 'disabled' }}">Terminology</a>
+                </div>
+                <div>
+                    <div class="btn-group">
+                        <a href="{{ route('languages.edit', language.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     {% endfor %}
-    </tbody>
-</table>
+    </div></div>
+    {% endfor %}
+</div>
 {% endblock %}

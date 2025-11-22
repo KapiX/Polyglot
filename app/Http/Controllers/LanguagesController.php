@@ -16,9 +16,16 @@ class LanguagesController extends Controller
 
     public function index()
     {
+        $addLanguage = new Language;
+        $addLanguage->name = '_Add';
         $languages = Language::orderBy('name')->get();
+        $languages->prepend($addLanguage);
         return view('languages.index')
             ->with('languages', $languages);
+    }
+
+    public function create() {
+        return view('languages.create');
     }
 
     public function store(AddLanguage $request) {
@@ -33,15 +40,17 @@ class LanguagesController extends Controller
             ->with('message', 'Language added.');
     }
 
+    public function edit(Language $language)
+    {
+        return view('languages.edit')->with('language', $language);
+    }
 
     public function update(EditLanguage $request, Language $language)
     {
-        // _$id suffix is a workaround, Form::text uses value parameter as a hint,
-        // if $request[key] exists it will override provided value
-        $language->name = $request->input('name_' . $language->id);
-        $language->iso_code = $request->input('iso_code_' . $language->id);
-        $language->style_guide_url = $request->input('style_guide_url_' . $language->id);
-        $language->terminology_url = $request->input('terminology_url_' . $language->id);
+        $language->iso_code = $request->input('iso_code');
+        $language->name = $request->input('name');
+        $language->style_guide_url = $request->input('style_guide_url');
+        $language->terminology_url = $request->input('terminology_url');
         $language->save();
 
         return redirect()->route('languages.index')

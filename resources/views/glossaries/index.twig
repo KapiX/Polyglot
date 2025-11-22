@@ -3,16 +3,18 @@
 {% block title %}Glossary - {{ glossary.name }}{% endblock %}
 
 {% block content %}
-<ol class="breadcrumb">
-    <li><a href="{{ route('projects.index') }}">Home</a></li>
-    <li><a href="{{ route('glossaries') }}">Glossaries</a></li>
-    {% if not search %}
-        <li class="active">{{ glossary.name }}</li>
-    {% else %}
-        <li><a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}">{{ glossary.name }}</a></li>
-        <li class="active">Search: {{ search }}</li>
-    {% endif %}
-</ol>
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+        <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('glossaries') }}">Glossaries</a></li>
+        {% if not search %}
+            <li class="breadcrumb-item active" aria-current="page">{{ glossary.name }}</li>
+        {% else %}
+            <li class="breadcrumb-item"><a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}">{{ glossary.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Search: {{ search }}</li>
+        {% endif %}
+    </ol>
+</nav>
 
 {% if errors.all() %}
 <div class="alert alert-danger" role="alert">
@@ -26,34 +28,30 @@
 {% endif %}
 
 <form action="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}" method="get">
-<div class="input-group form-group">
+<div class="input-group mb-3">
     {% if search != '' %}
-    <span class="input-group-btn">
-        <a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}" class="btn btn-default">&#x2715;</a>
-    </span>
+    <a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}" class="btn btn-secondary">&#x2715;</a>
     {% endif %}
     <input type="text" name="search" id="search" value="{{ search }}" class="form-control">
-    <span class="input-group-btn">
-        <input type="submit" value="Search" class="btn btn-default">
-    </span>
+    <button type="submit" class="btn btn-secondary">Search</button>
 </div>
 </form>
 
-<ol class="breadcrumb text-center">
+<ul class="nav nav-pills bg-secondary-subtle rounded p-2 mb-3 d-flex justify-content-center sticky-top" id="navbarLetters">
     {% for l in entries.pluck('letter').unique() %}
-        <li><a href="#letter-{{ l|lower }}">{{ l }}</a></li>
+        <li class="nav-item"><a class="nav-link" href="#letter-{{ l|lower }}">{{ l }}</a></li>
     {% endfor %}
-</ol>
+</ul>
 
 {% set letter = "" %}
-<table class="table table-striped glossary">
+<table class="table table-striped glossary" data-bs-spy="scroll" data-bs-target="#navbarLetters" data-bs-root-margin="0px 0px -50%" data-bs-smooth-scroll="true" tabindex="0">
     <thead>
     <tr>
         <th>Text</th>
         <th>Translation</th>
-        <th>
+        <th class="d-flex justify-content-end">
             {% if auth_user().can('create', ['App\\Models\\GlossaryEntry']) %}
-                <a href="{{ route('glossaries.entries.create', {glossary: glossary.id}) }}" class="btn btn-primary btn-xs">Add</a>
+                <a href="{{ route('glossaries.entries.create', {glossary: glossary.id}) }}" class="btn btn-primary btn-sm">Add</a>
             {% endif %}
         </th>
     </tr>
@@ -67,18 +65,20 @@
         </tr>
     {% endif %}
     <tr>
-        <td class="entry">{{ entry.text }}</td>
-        <td class="entry">{{ entry.translation }}</td>
-        <td>
+        <td>{{ entry.text }}</td>
+        <td>{{ entry.translation }}</td>
+        <td class="d-flex justify-content-end">
             <form action="{{ route('glossaries.entries.destroy', {glossary: glossary.id, entry: entry.id}) }}" method="post">
             {{ method_field('DELETE') }}
             {{ csrf_field() }}
+            <div class="btn-group">
             {% if auth_user().can('update', [entry]) %}
-                <a href="{{ route('glossaries.entries.edit', {glossary: glossary.id, entry: entry.id}) }}" class="btn btn-default btn-xs">Edit</a>
+                <a href="{{ route('glossaries.entries.edit', {glossary: glossary.id, entry: entry.id}) }}" class="btn btn-primary btn-sm">Edit</a>
             {% endif %}
             {% if auth_user().can('delete', [entry]) %}
-                <input type="submit" value="Delete" class="btn btn-danger btn-xs">
+                <input type="submit" value="Delete" class="btn btn-danger btn-sm">
             {% endif %}
+            </div>
             </form>
         </td>
     </tr>

@@ -3,42 +3,50 @@
 {% block title %}{{ user.name }} - Edit{% endblock %}
 
 {% block content %}
-<ol class="breadcrumb">
-    <li><a href="{{ route('projects.index') }}">Home</a></li>
-    <li><a href="{{ route('users.index') }}">Users</a></li>
-    <li>{{ user.name }}</li>
-    <li class="active">Edit</li>
-</ol>
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+        <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Users</a></li>
+        <li class="breadcrumb-item">{{ user.name }}</li>
+        <li class="breadcrumb-item active" aria-current="page">Edit</li>
+    </ol>
+</nav>
 
 <form action="{{ route('users.update', user.id) }}" method="post">
 {{ method_field('PUT') }}
 {{ csrf_field() }}
-<div class="form-group">
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name" value="{{ user.name }}" class="form-control">
+<div class="mb-3">
+    <label for="name" class="form-label">Name</label>
+    <input type="text" name="name" id="name" value="{{ old('name', user.name) }}" class="form-control {{ errors.has('name') ? 'is-invalid' }}">
+    {% for error in errors.get('name') %}
+        <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
 </div>
-<div class="form-group">
-    <label for="email">E-mail</label>
-    <input type="text" name="email" id="email" value="{{ user.email }}" class="form-control">
+<div class="mb-3">
+    <label for="email" class="form-label">E-mail</label>
+    <input type="text" name="email" id="email" value="{{ old('email', user.email) }}" class="form-control {{ errors.has('email') ? 'is-invalid' }}">
+    {% for error in errors.get('email') %}
+        <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
 </div>
-<div class="form-group">
-    <label for="role">Role</label>
+<div class="mb-3">
+    <label for="role" class="form-label">Role</label>
     <select class="form-control" name="role[]" id="role">
     {% for id, name in user.rolesNames() %}
         <option value="{{ id }}"{{ id == user.role ? ' selected' }}>{{ name }}</option>
     {% endfor %}
     </select>
 </div>
-<div class="form-group">
-    <label for="languages">Language permissions</label>
+<div class="mb-3">
+    <label for="languages" class="form-label">Language permissions</label>
     <select multiple="multiple" class="form-control" name="languages[]" id="languages">
-    {% for id, name in languages %}
-        <option value="{{ id }}"{{ id in user.languages.pluck('id') ? ' selected' }}>{{ name }}</option>
+    {% for lang in languages %}
+        <option value="{{ lang.id }}"{{ lang.id in user.languages.pluck('id') ? ' selected' }}>[{{ lang.iso_code }}] {{ lang.name }}</option>
     {% endfor %}
     </select>
 </div>
-<div class="form-group">
-    <input type="submit" value="Save" class="btn btn-default">
+<div class="mb-3">
+    <input type="submit" value="Save" class="btn btn-primary">
 </div>
 </form>
 {% endblock %}

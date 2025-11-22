@@ -3,12 +3,14 @@
 {% block title %}Glossary - {{ glossary.name }} - Add entries{% endblock %}
 
 {% block content %}
-<ol class="breadcrumb">
-    <li><a href="{{ route('projects.index') }}">Home</a></li>
-    <li><a href="{{ route('glossaries') }}">Glossaries</a></li>
-    <li><a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}">{{ glossary.name }}</a></li>
-    <li class="active">Add entries</li>
-</ol>
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+        <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('glossaries') }}">Glossaries</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}">{{ glossary.name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Add entries</li>
+    </ol>
+</nav>
 
 {% if errors.all() %}
 <div class="alert alert-danger" role="alert">
@@ -20,7 +22,7 @@
 
 <form action="{{ route('glossaries.entries.store', {glossary: glossary.id}) }}" method="post">
 {{ csrf_field() }}
-<div class="row form-group">
+<div class="row mb-3">
     <div class="col-md-12">
         <p class="message bg-info text-info">
             In the text areas below you can input texts with their translations to be added to the glossary.<br>
@@ -32,17 +34,17 @@
         </p>
     </div>
 </div>
-<div class="row form-group">
+<div class="row mb-3">
     <div class="col-md-6">
-        <textarea name="text" id="text" class="form-control" placeholder="Texts"></textarea>
+        <textarea name="text" id="text" class="form-control" placeholder="Texts">{{ old('text') }}</textarea>
     </div>
     <div class="col-md-6">
-        <textarea name="translation" id="translation" class="form-control" placeholder="Translations"></textarea>
+        <textarea name="translation" id="translation" class="form-control" placeholder="Translations">{{ old('translation') }}</textarea>
     </div>
 </div>
-<div class="row form-group">
+<div class="row mb-3">
     <div class="col-md-12">
-        <input type="submit" value="Add" class="btn btn-primary" style="width: 100%">
+        <input type="submit" value="Add" class="btn btn-primary w-100">
     </div>
 </div>
 </form>

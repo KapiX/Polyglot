@@ -3,11 +3,13 @@
 {% block title %}Help for developers{% endblock %}
 
 {% block content %}
-<ol class="breadcrumb">
-    <li><a href="{{ route('projects.index') }}">Home</a></li>
-    <li><a href="{{ route('help') }}">Help</a></li>
-    <li class="active">Developers</li>
-</ol>
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+        <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('help') }}">Help</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Developers</li>
+    </ol>
+</nav>
 
 <p>If you're completely new to localization under Haiku, please read the very basic blog <a href="https://www.haiku-os.org/community/getting-involved/translating/3rdparty">Localizing an application</a>. Also see the <a href="https://www.haiku-os.org/docs/api/group__locale.html">Haiku Book</a> and maybe search for examples in Haiku the tree with <a href="https://xref.landonf.org/source/">OpenGrok</a>.</p>
 

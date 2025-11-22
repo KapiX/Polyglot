@@ -33,7 +33,7 @@ class UsersController extends Controller
         if($user->id == Auth::user()->id)
             return \Redirect::route('users.index');
 
-        $languages = Language::orderBy('iso_code')->pluck('name', 'id');
+        $languages = Language::orderBy('iso_code')->get();
         return view('users.edit')
             ->with('user', $user)
             ->with('languages', $languages);

@@ -81,8 +81,14 @@ Route::put('/texts/lang/{lang}', 'TextsController@bulkTranslate')
 Route::get('/languages', 'LanguagesController@index')
     ->name('languages.index')
     ->middleware('can:global-settings');
+Route::get('/languages/create', 'LanguagesController@create')
+    ->name('languages.create')
+    ->middleware('can:global-settings');
 Route::post('/languages', 'LanguagesController@store')
     ->name('languages.store')
+    ->middleware('can:global-settings');
+Route::get('/languages/{language}/edit', 'LanguagesController@edit')
+    ->name('languages.edit')
     ->middleware('can:global-settings');
 Route::put('/languages/{language}', 'LanguagesController@update')
     ->name('languages.update')

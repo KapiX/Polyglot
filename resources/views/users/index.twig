@@ -3,15 +3,17 @@
 {% block title %}Users{% endblock %}
 
 {% block content %}
-<ol class="breadcrumb">
-    <li><a href="{{ route('projects.index') }}">Home</a></li>
-    {% if not search %}
-        <li class="active">Users</li>
-    {% else %}
-        <li><a href="{{ route('users.index') }}">Users</a></li>
-        <li class="active">Search: {{ search }}</li>
-    {% endif %}
-</ol>
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+        <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
+        {% if not search %}
+            <li class="breadcrumb-item active" aria-current="page">Users</li>
+        {% else %}
+            <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Users</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Search: {{ search }}</li>
+        {% endif %}
+    </ol>
+</nav>
 
 {% if session('success') %}
     <div class="alert alert-success" role="alert">{{ session('success') }}</div>
@@ -20,15 +22,10 @@
 <form action="{{ route('users.index') }}" method="get">
 <div class="input-group">
     {% if search != '' %}
-    <span class="input-group-btn">
-        <a href="{{ route('users.index') }}" class="btn btn-default">&#x2715;</a>
-    </span>
+    <a href="{{ route('users.index') }}" class="btn btn-secondary">&#x2715;</a>
     {% endif %}
     <input type="text" name="search" id="search" value="{{ search }}" class="form-control" placeholder="Name or e-mail...">
-
-    <span class="input-group-btn">
-        <input type="submit" value="Search" class="btn btn-default">
-    </span>
+    <button type="submit" class="btn btn-secondary">Search</button>
 </div>
 </form>
 
@@ -50,11 +47,11 @@
         <td>{{ user.roleName() }}</td>
         <td>
             {% for language in user.languages %}
-            {{ language.iso_code }}{% if loop.last == false %}, {% endif %}
+                <span class="badge language-badge bg-secondary me-2">{{ language.iso_code }}</span>
             {% endfor %}
         </td>
-        <td>
-            <a href="{{ route('users.edit', user.id) }}" class="btn btn-default {{ user.id == auth_user().id ? 'disabled' }}">Edit</a>
+        <td class="d-flex justify-content-end">
+            <a href="{{ route('users.edit', user.id) }}" class="btn btn-primary {{ user.id == auth_user().id ? 'disabled' }}">Edit</a>
         </td>
     </tr>
     {% else %}

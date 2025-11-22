@@ -32,21 +32,10 @@ class EditLanguage extends FormRequest
             $uniqueName .= ',' . $language->id;
         }
         return [
-            'iso_code_' . $language->id => 'required|' . $uniqueIsoCode . '|max:20',
-            'name_' . $language->id => 'required|' . $uniqueName . '|max:255',
-            'style_guide_url_' . $language->id => 'nullable|url|max:255',
-            'terminology_url_' . $language->id => 'nullable|url|max:255'
-        ];
-    }
-
-    public function attributes()
-    {
-        $language = Language::find($this->route('language')['id']);
-        return [
-            'iso_code_' . $language->id => 'ISO code',
-            'name_' . $language->id => 'Name',
-            'style_guide_url_' . $language->id => 'Style guide URL',
-            'terminology_url_' . $language->id => 'Terminology URL'
+            'iso_code' => 'required|' . $uniqueIsoCode . '|max:20',
+            'name' => 'required|' . $uniqueName . '|max:255',
+            'style_guide_url' => 'nullable|url|max:255',
+            'terminology_url' => 'nullable|url|max:255'
         ];
     }
 }

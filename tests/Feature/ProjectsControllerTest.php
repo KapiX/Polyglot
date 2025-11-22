@@ -199,7 +199,7 @@ class ProjectsControllerTest extends TestCase
         $response->assertSuccessful();
         $response->assertViewIs('projects.index');
 
-        $response->assertSeeInOrder(['class="warning"', $project->name], false);
+        $response->assertSeeInOrder(['class="table-warning"', $project->name], false);
     }
 
     public function testProjectsListHighlightsIncompleteProjectsWithManyPreferredLanguagesAndNoTranslations()
@@ -214,7 +214,7 @@ class ProjectsControllerTest extends TestCase
         $response->assertSuccessful();
         $response->assertViewIs('projects.index');
 
-        $response->assertSeeInOrder(['class="warning"', $project->name], false);
+        $response->assertSeeInOrder(['class="table-warning"', $project->name], false);
     }
 
     public function testAddingProjectSetsProjectAdminAndRedirectsToEdit()

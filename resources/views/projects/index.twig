@@ -2,33 +2,45 @@
 
 {% block title %}Projects{% endblock %}
 
+{% block scripts %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    })
+</script>
+{% endblock %}
+
 {% block content %}
-<ol class="breadcrumb">
-    <li><a href="{{ route('projects.index') }}">Home</a></li>
-    <li class="active">Projects</li>
-</ol>
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+        <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Projects</li>
+    </ol>
+</nav>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-6 col-md-push-6">
+        <div class="col-md-6 order-md-2">
             {% if auth_user().can('add-project') %}
             <form action="{{ route('projects.store') }}" method="post">
             {{ csrf_field() }}
-            <div class="form-group {{ errors.has('name') ? ' has-error' }}">
-                <label for="name">Add project</label>
-                <div class="input-group">
-                    <input type="text" name="name" placeholder="Name" class="form-control">
-                    <span class="input-group-btn">
-                        <input type="submit" class="btn btn-primary" value="Add">
-                    </span>
+            <div class="input-group has-validation">
+                {% set name_errors = errors.get('name') %}
+                <div class="form-floating {{ name_errors ? 'is-invalid' }}">
+                    <input type="text" name="name" placeholder="Name" class="form-control {{ name_errors ? 'is-invalid' }}">
+                    <label for="name">Project name</label>
                 </div>
-                {% for error in errors.get('name') %}
-                    <span class="help-block">{{ error }}</span>
+                <button type="submit" class="btn btn-primary">Add</button>
+                <div class="invalid-feedback">
+                {% for error in name_errors %}
+                    {{ error }}
                 {% endfor %}
+                </div>
             </div>
             </form>
             {% endif %}
         </div>
-        <div class="col-md-6 col-md-pull-6">
+        <div class="col-md-6 order-md-1">
             <p>Polyglot allows developers to upload the GUI strings ("catkeys", Java properties, or Line-separated files) of their applications and have their users translate them into their native language.</p>
             <p>
                 <strong>These projects are currently available:</strong>
@@ -42,42 +54,48 @@
     </div>
 </div>
 {% if projects.count != 0 %}
+    <div class="container">
+        <div class="row">
 {% for chunk in projects.chunk((projects.count() / 3)|round(0, 'ceil')) %}
-<div class="col-md-4">
-<table class="table table-striped">
-    <tbody>
+<div class="col">
     {% for project in chunk %}
-    <tr{{ project_needs_work ? (project_needs_work[project.id] == 1 ? ' class="warning"') }}>
-        <td class="project">
-            <img src="{{ asset(project.icon) }}">
-            <a href="{{ route('projects.show', project.id) }}">{{ project.name }}</a>
-            {% if project.url %}
-                <a href="{{ project.url }}" title="Website">
-                    <span class="glyphicon glyphicon-globe" aria-hidden="true"></span></a>
+<div class="row mb-2">
+    <div class="btn-group w-100" role="group">
+        <a href="{{ route('projects.show', project.id) }}" class="btn btn-outline-primary position-relative w-100 text-start" role="button">
+            <img width="32" height="32" src="{{ asset(project.icon) }}" class="me-2" alt="Icon">
+            <span class="align-middle">{{ project.name }}</span>
+
+            {% if project_needs_work and project_needs_work[project.id] == 1 %}
+                <span class="position-absolute top-0 start-0 translate-middle p-1 bg-primary border border-light-subtle rounded-circle">
+                    <span class="visually-hidden">Incomplete</span>
+                </span>
             {% endif %}
-            {% if project.bugtracker_url %}
-                <a href="{{ project.bugtracker_url }}" title="Bugtracker">
-                    <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
-            {% endif %}
-            {% if project.prerelease_url %}
-                <a href="{{ project.prerelease_url }}" title="Download prerelease">
-                    <span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
-            {% endif %}
-            {% if project.release_date %}
-                <span class="label label-info">Upcoming release: {{ project.release_date }}</span>
-            {% endif %}
-        </td>
-        <td>
-            {% if auth_user().can('modify-project', project) %}
-                <a href="{{ route('projects.edit', project.id) }}" class="btn btn-default">Edit</a>
-            {% endif %}
-        </td>
-    </tr>
+        </a>
+        {% if project.release_date %}
+            <a href="#" class="btn btn-primary d-flex align-items-center" data-bs-toggle="tooltip" title="Upcoming release: {{ project.release_date }}">
+                <i class="bi bi-calendar-date"></i></a>
+        {% endif %}
+        {% if project.url %}
+            <a href="{{ project.url }}" class="btn btn-outline-secondary d-flex align-items-center" title="Website">
+                <i class="bi bi-globe"></i></a>
+        {% endif %}
+        {% if project.bugtracker_url %}
+            <a href="{{ project.bugtracker_url }}" class="btn btn-outline-secondary d-flex align-items-center" title="Bugtracker">
+                <i class="bi bi-bug"></i></a>
+        {% endif %}
+        {% if project.prerelease_url %}
+            <a href="{{ project.prerelease_url }}" class="btn btn-outline-secondary d-flex align-items-center" title="Download prerelease">
+                <i class="bi bi-download"></i></a>
+        {% endif %}
+        {% if auth_user().can('modify-project', project) %}
+            <a href="{{ route('projects.edit', project.id) }}" class="btn btn-secondary d-flex align-items-center">Edit</a>
+        {% endif %}
+    </div>
+</div>
     {% endfor %}
-    </tbody>
-</table>
 </div>
 {% endfor %}
+</div></div>
 {% else %}
 <p>No projects found.</p>
 {% endif %}

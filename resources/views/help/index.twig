@@ -3,13 +3,15 @@
 {% block title %}Help{% endblock %}
 
 {% block content %}
-<ol class="breadcrumb">
-    <li><a href="{{ route('projects.index') }}">Home</a></li>
-    <li class="active">Help</li>
-</ol>
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+        <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Help</li>
+    </ol>
+</nav>
 <picture>
     <source srcset="{{ asset('images/Polyglot_dark_100px.png') }}" media="(prefers-color-scheme: dark)">
-    <img src="{{ asset('images/Polyglot_100px.png') }}" alt="Polyglot logo" class="center-block">
+    <img src="{{ asset('images/Polyglot_100px.png') }}" alt="Polyglot logo" class="d-block mx-auto">
 </picture>
 
 <p><br /></p>
@@ -18,7 +20,6 @@
 <p>It aims to be a very quick and easy tool for Haiku application developers to publish new and updated catkeys of their projects. Polyglot allows users to browse these projects and quickly localize the strings still missing from their native language.</p>
 <p>If you find bugs, have feature requests, or would like to request adding another language for translation, please file a <a href="https://github.com/KapiX/Polyglot/issues">ticket at the issue tracker</a>.</p>
 <p>Thanks to Humdinger for providing ideas, documentation and artwork.</p>
-<p>Dark mode theme is <a href="https://bootswatch.com/3/slate/">Slate by Bootswatch</a>. Copyright 2012-2019 Thomas Park, licensed under MIT.</p>
 
 <h2 class="help">Help</h2>
 

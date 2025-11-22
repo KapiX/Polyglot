@@ -3,63 +3,68 @@
 {% block title %}{{ project.name }} - Edit{% endblock %}
 
 {% block content %}
-<ol class="breadcrumb">
-    <li><a href="{{ route('projects.index') }}">Home</a></li>
-    <li><img src="{{ asset(project.icon) }}" class="breadcrumb-icon"> <a href="{{ route('projects.show', {project: project}) }}">{{ project.name }}</a></li>
-    <li class="active">Edit</li>
-</ol>
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+        <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
+        <li class="breadcrumb-item"><img src="{{ asset(project.icon) }}" class="breadcrumb-icon"> <a href="{{ route('projects.show', {project: project}) }}">{{ project.name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Edit</li>
+    </ol>
+</nav>
 
 <form action="{{ route('projects.update', project.id) }}" method="post" enctype="multipart/form-data">
 {{ method_field('PUT') }}
 {{ csrf_field() }}
-<div class="form-group {{ errors.has('name') ? ' has-error' }}">
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name" value="{{ project.name }}" class="form-control">
+<div class="mb-3">
+    <label for="name" class="form-label">Name</label>
+    <input type="text" name="name" id="name" value="{{ old('name', project.name) }}" class="form-control {{ errors.has('name') ? 'is-invalid' }}">
     {% for error in errors.get('name') %}
-        <span class="help-block">{{ error }}</span>
+        <div class="invalid-feedback">{{ error }}</div>
     {% endfor %}
 </div>
-<div class="form-group {{ errors.has('url') ? ' has-error' }}">
-    <label for="url">Project URL (optional)</label>
-    <input type="text" name="url" id="url" value="{{ project.url }}" class="form-control">
+<div class="mb-3">
+    <label for="url" class="form-label">Project URL (optional)</label>
+    <input type="text" name="url" id="url" value="{{ old('url', project.url) }}" class="form-control {{ errors.has('url') ? 'is-invalid' }}">
     {% for error in errors.get('url') %}
-        <span class="help-block">{{ error }}</span>
+        <div class="invalid-feedback">{{ error }}</div>
     {% endfor %}
 </div>
-<div class="form-group {{ errors.has('bugtracker_url') ? ' has-error' }}">
-    <label for="bugtracker_url">Bugtracker URL (optional)</label>
-    <input type="text" name="bugtracker_url" id="bugtracker_url" value="{{ project.bugtracker_url }}" class="form-control">
+<div class="mb-3">
+    <label for="bugtracker_url" class="form-label">Bugtracker URL (optional)</label>
+    <input type="text" name="bugtracker_url" id="bugtracker_url" value="{{ old('bugtracker_url', project.bugtracker_url) }}" class="form-control {{ errors.has('bugtracker_url') ? 'is-invalid' }}">
     {% for error in errors.get('bugtracker_url') %}
-        <span class="help-block">{{ error }}</span>
+        <div class="invalid-feedback">{{ error }}</div>
     {% endfor %}
 </div>
-<div class="form-group {{ errors.has('prerelease_url') ? ' has-error' }}">
-    <label for="prerelease_url">Prerelease URL (optional)</label>
-    <input type="text" name="prerelease_url" id="prerelease_url" value="{{ project.prerelease_url }}" class="form-control">
+<div class="mb-3">
+    <label for="prerelease_url" class="form-label">Prerelease URL (optional)</label>
+    <input type="text" name="prerelease_url" id="prerelease_url" value="{{ old('prerelease_url', project.prerelease_url) }}" class="form-control {{ errors.has('prerelease_url') ? 'is-invalid' }}">
     {% for error in errors.get('prerelease_url') %}
-        <span class="help-block">{{ error }}</span>
+        <div class="invalid-feedback">{{ error }}</div>
     {% endfor %}
 </div>
-<div class="form-group {{ errors.has('release_date') ? ' has-error' }}">
-    <label for="release_date">Upcoming release date (optional)</label>
-    <input type="date" name="release_date" id="release_date" value="{{ project.release_date }}" placeholder="YYYY-MM-DD" class="form-control">
+<div class="mb-3">
+    <label for="release_date" class="form-label">Upcoming release date (optional)</label>
+    <input type="date" name="release_date" id="release_date" value="{{ old('release_date', project.release_date) }}" placeholder="YYYY-MM-DD" class="form-control {{ errors.has('release_date') ? 'is-invalid' }}">
     {% for error in errors.get('release_date') %}
-        <span class="help-block">{{ error }}</span>
+        <div class="invalid-feedback">{{ error }}</div>
     {% endfor %}
 </div>
-<div class="form-group {{ errors.has('icon') ? ' has-error' }}">
-    <label for="icon">Icon (32x32, PNG, optional)</label>
-    <input type="file" name="icon" id="icon">
-    {% for error in errors.get('icon') %}
-        <span class="help-block">{{ error }}</span>
-    {% endfor %}
+<div class="row mb-3">
+    <div class="col-auto">
+        <img src="{{ asset(project.icon) }}" class="h-100 ratio ratio-1x1" style="width: 4.375em">
+    </div>
+    <div class="col">
+        <label for="icon" class="form-label">Icon (32x32, PNG, optional)</label>
+        <input type="file" name="icon" id="icon" class="form-control {{ errors.has('icon') ? 'is-invalid' }}">
+        {% for error in errors.get('icon') %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
 </div>
-<div class="form-group">
-    <label>Current icon</label>
-    <img src="{{ asset(project.icon) }}" class="thumbnail">
+<div class="mb-3">
 </div>
-<div class="form-group">
-    <input type="submit" value="Save" class="btn btn-default">
+<div class="mb-3">
+    <input type="submit" value="Save" class="btn btn-primary">
 </div>
 </form>
 {% endblock %}

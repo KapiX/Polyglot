@@ -3,11 +3,13 @@
 {% block title %}Help for translators{% endblock %}
 
 {% block content %}
-<ol class="breadcrumb">
-    <li><a href="{{ route('projects.index') }}">Home</a></li>
-    <li><a href="{{ route('help') }}">Help</a></li>
-    <li class="active">Translators</li>
-</ol>
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+        <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('help') }}">Help</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Translators</li>
+    </ol>
+</nav>
 
 <p>For translators, Polyglot should be pretty much self-explanatory with only very few things that need explaining.<br />
 Before you can start translating, an admin has to grant you the necessary permissions. Please see the Haiku forum post <a href="https://discuss.haiku-os.org/t/help-translating-applications-with-polyglot">Help translating applications with Polyglot</a>.</p>

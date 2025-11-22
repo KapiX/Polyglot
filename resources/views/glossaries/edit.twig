@@ -3,13 +3,15 @@
 {% block title %}Glossary - {{ glossary.name }} - Edit entry{% endblock %}
 
 {% block content %}
-<ol class="breadcrumb">
-    <li><a href="{{ route('projects.index') }}">Home</a></li>
-    <li><a href="{{ route('glossaries') }}">Glossaries</a></li>
-    <li><a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}">{{ glossary.name }}</a></li>
-    <li>{{ entry.text }}</li>
-    <li class="active">Edit</li>
-</ol>
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+        <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('glossaries') }}">Glossaries</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}">{{ glossary.name }}</a></li>
+        <li class="breadcrumb-item">{{ entry.text }}</li>
+        <li class="breadcrumb-item active" aria-current="page">Edit</li>
+    </ol>
+</nav>
 
 {% if errors.all() %}
 <div class="alert alert-danger" role="alert">
@@ -22,17 +24,17 @@
 <form action="{{ route('glossaries.entries.update', {glossary: glossary.id, entry: entry.id}) }}" method="post">
 {{ method_field('PUT') }}
 {{ csrf_field() }}
-<div class="row form-group">
+<div class="row mb-3">
     <div class="col-md-6">
-        <textarea name="text" id="text" class="form-control" placeholder="Text">{{ entry.text }}</textarea>
+        <textarea name="text" id="text" class="form-control" placeholder="Text">{{ old('text', entry.text) }}</textarea>
     </div>
     <div class="col-md-6">
-        <textarea name="translation" id="translation" class="form-control" placeholder="Translation">{{ entry.translation }}</textarea>
+        <textarea name="translation" id="translation" class="form-control" placeholder="Translation">{{ old('translation', entry.translation) }}</textarea>
     </div>
 </div>
-<div class="row form-group">
+<div class="row mb-3">
     <div class="col-md-12">
-        <input type="submit" value="Save" class="btn btn-primary" style="width: 100%">
+        <input type="submit" value="Save" class="btn btn-primary w-100">
     </div>
 </div>
 </form>
