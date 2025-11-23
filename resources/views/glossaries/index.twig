@@ -39,7 +39,7 @@
 
 <ul class="nav nav-pills bg-secondary-subtle rounded p-2 mb-3 d-flex justify-content-center sticky-top" id="navbarLetters">
     {% for l in entries.pluck('letter').unique() %}
-        <li class="nav-item"><a class="nav-link" href="#letter-{{ l|lower }}">{{ l }}</a></li>
+        <li class="nav-item"><a class="nav-link" href="#letter-{{ l|lower|e('css') }}">{{ l }}</a></li>
     {% endfor %}
 </ul>
 
@@ -61,7 +61,7 @@
     {% if letter != entry.letter %}
         {% set letter = entry.letter %}
         <tr>
-            <td colspan="3" class="letter" id="letter-{{ entry.letter|lower }}">{{ entry.letter }}</td>
+            <td colspan="3" class="letter" id="letter-{{ entry.letter|lower|e('css') }}">{{ entry.letter }}</td>
         </tr>
     {% endif %}
     <tr>
