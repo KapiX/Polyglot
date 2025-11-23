@@ -145,6 +145,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => response.json())
                 .then(data => {
                     resetTr(data);
+                    console.log(data);
+                    let progressBarComplete = document.querySelector('.progress > .bg-success');
+                    let progress = data.translationCounts[0]?.count / data.textsCount * 100;
+                    progressBarComplete.parentElement.style.width = progress.toString() + '%';
+                    if(progress > 5)
+                        progressBarComplete.textContent = Math.floor(progress).toFixed(0).toString() + '%';
+                    else
+                        progressBarComplete.textContent = '';
+                    let needsWorkProgress = document.querySelector('.progress > .bg-warning').parentElement;
+                    needsWorkProgress.style.width = (data.translationCounts[1]?.count / data.textsCount * 100).toString() + '%';
+                    needsWorkProgress.style.left = progressBarComplete.parentElement.offsetLeft + progressBarComplete.parentElement.offsetWidth;
                     if (tr.nextElementSibling)
                         tr.nextElementSibling.click();
                     else
@@ -228,17 +239,35 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     </div>
 </div>
-{% if type == 'all' %}
-<form action="{{ route('files.translate', {file: file.id, lang: lang.id}) }}" method="get">
-<div class="input-group mb-3">
-    {% if search != '' %}
-    <a href="{{ route('files.translate', {file: file.id, lang: lang.id}) }}" class="btn btn-secondary">&#x2715;</a>
-    {% endif %}
-    <input type="text" name="search" id="search" value="{{ search }}" class="form-control">
-    <button type="submit" class="btn btn-secondary">Search</button>
+<div class="card bg-secondary-subtle border-0 mb-3 sticky-top" style="top:1em;">
+    <div class="card-body">
+        <div class="progress-stacked progress-translation w-100 {{ type != 'all' ? 'mb-0' : 'mb-3' }}">
+            {% set completed = stats[0].count / textsCount * 100 %}
+            {% set needswork = stats[1].count / textsCount * 100 %}
+            {% apply spaceless %}
+            <div class="progress progress-translation" style="width: {{ completed }}%">
+                <div class="progress-bar bg-success">
+                    {% if completed > 5 %}{{ stats[0].count * 100 // textsCount }}%{% endif %}
+                </div>
+            </div>
+            <div class="progress progress-translation" style="width: {{ needswork }}%">
+                <div class="progress-bar bg-warning"></div>
+            </div>
+            {% endapply %}
+        </div>
+        {% if type == 'all' %}
+        <form action="{{ route('files.translate', {file: file.id, lang: lang.id}) }}" method="get">
+        <div class="input-group">
+            {% if search != '' %}
+            <a href="{{ route('files.translate', {file: file.id, lang: lang.id}) }}" class="btn btn-secondary">&#x2715;</a>
+            {% endif %}
+            <input type="text" name="search" id="search" value="{{ search }}" class="form-control">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </div>
+        </form>
+        {% endif %}
+    </div>
 </div>
-</form>
-{% endif %}
 {% if translations.count() > 0 %}
     {% for context, translationsGrouped in translations.groupBy('context') %}
         <h3>{{ context }}</h3>

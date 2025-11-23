@@ -98,9 +98,10 @@ td.project {
     width: 8rem;
     vertical-align: middle;
     height: 2rem;
+    transition: var(--bs-progress-bar-transition);
 }
 
-.progress > .progress-bar {
+.progress > .progress-bar, .progress-stacked > .progress-bar {
     height: 100%;
     font-size: 0.875rem;
 }

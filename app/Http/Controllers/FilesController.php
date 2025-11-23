@@ -291,6 +291,8 @@ class FilesController extends Controller
                     ->where('language_id', $lang->id);
             })
             ->where('file_id', $file->id);
+        $textsCount = $file->texts()->count();
+        $translationCounts = $file->translationCounts($lang)->get();
         $instance = $file->getFileInstance();
         if($instance->indexColumn() !== null) {
             $translations->orderByRaw('cast(' . $instance->indexColumn() . ' as unsigned) asc');
@@ -321,6 +323,8 @@ class FilesController extends Controller
             ->with('file', $file)
             ->with('lang', $lang)
             ->with('allTranslationsCount', $translationsCount)
+            ->with('textsCount', $textsCount)
+            ->with('stats', $translationCounts)
             ->with('translations', $translations)
             ->with('filename', $filename);
     }

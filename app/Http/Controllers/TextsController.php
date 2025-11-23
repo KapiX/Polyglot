@@ -61,7 +61,8 @@ class TextsController extends Controller
         }
 
         // remember a contributor
-        $users = $text->file->project->users();
+        $file = $text->file;
+        $users = $file->project->users();
         $isInDb = $users->where('user_id', Auth::id())
                         ->where(function($query) use ($lang) {
             $query->where('project_user.role', 2)
@@ -72,7 +73,16 @@ class TextsController extends Controller
                 Auth::id() => ['language_id' => $lang->id, 'role' => 0]
             ]);
         }
-        return \Response::json(['status' => 'success', 'translation' => $translation->translation, 'needswork' => $translation->needs_work === 1 ? true : false]);
+
+        $textsCount = $file->texts()->count();
+        $translationCounts = $file->translationCounts($lang)->get();
+        return \Response::json([
+            'status' => 'success',
+            'translation' => $translation->translation,
+            'needswork' => $translation->needs_work === 1 ? true : false,
+            'textsCount' => $textsCount,
+            'translationCounts' => $translationCounts
+        ]);
     }
 
     /**
