@@ -62,15 +62,18 @@
     {% for file in chunk %}
     <td>
         {% set lang_stat = status[language.id][file.id][0] %}
-        <div class="progress progress-translation">
-            <div class="progress-bar bg-success"
-                 style="width: {{ lang_stat.translated_percent ?? 0 }}%">
-                {% if lang_stat.translated_percent > 24 %}
-                    {{ lang_stat.translated_percent }}%
-                {% endif %}
+        <div class="progress-stacked progress-translation">
+            {% apply spaceless %}
+            <div class="progress progress-translation" style="width: {{ lang_stat.translated_percent ?? 0 }}%">
+                <div class="progress-bar bg-success">
+                    {{ lang_stat.translated_percent > 24 ? lang_stat.translated_percent ~ '%' }}
+                </div>
             </div>
-            <div class="progress-bar bg-warning"
-                 style="width: {{ lang_stat.needs_work_percent }}%"></div>
+            <div class="progress progress-translation"
+                 style="width: {{ lang_stat.needs_work_percent }}%">
+                <div class="progress-bar bg-warning"></div>
+            </div>
+            {% endapply %}
         </div>
         <div class="btn-group">
             {% set canTranslate = can('translate-file', [file, language]) %}
