@@ -70,7 +70,7 @@
                 </div>
             </div>
             <div class="progress progress-translation"
-                 style="width: {{ lang_stat.needs_work_percent }}%">
+                 style="width: {{ lang_stat.needs_work_percent ?? 0 }}%">
                 <div class="progress-bar bg-warning"></div>
             </div>
             {% endapply %}
