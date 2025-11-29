@@ -1,4 +1,5 @@
 {% extends "layouts.master" %}
+{% import "macros.forms" as forms %}
 
 {% block title %}{{ file.project.name }} - {{ file.name }} - Edit{% endblock %}
 
@@ -29,14 +30,8 @@
                         When an updated {{ filename }}.{{ fileInstance.getExtension() }} file is uploaded, the unchanged strings are kept in the database (along with their translations) and all new strings are added (with no translations yet, of course). Strings that aren't in the new {{ filename }}.{{ fileInstance.getExtension() }} anymore get removed (together with all their attached translations: just fixing a typo is then very costly, because the whole string has to be re-translated!).
                     </p>
                     <form action="{{ route('files.upload', {file: file.id}) }}" method="post" enctype="multipart/form-data">
-                    {{ csrf_field() }}
-                    <div class="input-group">
-                        <input type="file" name="catkeys" id="catkeys" class="form-control {{ errors.has('catkeys') ? 'is-invalid' }}">
-                        <button type="submit" class="btn btn-primary">Upload</button>
-                        {% for error in errors.get('catkeys') %}
-                            <div class="invalid-feedback">{{ error }}</div>
-                        {% endfor %}
-                    </div>
+                        {{ csrf_field() }}
+                        {{ forms.file_input_with_btn('catkeys', '', 'Upload', errors) }}
                     </form>
                 </div>
             </div>
@@ -48,25 +43,14 @@
             <div class="card mb-3">
                 <div class="card-header">{{ fileInstance.getTypeName() }} properties</div>
                 <div class="card-body">
+                    <div class="mb-3">{{ forms.input('name', 'Name', file.name, errors) }}</div>
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" name="name" id="name" value="{{ old('name', file.name) }}" class="form-control {{ errors.has('name') ? 'is-invalid' }}">
-                        {% for error in errors.get('name') %}
-                            <div class="invalid-feedback">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    <div class="mb-3">
-                        <label for="path" class="form-label">Path</label>
-                        <input type="text" name="path" id="path" value="{{ old('path', file.path) }}" class="form-control {{ errors.has('path') ? 'is-invalid' }}">
-                        {% for error in errors.get('path') %}
-                            <div class="invalid-feedback">{{ error }}</div>
-                        {% endfor %}
+                        {{ forms.input('path', 'Path', file.path, errors) }}
                         <div class="form-text">Path to the file in the project, without extension; %lang% is replaced with language ISO code.</div>
                     </div>
                     {% for prop, data in file.metadata %}
                     <div class="mb-3">
-                        <label for="{{ prop }}" class="form-label">{{ fileInstance.getLabelForMetaData(prop) }}</label>
-                        <input type="text" name="{{ prop }}" id="{{ prop }}" value="{{ data }}" class="form-control"{{ not (prop in fileInstance.editableMetaData()) ? ' disabled' }}>
+                        {{ forms.input(prop, fileInstance.getLabelForMetaData(prop), data, errors, "", prop in fileInstance.editableMetaData()) }}
                     </div>
                     {% endfor %}
                     <input type="submit" value="Save" class="btn btn-primary w-100">

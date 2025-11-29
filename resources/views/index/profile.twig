@@ -1,4 +1,5 @@
 {% extends "layouts.master" %}
+{% import "macros.forms" as forms %}
 
 {% block title %}Edit profile{% endblock %}
 
@@ -10,32 +11,13 @@
     </ol>
 </nav>
 <form action="{{ route('profile.update') }}" method="post">
-{{ method_field('PUT') }}
-{{ csrf_field() }}
-<div class="mb-3">
-    <label for="name" class="form-label">Name</label>
-    <input type="text" name="name" id="name" value="{{ old('name', user.name) }}" class="form-control {{ errors.has('name') ? 'is-invalid' }}">
-    {% for error in errors.get('name') %}
-        <div class="invalid-feedback">{{ error }}</div>
-    {% endfor %}
-</div>
-<div class="mb-3">
-    <label for="email" class="form-label">E-mail</label>
-    <input type="text" name="email" id="email" value="{{ old('email', user.email) }}" class="form-control {{ errors.has('email') ? 'is-invalid' }}">
-    {% for error in errors.get('email') %}
-        <div class="invalid-feedback">{{ error }}</div>
-    {% endfor %}
-</div>
-<div class="mb-3">
-    <label for="languages" class="form-label">Preferred languages</label>
-    <select multiple="multiple" class="form-control" name="languages[]" id="languages">
-    {% for lang in languages %}
-        <option value="{{ lang.id }}"{{ lang.id in user.preferred_languages ? ' selected' }}>[{{ lang.iso_code }}] {{ lang.name }}</option>
-    {% endfor %}
-    </select>
-</div>
-<div class="mb-3">
-    <input type="submit" value="Save" class="btn btn-primary">
-</div>
+    {{ method_field('PUT') }}
+    {{ csrf_field() }}
+    <div class="mb-3">{{ forms.input('name', 'Name', user.name, errors) }}</div>
+    <div class="mb-3">{{  forms.input('email', 'E-mail', user.email, errors) }}</div>
+    <div class="mb-3">
+        {{ forms.select('languages', 'Preferred languages', languages.mapWithKeys(l => {(l.id): "[#{l.iso_code}] #{l.name}"}), user.preferred_languages, true) }}
+    </div>
+    <div class="mb-3"><input type="submit" value="Save" class="btn btn-primary"></div>
 </form>
 {% endblock %}

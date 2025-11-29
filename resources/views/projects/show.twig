@@ -1,4 +1,5 @@
 {% extends "layouts.master" %}
+{% import "macros.forms" as forms %}
 
 {% block title %}{{ project.name }}{% endblock %}
 
@@ -170,13 +171,7 @@ Here you can add those different translation modules and their catkeys (or Java 
             <button type="submit" class="btn btn-primary">Add</button>
         </div>
     </div>
-    <div class="col">
-        <select class="form-select" name="type[]" id="type">
-            {% for id, name in file_types %}
-                <option value="{{ id }}"{{ id == 1 ? ' selected' }}>{{ name }}</option>
-            {% endfor %}
-        </select>
-    </div>
+    <div class="col">{{ forms.select('type', '', file_types, 1) }}</div>
 </div>
 </form>
 {% endblock %}

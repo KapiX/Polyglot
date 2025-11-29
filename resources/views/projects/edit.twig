@@ -1,4 +1,5 @@
 {% extends "layouts.master" %}
+{% import "macros.forms" as forms %}
 
 {% block title %}{{ project.name }} - Edit{% endblock %}
 
@@ -12,59 +13,19 @@
 </nav>
 
 <form action="{{ route('projects.update', project.id) }}" method="post" enctype="multipart/form-data">
-{{ method_field('PUT') }}
-{{ csrf_field() }}
-<div class="mb-3">
-    <label for="name" class="form-label">Name</label>
-    <input type="text" name="name" id="name" value="{{ old('name', project.name) }}" class="form-control {{ errors.has('name') ? 'is-invalid' }}">
-    {% for error in errors.get('name') %}
-        <div class="invalid-feedback">{{ error }}</div>
-    {% endfor %}
-</div>
-<div class="mb-3">
-    <label for="url" class="form-label">Project URL (optional)</label>
-    <input type="text" name="url" id="url" value="{{ old('url', project.url) }}" class="form-control {{ errors.has('url') ? 'is-invalid' }}">
-    {% for error in errors.get('url') %}
-        <div class="invalid-feedback">{{ error }}</div>
-    {% endfor %}
-</div>
-<div class="mb-3">
-    <label for="bugtracker_url" class="form-label">Bugtracker URL (optional)</label>
-    <input type="text" name="bugtracker_url" id="bugtracker_url" value="{{ old('bugtracker_url', project.bugtracker_url) }}" class="form-control {{ errors.has('bugtracker_url') ? 'is-invalid' }}">
-    {% for error in errors.get('bugtracker_url') %}
-        <div class="invalid-feedback">{{ error }}</div>
-    {% endfor %}
-</div>
-<div class="mb-3">
-    <label for="prerelease_url" class="form-label">Prerelease URL (optional)</label>
-    <input type="text" name="prerelease_url" id="prerelease_url" value="{{ old('prerelease_url', project.prerelease_url) }}" class="form-control {{ errors.has('prerelease_url') ? 'is-invalid' }}">
-    {% for error in errors.get('prerelease_url') %}
-        <div class="invalid-feedback">{{ error }}</div>
-    {% endfor %}
-</div>
-<div class="mb-3">
-    <label for="release_date" class="form-label">Upcoming release date (optional)</label>
-    <input type="date" name="release_date" id="release_date" value="{{ old('release_date', project.release_date) }}" placeholder="YYYY-MM-DD" class="form-control {{ errors.has('release_date') ? 'is-invalid' }}">
-    {% for error in errors.get('release_date') %}
-        <div class="invalid-feedback">{{ error }}</div>
-    {% endfor %}
-</div>
-<div class="row mb-3">
-    <div class="col-auto">
-        <img src="{{ asset(project.icon) }}" class="h-100 ratio ratio-1x1" style="width: 4.375em">
+    {{ method_field('PUT') }}
+    {{ csrf_field() }}
+    <div class="mb-3">{{ forms.input('name', 'Name', project.name, errors) }}</div>
+    <div class="mb-3">{{ forms.input('url', 'URL', project.url, errors) }}</div>
+    <div class="mb-3">{{ forms.input('bugtracker_url', 'Bugtracker URL (optional)', project.url, errors) }}</div>
+    <div class="mb-3">{{ forms.input('prerelease_url', 'Prerelease URL (optional)', project.url, errors) }}</div>
+    <div class="mb-3">{{ forms.input('release_date', 'Upcoming release date (optional)', project.release_date, errors, '', true, 'date') }}</div>
+    <div class="row mb-3">
+        <div class="col-auto">
+            <img src="{{ asset(project.icon) }}" class="h-100 ratio ratio-1x1" style="width: 4.375em">
+        </div>
+        <div class="col">{{ forms.file_input('icon', 'Icon (32x32, PNG, optional)', errors) }}</div>
     </div>
-    <div class="col">
-        <label for="icon" class="form-label">Icon (32x32, PNG, optional)</label>
-        <input type="file" name="icon" id="icon" class="form-control {{ errors.has('icon') ? 'is-invalid' }}">
-        {% for error in errors.get('icon') %}
-            <div class="invalid-feedback">{{ error }}</div>
-        {% endfor %}
-    </div>
-</div>
-<div class="mb-3">
-</div>
-<div class="mb-3">
-    <input type="submit" value="Save" class="btn btn-primary">
-</div>
+    <div class="mb-3"><input type="submit" value="Save" class="btn btn-primary"></div>
 </form>
 {% endblock %}

@@ -1,0 +1,35 @@
+{% macro input(name, label, value, errors, class = "", enabled = true, type = "text") %}
+    {% if label %}<label for="{{ name }}" class="form-label">{{ label }}</label>{% endif %}
+    <input type="{{ type }}" name="{{ name }}" id="{{ name }}" value="{{ old(name, value|e) }}" class="form-control {{ errors.has(name) ? 'is-invalid' }} {{ class }}"{{ not enabled ? ' disabled' }}>
+    {% for error in errors.get(name) %}
+        <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
+{% endmacro %}
+
+{% macro file_input(name, label, errors) %}
+    {% if label %}<label for="{{ name }}" class="form-label">{{ label }}</label>{% endif %}
+    <input type="file" name="{{ name }}" id="{{ name }}" class="form-control {{ errors.has(name) ? 'is-invalid' }}">
+    {% for error in errors.get(name) %}
+        <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
+{% endmacro %}
+
+{% macro file_input_with_btn(name, label, btn_label, errors) %}
+    {% if label %}<label for="{{ name }}" class="form-label">{{ label }}</label>{% endif %}
+    <div class="input-group">
+        <input type="file" name="{{ name }}" id="{{ name }}" class="form-control {{ errors.has(name) ? 'is-invalid' }}">
+        <button type="submit" class="btn btn-primary">{{ btn_label }}</button>
+        {% for error in errors.get(name) %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% macro select(name, label, values, selected, multiple = false) %}
+    {% if label %}<label for="{{ name }}" class="form-label">{{ label }}</label>{% endif %}
+    <select{{ multiple ? ' multiple="multiple"' }} class="form-select" name="{{ name }}[]" id="{{ name }}">
+        {% for key, val in values %}
+            <option value="{{ key }}"{{ (multiple ? key in selected : key == selected) ? ' selected' }}>{{ val }}</option>
+        {% endfor %}
+    </select>
+{% endmacro %}
