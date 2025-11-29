@@ -15,7 +15,7 @@
 {% endif %}
 <div class="row">
     {% for chunk in languages.chunk(((languages.count()) / 3)|round(0, 'ceil')) %}
-    <div class="col"><div class="list-group mb-3">
+    <div class="col-lg-4 col-12"><div class="list-group mb-3">
     {% for language in chunk %}
         {% if language.name == "_Add" %}
         <a href="{{ route('languages.create') }}" class="list-group-item list-group-item-action">

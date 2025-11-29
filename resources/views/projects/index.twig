@@ -19,8 +19,11 @@
     </ol>
 </nav>
 <div class="container">
-<div class="row mb-3">
-    <div class="col-md-6 order-md-2 d-flex flex-column justify-content-between">
+<div class="row">
+    <div class="col-md-6">
+        <p>Polyglot allows developers to upload the GUI strings ("catkeys", Java properties, or Line-separated files) of their applications and have their users translate them into their native language.</p>
+    </div>
+    <div class="col-md-6">
         {% if auth_user().can('add-project') %}
         <form action="{{ route('projects.store') }}" method="post">
         {{ csrf_field() }}
@@ -39,16 +42,21 @@
         </div>
         </form>
         {% endif %}
-        <div class="text-end">sort by
-            <span class="btn-group align-baseline">
-                <a href="{{ url_current() }}?sort=name" class="btn btn-sm {{ sort == 'name' ? 'btn-secondary' : 'btn-outline-secondary' }}">name</a>
-                <a href="{{ url_current() }}?sort=updated" class="btn btn-sm {{ sort == 'updated' ? 'btn-secondary' : 'btn-outline-secondary' }}">last updated</a>
-            </span>
+        <div class="text-end">
+
         </div>
     </div>
-    <div class="col-md-6 order-md-1">
-        <p>Polyglot allows developers to upload the GUI strings ("catkeys", Java properties, or Line-separated files) of their applications and have their users translate them into their native language.</p>
+</div>
+<div class="row mb-3">
+    <div class="col-md-6 align-content-end">
         <strong>These projects are currently available:</strong>
+    </div>
+    <div class="col-md-6 text-end">
+        sort by
+        <span class="btn-group align-baseline">
+            <a href="{{ url_current() }}?sort=name" class="btn btn-sm {{ sort == 'name' ? 'btn-secondary' : 'btn-outline-secondary' }}">name</a>
+            <a href="{{ url_current() }}?sort=updated" class="btn btn-sm {{ sort == 'updated' ? 'btn-secondary' : 'btn-outline-secondary' }}">last updated</a>
+        </span>
     </div>
 </div>
 </div>
@@ -56,10 +64,9 @@
     <div class="container">
         <div class="row">
 {% for chunk in projects.chunk((projects.count() / 3)|round(0, 'ceil')) %}
-<div class="col">
+<div class="col-xl-4 col-12">
     {% for project in chunk %}
-<div class="row mb-2">
-    <div class="btn-group w-100" role="group">
+    <div class="btn-group w-100 mb-2" role="group">
         <a href="{{ route('projects.show', project.id) }}" class="btn btn-outline-primary position-relative w-100 text-start" role="button">
             <img width="32" height="32" src="{{ asset(project.icon) }}" class="me-2">
             <span class="align-middle">{{ project.name }}</span>
@@ -91,7 +98,6 @@
             <a href="{{ route('projects.edit', project.id) }}" class="btn btn-secondary d-flex align-items-center">Edit</a>
         {% endif %}
     </div>
-</div>
     {% endfor %}
 </div>
 {% endfor %}
