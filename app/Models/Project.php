@@ -16,6 +16,10 @@ class Project extends Model
 
     const DEFAULT_ICON = 'images/default-project_32.png';
 
+    protected $casts = [
+        'release_date' => 'date',
+    ];
+
     public function files()
     {
         return $this->hasMany('App\Models\File');

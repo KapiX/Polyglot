@@ -70,8 +70,10 @@
             {% endif %}
         </a>
         {% if project.release_date %}
-            <a href="#" class="btn btn-primary d-flex align-items-center" data-bs-toggle="tooltip" title="Upcoming release: {{ project.release_date }}">
-                <i class="bi bi-calendar-date"></i></a>
+            {% set daysToRelease = project.release_date.diff().days %}
+            {% set btnColor = daysToRelease > 14 ? 'btn-outline-primary' : daysToRelease > 7 ? 'btn-primary' : daysToRelease > 3 ? 'btn-warning' : 'btn-danger' %}
+            <a href="#" class="btn {{ btnColor }} d-flex align-items-center" data-bs-toggle="tooltip" title="Upcoming release: {{ project.release_date|date('d-m-Y') }}">
+                <i class="bi bi-calendar-event"></i></a>
         {% endif %}
         {% if project.url %}
             <a href="{{ project.url }}" class="btn btn-outline-secondary d-flex align-items-center" title="Website">
