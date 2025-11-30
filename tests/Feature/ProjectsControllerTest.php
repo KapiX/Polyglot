@@ -148,9 +148,9 @@ class ProjectsControllerTest extends TestCase
         $response->assertSuccessful();
         $response->assertViewIs('projects.index');
 
-        $response->assertSeeInOrder([$projects[0]->name, route('projects.edit', $projects[0]->id), 'Edit']);
-        $response->assertSeeInOrder([$projects[1]->name, route('projects.edit', $projects[1]->id), 'Edit']);
-        $response->assertSeeInOrder([$projects[2]->name, route('projects.edit', $projects[2]->id), 'Edit']);
+        $response->assertSeeInOrder([$projects[0]->name, route('projects.edit', $projects[0]), 'Edit']);
+        $response->assertSeeInOrder([$projects[1]->name, route('projects.edit', $projects[1]), 'Edit']);
+        $response->assertSeeInOrder([$projects[2]->name, route('projects.edit', $projects[2]), 'Edit']);
     }
 
     public function testProjectsListShowsEditButtonOnlyOnOwnedProjectsForDeveloper()
@@ -167,9 +167,9 @@ class ProjectsControllerTest extends TestCase
         $response->assertSuccessful();
         $response->assertViewIs('projects.index');
 
-        $response->assertSeeInOrder([$projects[0]->name, route('projects.edit', $projects[0]->id), 'Edit']);
-        $response->assertSeeInOrder([$projects[1]->name, route('projects.edit', $projects[1]->id), 'Edit']);
-        $response->assertDontSee(route('projects.edit', $projects[2]->id));
+        $response->assertSeeInOrder([$projects[0]->name, route('projects.edit', $projects[0]), 'Edit']);
+        $response->assertSeeInOrder([$projects[1]->name, route('projects.edit', $projects[1]), 'Edit']);
+        $response->assertDontSee(route('projects.edit', $projects[2]));
     }
 
     public function testProjectsListDoesntShowEditButtonsForUsers()
@@ -182,9 +182,9 @@ class ProjectsControllerTest extends TestCase
         $response->assertSuccessful();
         $response->assertViewIs('projects.index');
 
-        $response->assertDontSee(route('projects.edit', $projects[0]->id));
-        $response->assertDontSee(route('projects.edit', $projects[1]->id));
-        $response->assertDontSee(route('projects.edit', $projects[2]->id));
+        $response->assertDontSee(route('projects.edit', $projects[0]));
+        $response->assertDontSee(route('projects.edit', $projects[1]));
+        $response->assertDontSee(route('projects.edit', $projects[2]));
     }
 
     public function testProjectsListHighlightsIncompleteProjectsWithOnePreferredLanguageAndNoTranslations()
@@ -236,7 +236,7 @@ class ProjectsControllerTest extends TestCase
             'role' => 2
         ]);
 
-        $response->assertRedirect(route('projects.edit', $project->id));
+        $response->assertRedirect(route('projects.edit', $project));
     }
 
     public function testDeveloperCanAddProjectsAndIsSetAsItsAdmin()
@@ -258,7 +258,7 @@ class ProjectsControllerTest extends TestCase
             'role' => 2
         ]);
 
-        $response->assertRedirect(route('projects.edit', $project->id));
+        $response->assertRedirect(route('projects.edit', $project));
     }
 
     public function testRegularUserCannotAddProjects()
@@ -330,7 +330,7 @@ class ProjectsControllerTest extends TestCase
         $user = User::factory()->preferredLanguages([$language->id])->create();
         $file = File::factory()->hasTexts(3)->for($project)->create();
 
-        $response = $this->actingAs($user)->get(route('projects.show', [$project->id]));
+        $response = $this->actingAs($user)->get(route('projects.show', [$project]));
 
         $response->assertSuccessful();
         $response->assertViewIs('projects.show');
@@ -350,7 +350,7 @@ class ProjectsControllerTest extends TestCase
         Translation::factory()->for($texts[0])->for($languages[0])->create($author);
         Translation::factory()->for($texts[1])->for($languages[2])->create($author);
 
-        $response = $this->actingAs($user)->get(route('projects.show', [$project->id]));
+        $response = $this->actingAs($user)->get(route('projects.show', [$project]));
 
         $response->assertSuccessful();
         $response->assertViewIs('projects.show');
@@ -373,7 +373,7 @@ class ProjectsControllerTest extends TestCase
         Translation::factory()->for($texts[0])->for($languages[0])->create($author);
         Translation::factory()->for($texts[1])->for($languages[2])->create($author);
 
-        $response = $this->actingAs($user)->get(route('projects.show', [$project->id, 'all']));
+        $response = $this->actingAs($user)->get(route('projects.show', [$project, 'all']));
 
         $response->assertSuccessful();
         $response->assertViewIs('projects.show');
@@ -397,7 +397,7 @@ class ProjectsControllerTest extends TestCase
         Translation::factory()->for($texts0[0])->for($languages[0])->create($author);
         Translation::factory()->for($texts1[1])->for($languages[2])->create($author);
 
-        $response = $this->actingAs($user)->get(route('projects.show', [$project->id]));
+        $response = $this->actingAs($user)->get(route('projects.show', [$project]));
 
         $response->assertSuccessful();
         $response->assertViewIs('projects.show');
@@ -422,7 +422,7 @@ class ProjectsControllerTest extends TestCase
         Translation::factory()->for($texts0[0])->for($languages[0])->create($author);
         Translation::factory()->for($texts1[1])->for($languages[2])->create($author);
 
-        $response = $this->actingAs($user)->get(route('projects.show', [$project->id, 'all']));
+        $response = $this->actingAs($user)->get(route('projects.show', [$project, 'all']));
 
         $response->assertSuccessful();
         $response->assertViewIs('projects.show');
@@ -437,7 +437,7 @@ class ProjectsControllerTest extends TestCase
         Language::factory()->count(3)->create();
         $user = User::factory()->admin()->create();
 
-        $response = $this->actingAs($user)->get(route('projects.edit', [$project->id]));
+        $response = $this->actingAs($user)->get(route('projects.edit', [$project]));
 
         $response->assertSuccessful();
         $response->assertViewIs('projects.edit');

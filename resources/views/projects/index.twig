@@ -67,7 +67,7 @@
 <div class="col-xl-4 col-12">
     {% for project in chunk %}
     <div class="btn-group w-100 mb-2" role="group">
-        <a href="{{ route('projects.show', project.id) }}" class="btn btn-outline-primary position-relative w-100 text-start" role="button">
+        <a href="{{ route('projects.show', [project]) }}" class="btn btn-outline-primary position-relative w-100 text-start" role="button">
             <img width="32" height="32" src="{{ asset(project.icon) }}" class="me-2">
             <span class="align-middle">{{ project.name }}</span>
             {% if project_needs_work and project_needs_work[project.id] == 1 %}
@@ -95,7 +95,7 @@
                 <i class="bi bi-download"></i></a>
         {% endif %}
         {% if auth_user().can('modify-project', project) %}
-            <a href="{{ route('projects.edit', project.id) }}" class="btn btn-secondary d-flex align-items-center">Edit</a>
+            <a href="{{ route('projects.edit', [project]) }}" class="btn btn-secondary d-flex align-items-center">Edit</a>
         {% endif %}
     </div>
     {% endfor %}

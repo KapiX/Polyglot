@@ -7,7 +7,7 @@
     <ol class="breadcrumb p-3 bg-body-secondary rounded">
         <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
         <li class="breadcrumb-item"><a href="{{ route('glossaries') }}">Glossaries</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}">{{ glossary.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('glossaries.entries.index', [glossary]) }}">{{ glossary.name }}</a></li>
         <li class="breadcrumb-item active" aria-current="page">Add entries</li>
     </ol>
 </nav>
@@ -20,11 +20,11 @@
 </div>
 {% endif %}
 
-<form action="{{ route('glossaries.entries.store', {glossary: glossary.id}) }}" method="post">
+<form action="{{ route('glossaries.entries.store', [glossary]) }}" method="post">
 {{ csrf_field() }}
-<div class="row mb-3">
+<div class="row">
     <div class="col-md-12">
-        <p class="message bg-info text-info">
+        <p class="alert alert-info">
             In the text areas below you can input texts with their translations to be added to the glossary.<br>
             Multiple entries can be added at once, each in their own line. Polyglot will match text in line 1 with translation in line 1, and so on.<br>
             If the batch contains already existing or duplicated entries it will be rejected as a whole.<br>

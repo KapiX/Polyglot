@@ -13,7 +13,7 @@
     </ol>
 </nav>
 
-<form action="{{ route('users.update', user.id) }}" method="post">
+<form action="{{ route('users.update', [user]) }}" method="post">
     {{ method_field('PUT') }}
     {{ csrf_field() }}
     <div class="mb-3">{{ forms.input('name', 'Name', user.name, errors) }}</div>

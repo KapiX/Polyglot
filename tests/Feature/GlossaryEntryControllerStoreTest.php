@@ -53,9 +53,9 @@ class GlossaryEntryControllerStoreTest extends TestCase
             $this->languages[] = $language;
         }
 
-        $this->from = route('glossaries.entries.create', [$this->languages[0]->id]);
-        $this->route = route('glossaries.entries.store', [$this->languages[0]->id]);
-        $this->to = route('glossaries.entries.index', [$this->languages[0]->id]);
+        $this->from = route('glossaries.entries.create', [$this->languages[0]]);
+        $this->route = route('glossaries.entries.store', [$this->languages[0]]);
+        $this->to = route('glossaries.entries.index', [$this->languages[0]]);
     }
 
     public function testEmpty()
@@ -78,6 +78,8 @@ class GlossaryEntryControllerStoreTest extends TestCase
             'translation' => 'test-translation'
         ]);
 
+        $this->assertSuccess($response);
+
         $this->assertDatabaseCount('glossary', 1);
         $this->assertDatabaseHas('glossary', [
             'author_id' => $user->id,
@@ -85,8 +87,6 @@ class GlossaryEntryControllerStoreTest extends TestCase
             'text' => 'test',
             'translation' => 'test-translation'
         ]);
-
-        $this->assertSuccess($response);
     }
 
     public function testSingleLineInsertFail()

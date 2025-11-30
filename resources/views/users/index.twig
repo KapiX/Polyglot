@@ -51,7 +51,7 @@
             {% endfor %}
         </td>
         <td class="d-flex justify-content-end">
-            <a href="{{ route('users.edit', user.id) }}" class="btn btn-primary {{ user.id == auth_user().id ? 'disabled' }}">Edit</a>
+            <a href="{{ route('users.edit', [user]) }}" class="btn btn-primary {{ user.id == auth_user().id ? 'disabled' }}">Edit</a>
         </td>
     </tr>
     {% else %}

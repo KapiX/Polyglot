@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Language extends Model
 {
     use HasFactory;
+    use HasSlug;
 
     public function translations()
     {
@@ -49,5 +52,15 @@ class Language extends Model
             return $all;
         }
         return self::select('*');
+    }
+
+    public function getSlugOptions() : SlugOptions {
+        return SlugOptions::create()
+            ->generateSlugsFrom('iso_code')
+            ->saveSlugsTo('slug');
+    }
+
+    public function getRouteKeyName(): string {
+        return 'slug';
     }
 }

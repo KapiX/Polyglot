@@ -7,7 +7,7 @@
     <ol class="breadcrumb p-3 bg-body-secondary rounded">
         <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
         <li class="breadcrumb-item"><a href="{{ route('glossaries') }}">Glossaries</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}">{{ glossary.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('glossaries.entries.index', [glossary]) }}">{{ glossary.name }}</a></li>
         <li class="breadcrumb-item">{{ entry.text }}</li>
         <li class="breadcrumb-item active" aria-current="page">Edit</li>
     </ol>
@@ -21,7 +21,7 @@
 </div>
 {% endif %}
 
-<form action="{{ route('glossaries.entries.update', {glossary: glossary.id, entry: entry.id}) }}" method="post">
+<form action="{{ route('glossaries.entries.update', [glossary, entry]) }}" method="post">
 {{ method_field('PUT') }}
 {{ csrf_field() }}
 <div class="row mb-3">

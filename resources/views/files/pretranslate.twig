@@ -13,7 +13,7 @@
     </ol>
 </nav>
 
-<form action="{{ route('texts.bulkTranslate', {lang: lang.id}) }}" method="post">
+<form action="{{ route('texts.bulkTranslate', {language: lang}) }}" method="post">
 {{ csrf_field() }}
 {{ method_field('PUT') }}
 <input type="hidden" name="project" id="project" value="{{ file.project.id }}">

@@ -25,13 +25,13 @@ class GlossaryEntryController extends Controller
     public function list()
     {
         $preferred_languages = Auth::user()->preferred_languages ?? [];
-        $columns = ['id', 'name', 'iso_code'];
+        $columns = ['id', 'name', 'iso_code', 'slug'];
         $glossaries = GlossaryEntry::glossaries(
             Language::allWithPrioritized($preferred_languages, $columns),
             $columns)->orderBy('name')->get();
 
         return view('glossaries.list')
-            ->with('glossaries', $glossaries);
+            ->with('glossaries', Language::hydrate($glossaries->all()));
     }
 
     /**
@@ -99,8 +99,12 @@ class GlossaryEntryController extends Controller
                 || $value['translation'] === null || $value['translation'] === '';
         });
         $addingSanitized = $data->count();
+        $entries = GlossaryEntry::hydrate($data->all())
+            ->each(function ($item, $key) { $item->generateSlug(); return $item->toArray(); })
+            ->toArray();
 
-        if($glossaryEntry::insert($data->toArray()) === true) {
+        // it needs to be $glossaryEntry for mock to work
+        if($glossaryEntry::insert($entries) === true) {
             return redirect()->route('glossaries.entries.index', [$glossary])
                 ->with('success', 'Added ' . $addingSanitized . ' glossary entries with '
                     . ($adding - $addingSanitized) . ' entries rejected for having empty fields.');

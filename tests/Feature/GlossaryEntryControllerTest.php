@@ -52,7 +52,7 @@ class GlossaryEntryControllerTest extends TestCase
         $entries = GlossaryEntry::factory()->count(5)->for($language)->create();
 
         $response = $this->actingAs($user)->get(
-            route('glossaries.entries.index', [$language->id]));
+            route('glossaries.entries.index', [$language]));
 
         $response->assertSuccessful();
         $response->assertViewIs('glossaries.index');
@@ -78,7 +78,7 @@ class GlossaryEntryControllerTest extends TestCase
         $entries = GlossaryEntry::factory()->count(1000)->for($language)->create();
 
         $response = $this->actingAs($user)->get(
-            route('glossaries.entries.index', [$language->id]));
+            route('glossaries.entries.index', [$language]));
 
         $response->assertSuccessful();
         $response->assertViewIs('glossaries.index');
@@ -95,7 +95,7 @@ class GlossaryEntryControllerTest extends TestCase
         $entries = GlossaryEntry::factory()->count(5)->for($language)->create();
 
         $response = $this->actingAs($user)->get(
-            route('glossaries.entries.index', [$language->id]));
+            route('glossaries.entries.index', [$language]));
 
         $response->assertSuccessful();
         $response->assertViewIs('glossaries.index');
@@ -120,7 +120,7 @@ class GlossaryEntryControllerTest extends TestCase
         $entries = GlossaryEntry::factory()->count(5)->for($language)->create();
 
         $response = $this->actingAs($user)->get(
-            route('glossaries.entries.index', [$language->id]));
+            route('glossaries.entries.index', [$language]));
 
         $response->assertSuccessful();
         $response->assertViewIs('glossaries.index');
@@ -145,7 +145,7 @@ class GlossaryEntryControllerTest extends TestCase
         $entries = GlossaryEntry::factory()->count(5)->for($language)->create();
 
         $response = $this->actingAs($user)->get(
-            route('glossaries.entries.index', [$language->id]));
+            route('glossaries.entries.index', [$language]));
 
         $response->assertSuccessful();
         $response->assertViewIs('glossaries.index');
@@ -178,7 +178,7 @@ class GlossaryEntryControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->get(
-            route('glossaries.entries.index', [$language->id]) . '?search=abc');
+            route('glossaries.entries.index', [$language]) . '?search=abc');
 
         $response->assertSuccessful();
         $response->assertViewIs('glossaries.index');
@@ -203,7 +203,7 @@ class GlossaryEntryControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->get(
-            route('glossaries.entries.index', [$language->id]) . '?search=vwx');
+            route('glossaries.entries.index', [$language]) . '?search=vwx');
 
         $response->assertSuccessful();
         $response->assertViewIs('glossaries.index');
@@ -222,7 +222,7 @@ class GlossaryEntryControllerTest extends TestCase
         )->create();
 
         $response = $this->actingAs($user)->get(
-            route('glossaries.entries.create', [$language->id]));
+            route('glossaries.entries.create', [$language]));
 
         $response->assertSuccessful();
         $response->assertViewIs('glossaries.create');
@@ -240,7 +240,7 @@ class GlossaryEntryControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->get(
-            route('glossaries.entries.edit', [$language->id, $entry->id]));
+            route('glossaries.entries.edit', [$language, $entry]));
 
         $response->assertSuccessful();
         $response->assertViewIs('glossaries.edit');
@@ -258,7 +258,7 @@ class GlossaryEntryControllerTest extends TestCase
             'translation' => 'tuvwxyz'
         ]);
         $response = $this->actingAs($user)->put(
-            route('glossaries.entries.update', [$language->id, $entry->id]),
+            route('glossaries.entries.update', [$language, $entry]),
             [
                 'text' => 'test',
                 'translation' => 'test-translation'
@@ -276,7 +276,7 @@ class GlossaryEntryControllerTest extends TestCase
         $response->assertSessionHas('success');
         $response->assertSessionHasNoErrors();
         $response->assertRedirect(
-            route('glossaries.entries.index', [$language->id]));
+            route('glossaries.entries.index', [$language]));
     }
 
     public function testUpdateRegularUser()
@@ -288,7 +288,7 @@ class GlossaryEntryControllerTest extends TestCase
             'translation' => 'tuvwxyz'
         ]);
         $response = $this->actingAs($user)->put(
-            route('glossaries.entries.update', [$language->id, $entry->id]),
+            route('glossaries.entries.update', [$language, $entry]),
             [
                 'text' => 'test',
                 'translation' => 'test-translation'
@@ -315,7 +315,7 @@ class GlossaryEntryControllerTest extends TestCase
             'translation' => 'tuvwxyz'
         ]);
         $response = $this->actingAs($user)->put(
-            route('glossaries.entries.update', [$language->id, $entry->id]),
+            route('glossaries.entries.update', [$language, $entry]),
             [
                 'text' => 'test',
                 'translation' => 'test-translation'
@@ -333,7 +333,7 @@ class GlossaryEntryControllerTest extends TestCase
         $response->assertSessionHas('success');
         $response->assertSessionHasNoErrors();
         $response->assertRedirect(
-            route('glossaries.entries.index', [$language->id]));
+            route('glossaries.entries.index', [$language]));
     }
 
     public function testUpdateLanguageManagerForADifferentLanguage()
@@ -348,7 +348,7 @@ class GlossaryEntryControllerTest extends TestCase
         ]);
         $author_id = $entry->author_id;
         $response = $this->actingAs($user)->put(
-            route('glossaries.entries.update', [$language->id, $entry->id]),
+            route('glossaries.entries.update', [$language, $entry]),
             [
                 'text' => 'test',
                 'translation' => 'test-translation'
@@ -378,9 +378,9 @@ class GlossaryEntryControllerTest extends TestCase
             'text' => 'test',
             'translation' => 'translation'
         ]);
-        $from = route('glossaries.entries.edit', [$language->id, $entry->id]);
+        $from = route('glossaries.entries.edit', [$language, $entry]);
         $response = $this->from($from)->actingAs($user)->put(
-            route('glossaries.entries.update', [$language->id, $entry->id]),
+            route('glossaries.entries.update', [$language, $entry]),
             [
                 'text' => 'test',
                 'translation' => 'test-translation'
@@ -406,9 +406,9 @@ class GlossaryEntryControllerTest extends TestCase
             'text' => 'abcdefg',
             'translation' => 'tuvwxyz'
         ]);
-        $from = route('glossaries.entries.edit', [$language->id, $entry->id]);
+        $from = route('glossaries.entries.edit', [$language, $entry]);
         $response = $this->from($from)->actingAs($user)->put(
-            route('glossaries.entries.update', [$language->id, $entry->id]),
+            route('glossaries.entries.update', [$language, $entry]),
             [
                 'text' => str_repeat('a', 1024),
                 'translation' => str_repeat('b', 1024)
@@ -439,14 +439,14 @@ class GlossaryEntryControllerTest extends TestCase
         $this->assertDatabaseCount('glossary', 1);
 
         $response = $this->actingAs($user)->delete(
-            route('glossaries.entries.destroy', [$language->id, $entry->id])
+            route('glossaries.entries.destroy', [$language, $entry])
         );
 
         $this->assertDatabaseCount('glossary', 0);
 
         $response->assertSessionHas('success');
         $response->assertRedirect(
-            route('glossaries.entries.index', [$language->id]));
+            route('glossaries.entries.index', [$language]));
     }
 
     public function testDeleteRegularUser()
@@ -461,7 +461,7 @@ class GlossaryEntryControllerTest extends TestCase
         $this->assertDatabaseCount('glossary', 1);
 
         $response = $this->actingAs($user)->delete(
-            route('glossaries.entries.destroy', [$language->id, $entry->id])
+            route('glossaries.entries.destroy', [$language, $entry])
         );
 
         $this->assertDatabaseCount('glossary', 1);
@@ -483,14 +483,14 @@ class GlossaryEntryControllerTest extends TestCase
         $this->assertDatabaseCount('glossary', 1);
 
         $response = $this->actingAs($user)->delete(
-            route('glossaries.entries.destroy', [$language->id, $entry->id])
+            route('glossaries.entries.destroy', [$language, $entry])
         );
 
         $this->assertDatabaseCount('glossary', 0);
 
         $response->assertSessionHas('success');
         $response->assertRedirect(
-            route('glossaries.entries.index', [$language->id]));
+            route('glossaries.entries.index', [$language]));
     }
 
     public function testDeleteLanguageManagerForADifferentLanguage()
@@ -507,7 +507,7 @@ class GlossaryEntryControllerTest extends TestCase
         $this->assertDatabaseCount('glossary', 1);
 
         $response = $this->actingAs($user)->delete(
-            route('glossaries.entries.destroy', [$language->id, $entry->id])
+            route('glossaries.entries.destroy', [$language, $entry])
         );
 
         $this->assertDatabaseCount('glossary', 1);

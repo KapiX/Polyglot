@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
         historyButton.addEventListener('click', function () {
             const list = translationCell.querySelector('ul.list-group');
             list.children[0].innerHTML = 'Loading...';
-            fetch('{{ url('/') }}/texts/' + id + '/lang/' + lang + '/history')
+            fetch('{{ url('/') }}/texts/' + id + '/' + lang + '/history')
                 .then(response => {
                     if (response.ok) {
                         return response.json();
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
         needsWorkButton.addEventListener('click', toggleNeedsWork);
 
         textarea.disabled = true;
-        fetch('{{ url('/') }}/texts/' + id + '/lang/' + lang)
+        fetch('{{ url('/') }}/texts/' + id + '/' + lang)
             .then(response => response.json())
             .then(data => {
                 textarea.value = data.translation;
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         sendButton.addEventListener('click', function () {
             textarea.disabled = true;
-            fetch('{{ url('/') }}/texts/' + id + '/lang/' + lang, {
+            fetch('{{ url('/') }}/texts/' + id + '/' + lang, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         cancelButton.addEventListener('click', function () {
-            fetch('{{ url('/') }}/texts/' + id + '/lang/' + lang)
+            fetch('{{ url('/') }}/texts/' + id + '/' + lang)
                 .then(response => response.json())
                 .then(data => resetTr(data));
         });
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <li class="breadcrumb-item active" aria-current="page">Continue translation</li>
             {% endif %}
         {% else %}
-            <li class="breadcrumb-item"><a href="{{ route('files.translate', {file: file.id, lang: lang.id}) }}">{{ lang.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('files.translate', {project: file.project, file: file, language: lang}) }}">{{ lang.name }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">Search: {{ search }}</li>
         {% endif %}
     </ol>
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="row">
         <div class="col-md-6 order-md-2">
             {% if canTranslate %}
-            <form action="{{ route('files.import', {file: file.id, lang: lang.id}) }}" id="upload-form" method="post" enctype="multipart/form-data">
+            <form action="{{ route('files.import', [file.project, file, lang]) }}" id="upload-form" method="post" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <div class="mb-3">
                     {{ forms.file_input_with_btn('catkeys', "Upload #{filename}.#{file.getFileInstance().getExtension()}", 'Upload', errors) }}
@@ -250,10 +250,10 @@ document.addEventListener('DOMContentLoaded', function () {
             {% endapply %}
         </div>
         {% if type == 'all' %}
-        <form action="{{ route('files.translate', {file: file.id, lang: lang.id}) }}" method="get">
+        <form action="{{ route('files.translate', [file.project, file, lang]) }}" method="get">
         <div class="input-group">
             {% if search != '' %}
-            <a href="{{ route('files.translate', {file: file.id, lang: lang.id}) }}" class="btn btn-secondary">&#x2715;</a>
+            <a href="{{ route('files.translate', [file.project, file, lang]) }}" class="btn btn-secondary">&#x2715;</a>
             {% endif %}
             <input type="text" name="search" id="search" value="{{ search }}" class="form-control">
             <button type="submit" class="btn btn-secondary">Search</button>
@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
 {% if translations.count() > 0 %}
     {% for context, translationsGrouped in translations.groupBy('context') %}
         <h3>{{ context }}</h3>
-        <table class="table table-hover table-translations" id="{{ lang.id }}">
+        <table class="table table-hover table-translations" id="{{ lang.getRouteKey() }}">
         {% for translation in translationsGrouped %}
             <tr id="{{ translation.text_id }}">
                 <td class="d-flex justify-content-between align-items-start">
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </table>
     {% endfor %}
     {% if type == 'continue' and allTranslationsCount > perPage %}
-        <a href="{{ route('files.translate', {file: file.id, lang: lang.id, type: 'continue'}) }}" class="btn btn-primary btn-lg w-100 mb-3">Load more blocks</a>
+        <a href="{{ url_current() }}" class="btn btn-primary btn-lg w-100 mb-3">Load more blocks</a>
     {% else %}
         {{ translations.links() | raw }}
     {% endif %}

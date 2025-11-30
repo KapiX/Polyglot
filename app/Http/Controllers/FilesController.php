@@ -48,9 +48,9 @@ class FilesController extends Controller
         $file->project_id = $project->id;
 
         if($file->save()) {
-            return redirect()->route('files.edit', [$file->id]);
+            return redirect()->route('files.edit', [$file]);
         } else {
-            return redirect()->route('projects.show', [$project->id]);
+            return redirect()->route('projects.show', [$project]);
         }
     }
 
@@ -60,7 +60,7 @@ class FilesController extends Controller
      * @param  \App\Models\File $file
      * @return \Illuminate\Http\Response
      */
-    public function edit(File $file)
+    public function edit(Project $project, File $file)
     {
         $filename = str_replace('%lang%', 'en', basename($file->path));
         return view('files.edit')->with('file', $file)->with('filename', $filename);
@@ -73,7 +73,7 @@ class FilesController extends Controller
      * @param  \App\Models\File $file
      * @return \Illuminate\Http\Response
      */
-    public function update(EditFile $request, File $file)
+    public function update(EditFile $request, Project $project, File $file)
     {
         $file->name = $request->input('name');
         $file->path = $request->input('path');
@@ -107,14 +107,14 @@ class FilesController extends Controller
      * @param  \App\Models\File $file
      * @return \Illuminate\Http\Response
      */
-    public function upload(UploadFile $request, File $file)
+    public function upload(UploadFile $request, Project $project, File $file)
     {
         $instance = $file->getFileInstance();
         $catkeys = file_get_contents($request->file('catkeys')->getRealPath());
         try {
             $catkeys_processed = $instance->process($catkeys);
         } catch(Exception $e) {
-            return redirect()->route('files.edit', [$file->id])
+            return redirect()->route('files.edit', [$file])
                 ->with('error', $e->getMessage());
         }
 
@@ -201,11 +201,11 @@ class FilesController extends Controller
                 . count($translationIdsToUpdate)
                 . ' related translations marked as incomplete.';
 
-        return redirect()->route('files.edit', [$file->id])
+        return redirect()->route('files.edit', [$file])
             ->with('success', $result);
     }
 
-    public function import(ImportTranslation $request, File $file, Language $lang)
+    public function import(ImportTranslation $request, Project $project, File $file, Language $language)
     {
         $instance = $file->getFileInstance();
         $oldMetadata = $instance->getMetaData();
@@ -213,12 +213,12 @@ class FilesController extends Controller
         try {
             $catkeys_processed = $instance->process($catkeys);
         } catch(Exception $e) {
-            return redirect()->route('files.translate', [$file->id, $lang->id])
+            return redirect()->route('files.translate', [$file, $language])
                 ->with('error', $e->getMessage());
         }
 
         if($instance->validateMetaData($oldMetadata) == false) {
-            return redirect()->route('files.translate', [$file->id, $lang->id])
+            return redirect()->route('files.translate', [$file, $language])
                 ->with('error', "Metadata does not match.");
         }
 
@@ -239,13 +239,13 @@ class FilesController extends Controller
             } else {
                 // TODO: update in batches?
                 $tr = $text->first()
-                    ->translations()->where('language_id', $lang->id)->get();
+                    ->translations()->where('language_id', $language->id)->get();
                 $needswork = $text->first()->text === $catkey['translation'] ? 1 : 0;
                 if($tr->count() == 0) {
                     if($needswork == 0) {
                         $translation = new Translation;
                         $translation->text_id = $text->first()->id;
-                        $translation->language_id = $lang->id;
+                        $translation->language_id = $language->id;
                         $translation->author_id = Auth::id();
                         $translation->translation = $catkey['translation'];
                         $translation->needs_work = $needswork;
@@ -263,36 +263,36 @@ class FilesController extends Controller
 
         $users = $file->project->users();
         $isInDb = $users->where('user_id', Auth::id())
-                        ->where(function($query) use ($lang) {
+                        ->where(function($query) use ($language) {
             $query->where('project_user.role', 2)
-                  ->orWhere('project_user.language_id', $lang->id);
+                  ->orWhere('project_user.language_id', $language->id);
         })->get();
         if($isInDb->count() == 0) {
             $users->attach([
-                Auth::id() => ['language_id' => $lang->id, 'role' => 1]
+                Auth::id() => ['language_id' => $language->id, 'role' => 1]
             ]);
         }
 
-        return redirect()->route('files.translate', [$file->id, $lang->id])
+        return redirect()->route('files.translate', [$file, $language])
             ->with('success', 'Translations uploaded.');
     }
 
-    public function translate(Request $request, File $file, Language $lang, $type = 'all')
+    public function translate(Request $request, Project $project, File $file, Language $language, $type = 'all')
     {
         $search = $request->input('search');
         $perPage = 30;
         $translationsCount = 0;
         $translations = Text::select('texts.id as text_id', 'file_id', 'text', 'comment', 'context')
-            ->selectRaw('COALESCE(`language_id`, ?) as `language_id`', [$lang->id])
+            ->selectRaw('COALESCE(`language_id`, ?) as `language_id`', [$language->id])
             ->selectRaw('COALESCE(`translation`, `text`) as `translation`')
             ->selectRaw('COALESCE(`needs_work`, 1) as `needs_work`')
-            ->leftJoin('translations', function($join) use($lang) {
+            ->leftJoin('translations', function($join) use($language) {
                 $join->on('texts.id', '=', 'translations.text_id')
-                    ->where('language_id', $lang->id);
+                    ->where('language_id', $language->id);
             })
             ->where('file_id', $file->id);
         $textsCount = $file->texts()->count();
-        $translationCounts = $file->translationCounts($lang)->get();
+        $translationCounts = $file->translationCounts($language)->get();
         $instance = $file->getFileInstance();
         if($instance->indexColumn() !== null) {
             $translations->orderByRaw('cast(' . $instance->indexColumn() . ' as unsigned) asc');
@@ -314,14 +314,14 @@ class FilesController extends Controller
         }
         else
             $translations = $translations->paginate($perPage)->appends(['search' => $search]);
-        $filename = str_replace('%lang%', $lang->iso_code, basename($file->path));
+        $filename = str_replace('%lang%', $language->iso_code, basename($file->path));
 
         return view('files.translate')
             ->with('search', $search)
             ->with('perPage', $perPage)
             ->with('type', $type)
             ->with('file', $file)
-            ->with('lang', $lang)
+            ->with('lang', $language)
             ->with('allTranslationsCount', $translationsCount)
             ->with('textsCount', $textsCount)
             ->with('stats', $translationCounts)
@@ -329,25 +329,25 @@ class FilesController extends Controller
             ->with('filename', $filename);
     }
 
-    public function pretranslate(File $file, Language $lang)
+    public function pretranslate(Project $project, File $file, Language $language)
     {
-        $translations = Text::pretranslated($file, $lang, false)->get();
+        $translations = Text::pretranslated($file, $language, false)->get();
         return view('files.pretranslate')
             ->with('file', $file)
-            ->with('lang', $lang)
+            ->with('lang', $language)
             ->with('translations', $translations);
     }
 
-    public function export(File $file, Language $lang)
+    public function export(Project $project, File $file, Language $language)
     {
-        $catkeys = $file->export($lang);
+        $catkeys = $file->export($language);
         if($catkeys === null)
             return \Redirect::route('projects.show', [$file->project_id])
                 ->with('message', 'Checksum or app signature are missing.');
 
         // prepare file
         $basename = basename($file->path);
-        $filename = str_replace('%lang%', $lang->iso_code, $basename)
+        $filename = str_replace('%lang%', $language->iso_code, $basename)
             . '.' . $file->getFileInstance()->getExtension();
         $headers = [
             'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
@@ -365,7 +365,7 @@ class FilesController extends Controller
         return \Response::stream($callback, 200, $headers);
     }
 
-    public function exportAll(File $file)
+    public function exportAll(Project $project, File $file)
     {
         $files = [];
         $languages = Language::whereIn('id',

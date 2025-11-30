@@ -29,7 +29,7 @@
                     <p class="alert alert-info">
                         When an updated {{ filename }}.{{ fileInstance.getExtension() }} file is uploaded, the unchanged strings are kept in the database (along with their translations) and all new strings are added (with no translations yet, of course). Strings that aren't in the new {{ filename }}.{{ fileInstance.getExtension() }} anymore get removed (together with all their attached translations: just fixing a typo is then very costly, because the whole string has to be re-translated!).
                     </p>
-                    <form action="{{ route('files.upload', {file: file.id}) }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('files.upload', [file.project, file]) }}" method="post" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         {{ forms.file_input_with_btn('catkeys', '', 'Upload', errors) }}
                     </form>
@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <form action="{{ route('files.update', file.id) }}" method="post">
+            <form action="{{ route('files.update', [file.project, file]) }}" method="post">
             {{ method_field('PUT') }}
             {{ csrf_field() }}
             <div class="card mb-3">

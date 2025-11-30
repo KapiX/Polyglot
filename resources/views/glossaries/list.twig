@@ -15,7 +15,7 @@
 {% for chunk in glossaries.chunk(((glossaries.count() - 1) / 3)|round(0, 'ceil')) %}
 <div class="col-xl-4 col-12"><div class="list-group mb-3">
     {% for glossary in chunk|filter(g => g.iso_code != 'en') %}
-    <a href="{{ route('glossaries.entries.index', {glossary: glossary.id}) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+    <a href="{{ route('glossaries.entries.index', [glossary]) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
         <div class="me-auto d-flex align-items-center">
             <span class="badge language-badge bg-secondary me-2">{{ glossary.iso_code }}</span>
             {{ glossary.name }}

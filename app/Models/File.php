@@ -11,10 +11,13 @@ use App\FileTypes\JavaPropertiesFile;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class File extends Model
 {
     use HasFactory;
+    use HasSlug;
 
     // formats
     const CATKEYS = 1;
@@ -139,5 +142,16 @@ class File extends Model
             self::LINE_SEPARATED => LineSeparatedFile::getTypeName(),
             self::JAVA_PROPERTIES => JavaPropertiesFile::getTypeName()
         ];
+    }
+
+    public function getSlugOptions() : SlugOptions {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug')
+            ->extraScope(fn ($builder) => $builder->where('project_id', $this->project_id));
+    }
+
+    public function getRouteKeyName(): string {
+        return 'slug';
     }
 }

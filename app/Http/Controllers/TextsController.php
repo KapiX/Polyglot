@@ -41,13 +41,13 @@ class TextsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Text $text, Language $lang)
+    public function store(Request $request, Text $text, Language $language)
     {
-        $translation = $text->translations()->where('language_id', $lang->id)->get();
+        $translation = $text->translations()->where('language_id', $language->id)->get();
         if($translation->count() === 0) {
             $translation = new Translation();
             $translation->text_id = $text->id;
-            $translation->language_id = $lang->id;
+            $translation->language_id = $language->id;
             $translation->author_id = Auth::id();
             $translation->translation = $request->post('translation') ?? '';
             $translation->needs_work = $request->post('needswork') === 'true' ? 1 : 0;
@@ -64,18 +64,18 @@ class TextsController extends Controller
         $file = $text->file;
         $users = $file->project->users();
         $isInDb = $users->where('user_id', Auth::id())
-                        ->where(function($query) use ($lang) {
+                        ->where(function($query) use ($language) {
             $query->where('project_user.role', 2)
-                  ->orWhere('project_user.language_id', $lang->id);
+                  ->orWhere('project_user.language_id', $language->id);
         })->get();
         if($isInDb->count() == 0) {
             $users->attach([
-                Auth::id() => ['language_id' => $lang->id, 'role' => 0]
+                Auth::id() => ['language_id' => $language->id, 'role' => 0]
             ]);
         }
 
         $textsCount = $file->texts()->count();
-        $translationCounts = $file->translationCounts($lang)->get();
+        $translationCounts = $file->translationCounts($language)->get();
         return \Response::json([
             'status' => 'success',
             'translation' => $translation->translation,
@@ -91,9 +91,9 @@ class TextsController extends Controller
      * @param  \App\Models\Text  $text
      * @return \Illuminate\Http\Response
      */
-    public function show(Text $text, Language $lang)
+    public function show(Text $text, Language $language)
     {
-        $translation = $text->translations()->where('language_id', $lang->id)->get();
+        $translation = $text->translations()->where('language_id', $language->id)->get();
         $text = $text->text;
         $needswork = true;
         if($translation->count() > 0) {
@@ -105,9 +105,9 @@ class TextsController extends Controller
         return \Response::json($response);
     }
 
-    public function history(Text $text, Language $lang)
+    public function history(Text $text, Language $language)
     {
-        $translation = $text->translations()->where('language_id', $lang->id)->get();
+        $translation = $text->translations()->where('language_id', $language->id)->get();
         $response = [];
         if($translation->count() > 0) {
             $response = $translation->first()->pastTranslations()
@@ -151,18 +151,18 @@ class TextsController extends Controller
         //
     }
 
-    public function bulkTranslate(Request $request, Language $lang)
+    public function bulkTranslate(Request $request, Language $language)
     {
         $texts = $request->get('text-ids');
         $affected = 0;
         foreach($texts as $id) {
-            if(Auth::user()->can('translate-text', [Text::find($id), $lang])) {
+            if(Auth::user()->can('translate-text', [Text::find($id), $language])) {
                 $translation = $request->get('translation-' . $id);
                 if($translation === '') {
                     continue;
                 }
                 Translation::updateOrCreate(
-                    ['text_id' => $id, 'language_id' => $lang->id],
+                    ['text_id' => $id, 'language_id' => $language->id],
                     ['author_id' => Auth::id(), 'translation' => $translation, 'needs_work' => 0]);
                 $affected++;
             }

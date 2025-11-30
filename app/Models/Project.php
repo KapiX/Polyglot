@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
-use App\Models\Text;
-use App\Models\Translation;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Project extends Model
 {
     use HasFactory;
+    use HasSlug;
 
     const DEFAULT_ICON = 'images/default-project_32.png';
 
@@ -151,5 +152,15 @@ class Project extends Model
                 })
                 ->orderBy('last_updated', $direction)
                 ->orderBy('name', 'asc');
+    }
+
+    public function getSlugOptions() : SlugOptions {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
+    }
+
+    public function getRouteKeyName(): string {
+        return 'slug';
     }
 }

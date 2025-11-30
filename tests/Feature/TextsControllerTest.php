@@ -37,7 +37,7 @@ class TextsControllerTest extends TestCase
 
     public function testStoreTranslationCreating()
     {
-        $route = route('texts.store', [$this->text->id, $this->language->id]); 
+        $route = route('texts.store', [$this->text, $this->language]); 
         $response = $this->actingAs($this->user)->postJson($route, [
             'translation' => 'test'
         ]);
@@ -57,7 +57,7 @@ class TextsControllerTest extends TestCase
 
     public function testStoreTranslationAddsContributor()
     {
-        $route = route('texts.store', [$this->text->id, $this->language->id]); 
+        $route = route('texts.store', [$this->text, $this->language]); 
         $response = $this->actingAs($this->user)->postJson($route, [
             'translation' => 'test'
         ]);
@@ -81,7 +81,7 @@ class TextsControllerTest extends TestCase
             $this->user->id => ['role' => 2]
         ]);
 
-        $route = route('texts.store', [$this->text->id, $this->language->id]); 
+        $route = route('texts.store', [$this->text, $this->language]); 
         $response = $this->actingAs($this->user)->postJson($route, [
             'translation' => 'test'
         ]);
@@ -105,7 +105,7 @@ class TextsControllerTest extends TestCase
             'author_id' => $this->user->id
         ]);
 
-        $route = route('texts.store', [$this->text->id, $this->language->id]); 
+        $route = route('texts.store', [$this->text, $this->language]); 
         $response = $this->actingAs($this->user)->postJson($route, [
             'translation' => 'test'
         ]);
@@ -129,7 +129,7 @@ class TextsControllerTest extends TestCase
             'author_id' => $this->user->id
         ]);
 
-        $route = route('texts.store', [$this->text->id, $this->language->id]); 
+        $route = route('texts.store', [$this->text, $this->language]); 
         $response = $this->actingAs($this->user)->postJson($route, [
             'translation' => 'test',
             'needswork' => 'true'
@@ -164,7 +164,7 @@ class TextsControllerTest extends TestCase
         $translation->translation = 'test';
         $translation->save();
 
-        $route = route('texts.history', [$this->text->id, $this->language->id]); 
+        $route = route('texts.history', [$this->text, $this->language]); 
         $response = $this->actingAs($this->user)->get($route);
 
         $response->assertSuccessful();
@@ -199,7 +199,7 @@ class TextsControllerTest extends TestCase
         $translation->translation = 'test3';
         $translation->save();
 
-        $route = route('texts.history', [$this->text->id, $this->language->id]);
+        $route = route('texts.history', [$this->text, $this->language]);
         $response = $this->actingAs($this->user)->get($route);
 
         $response->assertSuccessful();

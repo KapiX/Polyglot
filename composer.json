@@ -11,7 +11,8 @@
         "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.10",
         "laravel/ui": "^4.6",
-        "rcrowe/twigbridge": "^0.14.5"
+        "rcrowe/twigbridge": "^0.14.5",
+        "spatie/laravel-sluggable": "^3.7"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.16",

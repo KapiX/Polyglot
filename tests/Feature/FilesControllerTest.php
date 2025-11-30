@@ -35,7 +35,7 @@ class FilesControllerTest extends TestCase
         )->create();
         $texts = Text::factory()->count(3)->for($this->file)->create();
 
-        $response = $this->actingAs($user)->get(route('files.edit', [$this->file->id]));
+        $response = $this->actingAs($user)->get(route('files.edit', [$this->project, $this->file]));
 
         $response->assertSuccessful();
         $response->assertViewIs('files.edit');
@@ -54,7 +54,7 @@ class FilesControllerTest extends TestCase
         )->create();
         Text::factory()->count(3)->for($this->file)->create();
 
-        $response = $this->actingAs($user)->get(route('files.pretranslate', [$this->file->id, $language->id]));
+        $response = $this->actingAs($user)->get(route('files.pretranslate', [$this->project, $this->file, $language]));
 
         $response->assertSuccessful();
         $response->assertViewIs('files.pretranslate');
@@ -70,7 +70,7 @@ class FilesControllerTest extends TestCase
         )->create();
         $texts = Text::factory()->count(3)->for($this->file)->create();
 
-        $response = $this->actingAs($user)->get(route('files.translate', [$this->file->id, $language->id]));
+        $response = $this->actingAs($user)->get(route('files.translate', [$this->project, $this->file, $language]));
 
         $response->assertSuccessful();
         $response->assertViewIs('files.translate');

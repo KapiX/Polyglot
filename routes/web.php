@@ -11,6 +11,10 @@
 |
 */
 
+use App\Http\Controllers\FilesController;
+use Illuminate\Http\Request;
+use App\Models\Project;
+
 Route::get('/', 'IndexController@index')->middleware('guest')
     ->name('index');
 Route::get('/help/{article?}', 'IndexController@help')
@@ -29,7 +33,11 @@ Route::post('/projects', 'ProjectsController@store')
     ->middleware('can:add-project');
 Route::get('/projects/{project}/{display?}', 'ProjectsController@show')
     ->where('display', 'all|active')
-    ->name('projects.show');
+    ->name('projects.show')
+    ->missing(function (Request $request) {
+        return Redirect::route('projects.show',
+            [Project::where('id', $request->project)->firstOrFail()->slug], 301);
+    });
 Route::get('/projects/{project}/export/{status?}', 'ProjectsController@export')
     ->where('status', 'all|complete')
     ->name('projects.export');
@@ -39,43 +47,52 @@ Route::get('/projects/{project}/edit', 'ProjectsController@edit')
 Route::put('/projects/{project}', 'ProjectsController@update')
     ->name('projects.update')
     ->middleware('can:modify-project,project');
+
 Route::post('/projects/{project}/file', 'FilesController@store')
     ->name('files.store')
     ->middleware('can:modify-project,project');
-
-Route::get('/files/{file}/edit', 'FilesController@edit')
+Route::get('/projects/{project}/files/{file}/edit', [FilesController::class, 'edit'])
+    ->scopeBindings()
     ->name('files.edit')
     ->middleware('can:modify-file,file');
-Route::put('/files/{file}', 'FilesController@update')
+Route::put('/projects/{project}/files/{file}', 'FilesController@update')
+    ->scopeBindings()
     ->name('files.update')
     ->middleware('can:modify-file,file');
-Route::post('/files/{file}/upload', 'FilesController@upload')
+Route::post('/projects/{project}/files/{file}/upload', 'FilesController@upload')
+    ->scopeBindings()
     ->name('files.upload')
     ->middleware('can:modify-file,file');
-Route::get('/files/{file}/lang/{lang}/{type?}', 'FilesController@translate')
+Route::get('/projects/{project}/files/{file}/{language}/{type?}', 'FilesController@translate')
+    ->setBindingFields(['file' => 'slug', 'project' => 'slug'])
     ->where('type', 'all|continue')
-    ->name('files.translate');
-Route::get('/files/{file}/lang/{lang}/pretranslate', 'FilesController@pretranslate')
+    ->name('files.translate')
+    ->middleware('can:translate-file,file,language');
+Route::get('/projects/{project}/files/{file}/{language}/pretranslate', 'FilesController@pretranslate')
+    ->setBindingFields(['file' => 'slug', 'project' => 'slug'])
     ->name('files.pretranslate')
-    ->middleware('can:translate-file,file,lang');
-Route::get('/files/{file}/lang/{lang}/export', 'FilesController@export')
+    ->middleware('can:translate-file,file,language');
+Route::get('/projects/{project}/files/{file}/{language}/export', 'FilesController@export')
+    ->setBindingFields(['file' => 'slug', 'project' => 'slug'])
     ->name('files.export');
-Route::get('/files/{file}/export', 'FilesController@exportAll')
+Route::get('/projects/{project}/files/{file}/export', 'FilesController@exportAll')
+    ->scopeBindings()
     ->name('files.exportAll');
-Route::post('/files/{file}/lang/{lang}/import', 'FilesController@import')
+Route::post('/projects/{project}/files/{file}/{language}/import', 'FilesController@import')
+    ->setBindingFields(['file' => 'slug', 'project' => 'slug'])
     ->name('files.import')
-    ->middleware('can:translate-file,file,lang');
+    ->middleware('can:translate-file,file,language');
 
-Route::get('/texts/{text}/lang/{lang}', 'TextsController@show')
+Route::get('/texts/{text}/{language}', 'TextsController@show')
     ->name('texts.show')
-    ->middleware('can:translate-text,text,lang');
-Route::get('/texts/{text}/lang/{lang}/history', 'TextsController@history')
+    ->middleware('can:translate-text,text,language');
+Route::get('/texts/{text}/{language}/history', 'TextsController@history')
     ->name('texts.history')
-    ->middleware('can:translate-text,text,lang');
-Route::post('/texts/{text}/lang/{lang}', 'TextsController@store')
+    ->middleware('can:translate-text,text,language');
+Route::post('/texts/{text}/{language}', 'TextsController@store')
     ->name('texts.store')
-    ->middleware('can:translate-text,text,lang');
-Route::put('/texts/lang/{lang}', 'TextsController@bulkTranslate')
+    ->middleware('can:translate-text,text,language');
+Route::put('/texts/{language}', 'TextsController@bulkTranslate')
     ->name('texts.bulkTranslate');
 
 Route::get('/languages', 'LanguagesController@index')

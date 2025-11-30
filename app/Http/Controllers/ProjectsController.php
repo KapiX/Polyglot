@@ -66,7 +66,7 @@ class ProjectsController extends Controller
         $project->users()->attach(Auth::id(), ['role' => 2]);
 
         if($project->save()) {
-            return redirect()->route('projects.edit', [$project->id]);
+            return redirect()->route('projects.edit', [$project]);
         } else {
             return redirect()->route('projects.index');
         }
@@ -82,7 +82,7 @@ class ProjectsController extends Controller
     {
         $preferred_languages = Auth::user()->preferred_languages ?? [];
         $languages = Language::allWithPrioritized(
-            $preferred_languages, ['id', 'name', 'iso_code'])->get();
+            $preferred_languages, ['id', 'name', 'iso_code', 'slug'])->get();
 
         $status = $project->translationStatus()->get()
             ->groupBy(['language_id', 'file_id'])->toArray();
@@ -162,7 +162,7 @@ class ProjectsController extends Controller
     public function export(Project $project, $status = 'all')
     {
         if(!$project->allFilePathsAreUnique()) {
-            return redirect()->route('projects.show', [$project->id])
+            return redirect()->route('projects.show', [$project])
                 ->with('error',
                     'There are duplicate file paths. Cannot generate an archive.');
         }
