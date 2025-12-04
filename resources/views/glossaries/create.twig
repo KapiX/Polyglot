@@ -4,7 +4,7 @@
 
 {% block content %}
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+    <ol class="breadcrumb mb-2 p-2 bg-body-secondary rounded">
         <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
         <li class="breadcrumb-item"><a href="{{ route('glossaries') }}">Glossaries</a></li>
         <li class="breadcrumb-item"><a href="{{ route('glossaries.entries.index', [glossary]) }}">{{ glossary.name }}</a></li>
@@ -34,7 +34,7 @@
         </p>
     </div>
 </div>
-<div class="row mb-3">
+<div class="row mb-2">
     <div class="col-md-6">
         <textarea name="text" id="text" class="form-control" placeholder="Texts">{{ old('text') }}</textarea>
     </div>
@@ -42,7 +42,7 @@
         <textarea name="translation" id="translation" class="form-control" placeholder="Translations">{{ old('translation') }}</textarea>
     </div>
 </div>
-<div class="row mb-3">
+<div class="row mb-2">
     <div class="col-md-12">
         <input type="submit" value="Add" class="btn btn-primary w-100">
     </div>

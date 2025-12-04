@@ -4,7 +4,7 @@
 
 {% block content %}
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+    <ol class="breadcrumb mb-2 p-2 bg-body-secondary rounded">
         <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
         <li class="breadcrumb-item"><a href="{{ route('glossaries') }}">Glossaries</a></li>
         {% if not search %}
@@ -28,7 +28,7 @@
 {% endif %}
 
 <form action="{{ route('glossaries.entries.index', [glossary]) }}" method="get">
-<div class="input-group mb-3">
+<div class="input-group mb-2">
     {% if search != '' %}
         <a href="{{ route('glossaries.entries.index', [glossary]) }}" class="btn btn-secondary">&#x2715;</a>
     {% endif %}
@@ -37,7 +37,7 @@
 </div>
 </form>
 
-<ul class="nav nav-pills bg-secondary-subtle rounded p-2 mb-3 d-flex justify-content-center sticky-top" id="navbarLetters">
+<ul class="nav nav-pills bg-secondary-subtle rounded p-2 mb-2 d-flex justify-content-center sticky-top" id="navbarLetters">
     {% for l in entries.pluck('letter').unique() %}
         <li class="nav-item"><a class="nav-link" href="#letter-{{ l|lower|e('css') }}">{{ l }}</a></li>
     {% endfor %}

@@ -4,7 +4,7 @@
 
 {% block content %}
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+    <ol class="breadcrumb mb-2 p-2 bg-body-secondary rounded">
         <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
         <li class="breadcrumb-item active" aria-current="page">Languages</li>
     </ol>
@@ -13,9 +13,9 @@
 {% if session('message') %}
 <div class="alert alert-success">{{ session('message') }}</div>
 {% endif %}
-<div class="row">
+<div class="row g-2">
     {% for chunk in languages.chunk(((languages.count()) / 3)|round(0, 'ceil')) %}
-    <div class="col-lg-4 col-12"><div class="list-group mb-3">
+    <div class="col-lg-4 col-12"><div class="list-group">
     {% for language in chunk %}
         {% if language.name == "_Add" %}
         <a href="{{ route('languages.create') }}" class="list-group-item list-group-item-action">

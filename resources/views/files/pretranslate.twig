@@ -4,7 +4,7 @@
 
 {% block content %}
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+    <ol class="breadcrumb mb-2 p-2 bg-body-secondary rounded">
         <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
         <li class="breadcrumb-item"><img src="{{ asset(file.project.icon) }}" class="breadcrumb-icon"> <a href="{{ route('projects.show', {project: file.project}) }}">{{ file.project.name }}</a></li>
         <li class="breadcrumb-item"><a href="{{ route('projects.show', {project: file.project}) }}">{{ file.name }}</a></li>

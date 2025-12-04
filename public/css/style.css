@@ -60,6 +60,14 @@
     }
 }
 
+p {
+    margin-bottom: .5rem;
+}
+
+p:last-child {
+    margin-bottom: 0;
+}
+
 span.language-badge {
     width: 7em;
 }

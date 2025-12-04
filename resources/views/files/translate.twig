@@ -7,11 +7,11 @@
 {% block translationEditor %}
 <div class="container-fluid">
     <div class="row">
-        <div class="mb-3">
+        <div class="mb-2">
             <textarea class="form-control">${translationCell.innerHTML}</textarea>
             <div class="form-text"><small>Press Shift+Enter to enter a newline.</small></div>
         </div>
-        <div class="mb-3">
+        <div class="mb-2">
             <div class="btn-group d-flex" role="group">
                 <div class="flex-fill me-2">
                     <input class="btn btn-primary w-100" id="save" type="button" value="Save">
@@ -24,7 +24,7 @@
                 </div>
             </div>
         </div>
-        <div class="mb-3">
+        <div class="mb-2">
             <ul class="list-group">
                 <li class="list-group-item" id="history">Click to load past translations...</li>
             </ul>
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 {% block content %}
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+    <ol class="breadcrumb mb-2 p-2 bg-body-secondary rounded">
         <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
         <li class="breadcrumb-item"><img src="{{ asset(file.project.icon) }}" class="breadcrumb-icon" alt="Project icon"> <a href="{{ route('projects.show', {project: file.project}) }}">{{ file.project.name }}</a></li>
         <li class="breadcrumb-item"><a href="{{ route('projects.show', {project: file.project}) }}">{{ file.name }}</a></li>
@@ -202,40 +202,38 @@ document.addEventListener('DOMContentLoaded', function () {
         {% endif %}
     </ol>
 </nav>
-<div class="container-fluid">
-    {% if session('error') %}
-        <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
-    {% endif %}
-    {% if session('success') %}
-        <div class="alert alert-success" role="alert">{{ session('success') }}</div>
-    {% endif %}
-    <div class="row">
-        <div class="col-md-6 order-md-2">
-            {% if canTranslate %}
-            <form action="{{ route('files.import', [file.project, file, lang]) }}" id="upload-form" method="post" enctype="multipart/form-data">
-                {{ csrf_field() }}
-                <div class="mb-3">
-                    {{ forms.file_input_with_btn('catkeys', "Upload #{filename}.#{file.getFileInstance().getExtension()}", 'Upload', errors) }}
-                </div>
-            </form>
-            {% endif %}
-        </div>
-        <div class="col-md-6 order-md-1">
-            <p>For strings that don't need translation, because they are the same as the English original, the "Needs work" button should be deactivated. Otherwise the percentage display on the overview page doesn't reach 100%.</p>
-            {% if file.project.bugtracker_url %}
-                <p>If you find typos in the English original or other issues, please report them at the <a href="{{ file.project.bugtracker_url }}">{{ file.project.name }} bug tracker</a>.</p>
-            {% endif %}
-            {% if lang.style_guide_url or lang.terminology_url %}
-                <p>Remember to
-                    {% if lang.style_guide_url %} follow <a href="{{ lang.style_guide_url }}">style</a>{{ lang.terminology_url ? ' and ' }}{% endif %}
-                    {% if lang.terminology_url %} use <a href="{{ lang.terminology_url }}">terminology</a>{% endif %} of your language.</p>
-            {% endif %}
-        </div>
+{% if session('error') %}
+    <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+{% endif %}
+{% if session('success') %}
+    <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+{% endif %}
+<div class="row mb-2">
+    <div class="col-md-6 order-md-2">
+        {% if canTranslate %}
+        <form action="{{ route('files.import', [file.project, file, lang]) }}" id="upload-form" method="post" enctype="multipart/form-data">
+            {{ csrf_field() }}
+            <div class="mb-2">
+                {{ forms.file_input_with_btn('catkeys', "Upload #{filename}.#{file.getFileInstance().getExtension()}", 'Upload', errors) }}
+            </div>
+        </form>
+        {% endif %}
+    </div>
+    <div class="col-md-6 order-md-1">
+        <p>For strings that don't need translation, because they are the same as the English original, the "Needs work" button should be deactivated. Otherwise the percentage display on the overview page doesn't reach 100%.</p>
+        {% if file.project.bugtracker_url %}
+            <p>If you find typos in the English original or other issues, please report them at the <a href="{{ file.project.bugtracker_url }}">{{ file.project.name }} bug tracker</a>.</p>
+        {% endif %}
+        {% if lang.style_guide_url or lang.terminology_url %}
+            <p>Remember to
+                {% if lang.style_guide_url %} follow <a href="{{ lang.style_guide_url }}">style</a>{{ lang.terminology_url ? ' and ' }}{% endif %}
+                {% if lang.terminology_url %} use <a href="{{ lang.terminology_url }}">terminology</a>{% endif %} of your language.</p>
+        {% endif %}
     </div>
 </div>
-<div class="card bg-secondary-subtle border-0 mb-3 sticky-top" style="top:1em;">
+<div class="card bg-secondary-subtle border-0 mb-2 sticky-top" style="top:1em;">
     <div class="card-body">
-        <div class="progress-stacked progress-translation w-100 {{ type != 'all' ? 'mb-0' : 'mb-3' }}">
+        <div class="progress-stacked progress-translation w-100 {{ type != 'all' ? 'mb-0' : 'mb-2' }}">
             {% set completed = stats[0].count / textsCount * 100 %}
             {% set needswork = stats[1].count / textsCount * 100 %}
             {% apply spaceless %}
@@ -280,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </table>
     {% endfor %}
     {% if type == 'continue' and allTranslationsCount > perPage %}
-        <a href="{{ url_current() }}" class="btn btn-primary btn-lg w-100 mb-3">Load more blocks</a>
+        <a href="{{ url_current() }}" class="btn btn-primary btn-lg w-100 mb-2">Load more blocks</a>
     {% else %}
         {{ translations.links() | raw }}
     {% endif %}

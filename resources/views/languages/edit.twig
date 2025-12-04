@@ -5,7 +5,7 @@
 
 {% block content %}
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+    <ol class="breadcrumb mb-2 p-2 bg-body-secondary rounded">
         <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
         <li class="breadcrumb-item"><a href="{{ route('languages.index') }}">Languages</a></li>
         <li class="breadcrumb-item">{{ language.name }}</li>
@@ -17,12 +17,12 @@
     {{ method_field('PUT') }}
     {{ csrf_field() }}
     <div class="row">
-        <div class="col-3 mb-3">{{ forms.input('iso_code', 'ISO code', language.iso_code, errors) }}</div>
-        <div class="col-9 mb-3">{{ forms.input('name', 'Name', language.name, errors) }}</div>
+        <div class="col-3 mb-2">{{ forms.input('iso_code', 'ISO code', language.iso_code, errors) }}</div>
+        <div class="col-9 mb-2">{{ forms.input('name', 'Name', language.name, errors) }}</div>
     </div>
-    <div class="mb-3">{{ forms.input('style_guide_url', 'Style guide URL', language.style_guide_url, errors) }}</div>
-    <div class="mb-3">{{ forms.input('terminology_url', 'Terminology URL', language.terminology_url, errors) }}</div>
-    <div class="mb-3"><input type="submit" value="Save" class="btn btn-primary"></div>
+    <div class="mb-2">{{ forms.input('style_guide_url', 'Style guide URL', language.style_guide_url, errors) }}</div>
+    <div class="mb-2">{{ forms.input('terminology_url', 'Terminology URL', language.terminology_url, errors) }}</div>
+    <div class="mb-2"><input type="submit" value="Save" class="btn btn-primary"></div>
 </form>
 </form>
 {% endblock %}

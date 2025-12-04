@@ -5,7 +5,7 @@
 
 {% block content %}
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+    <ol class="breadcrumb mb-2 p-2 bg-body-secondary rounded">
         <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
         <li class="breadcrumb-item"><img src="{{ asset(project.icon) }}" class="breadcrumb-icon"> <a href="{{ route('projects.show', [project]) }}">{{ project.name }}</a></li>
         <li class="breadcrumb-item active" aria-current="page">Edit</li>
@@ -15,17 +15,17 @@
 <form action="{{ route('projects.update', [project]) }}" method="post" enctype="multipart/form-data">
     {{ method_field('PUT') }}
     {{ csrf_field() }}
-    <div class="mb-3">{{ forms.input('name', 'Name', project.name, errors) }}</div>
-    <div class="mb-3">{{ forms.input('url', 'URL', project.url, errors) }}</div>
-    <div class="mb-3">{{ forms.input('bugtracker_url', 'Bugtracker URL (optional)', project.url, errors) }}</div>
-    <div class="mb-3">{{ forms.input('prerelease_url', 'Prerelease URL (optional)', project.url, errors) }}</div>
-    <div class="mb-3">{{ forms.input('release_date', 'Upcoming release date (optional)', project.release_date, errors, '', true, 'date') }}</div>
-    <div class="row mb-3">
+    <div class="mb-2">{{ forms.input('name', 'Name', project.name, errors) }}</div>
+    <div class="mb-2">{{ forms.input('url', 'URL', project.url, errors) }}</div>
+    <div class="mb-2">{{ forms.input('bugtracker_url', 'Bugtracker URL (optional)', project.url, errors) }}</div>
+    <div class="mb-2">{{ forms.input('prerelease_url', 'Prerelease URL (optional)', project.url, errors) }}</div>
+    <div class="mb-2">{{ forms.input('release_date', 'Upcoming release date (optional)', project.release_date, errors, '', true, 'date') }}</div>
+    <div class="row mb-2">
         <div class="col-auto">
             <img src="{{ asset(project.icon) }}" class="h-100 ratio ratio-1x1" style="width: 4.375em">
         </div>
         <div class="col">{{ forms.file_input('icon', 'Icon (32x32, PNG, optional)', errors) }}</div>
     </div>
-    <div class="mb-3"><input type="submit" value="Save" class="btn btn-primary"></div>
+    <div class="mb-2"><input type="submit" value="Save" class="btn btn-primary"></div>
 </form>
 {% endblock %}

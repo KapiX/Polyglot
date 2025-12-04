@@ -3,7 +3,7 @@
 {% block title %}Welcome to Polyglot{% endblock %}
 
 {% block content %}
-<div class="card mb-3 bg-light-subtle">
+<div class="card mb-2 bg-light-subtle">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
             <div>
@@ -16,7 +16,7 @@
 </div>
 <div class="row">
 {% for chunk in projects.chunk((projects.count() / 3)|round(0, 'ceil')) %}
-<div class="col"><div class="list-group mb-3">
+<div class="col"><div class="list-group mb-2">
     {% for project in chunk %}
     <div class="list-group-item">
         <img src="{{ asset(project.icon) }}" width="32" height="32" class="me-2">

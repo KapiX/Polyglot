@@ -5,7 +5,7 @@
 
 {% block content %}
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+    <ol class="breadcrumb mb-2 p-2 bg-body-secondary rounded">
         <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
         <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Users</a></li>
         <li class="breadcrumb-item">{{ user.name }}</li>
@@ -16,12 +16,12 @@
 <form action="{{ route('users.update', [user]) }}" method="post">
     {{ method_field('PUT') }}
     {{ csrf_field() }}
-    <div class="mb-3">{{ forms.input('name', 'Name', user.name, errors) }}</div>
-    <div class="mb-3">{{ forms.input('email', 'E-mail', user.email, errors) }}</div>
-    <div class="mb-3">{{ forms.select('role', 'Role', user.rolesNames(), user.role) }}</div>
-    <div class="mb-3">
+    <div class="mb-2">{{ forms.input('name', 'Name', user.name, errors) }}</div>
+    <div class="mb-2">{{ forms.input('email', 'E-mail', user.email, errors) }}</div>
+    <div class="mb-2">{{ forms.select('role', 'Role', user.rolesNames(), user.role) }}</div>
+    <div class="mb-2">
         {{ forms.select('languages', 'Language permissions', languages.mapWithKeys(l => {(l.id): "[#{l.iso_code}] #{l.name}"}), user.languages.pluck('id'), true) }}
     </div>
-    <div class="mb-3"><input type="submit" value="Save" class="btn btn-primary"></div>
+    <div class="mb-2"><input type="submit" value="Save" class="btn btn-primary"></div>
 </form>
 {% endblock %}

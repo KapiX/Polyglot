@@ -12,7 +12,7 @@
     {% endif %}
 {% endmacro %}
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+    <ol class="breadcrumb mb-2 p-2 bg-body-secondary rounded">
         <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
         <li class="breadcrumb-item"><img src="{{ asset(project.icon) }}" class="breadcrumb-icon"> <a href="{{ route('projects.show', [project]) }}">{{ project.name }}</a></li>
         <li class="breadcrumb-item active" aria-current="page">Translation modules</li>
@@ -124,14 +124,14 @@
 
 {% block panels %}
 {% if auth_user().can('modify-project', project) %}
-<div class="card mb-3">
+<div class="card mb-2">
     <div class="card-header">Add translation module</div>
     <div class="card-body">
         {{ block('add_file_panel') }}
     </div>
 </div>
 {% endif %}
-<div class="card mb-3">
+<div class="card mb-2">
     <div class="card-header">Administrators</div>
     <div class="card-body">
         {% for admin in project.administrators %}
@@ -139,7 +139,7 @@
         {% endfor %}
     </div>
 </div>
-<div class="card mb-3">
+<div class="card mb-2">
     <div class="card-header">Contributors</div>
     <table class="table mb-0">
     {% for language in contributors %}

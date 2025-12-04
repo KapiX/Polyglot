@@ -21,7 +21,7 @@
         {% block scripts %}{% endblock %}
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-body-secondary mb-3">
+        <nav class="navbar navbar-expand-lg navbar-light bg-body-secondary mb-2">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     <picture>
@@ -68,7 +68,7 @@
                 </div>
             </div>
         </nav>
-        <div class="container mb-3">
+        <div class="container mb-2">
         {% if auth_check() and auth_user().languages is empty and auth_user().role == 0 %}
             <div class="alert alert-warning" role="alert">You don't have permissions to translate anything. They are required to do anything, until suggestions are implemented. See <a href="{{ route('help', {article: 'user'}) }}">Help for translators</a> for information.</div>
         {% endif %}

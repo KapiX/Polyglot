@@ -5,7 +5,7 @@
 
 {% block content %}
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb p-3 bg-body-secondary rounded">
+    <ol class="breadcrumb mb-2 p-2 bg-body-secondary rounded">
         <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
         <li class="breadcrumb-item"><img src="{{ asset(file.project.icon) }}" class="breadcrumb-icon"> <a href="{{ route('projects.show', {project: file.project}) }}">{{ file.project.name }}</a></li>
         <li class="breadcrumb-item"><a href="{{ route('projects.show', {project: file.project}) }}">{{ file.name }}</a></li>
@@ -14,50 +14,48 @@
 </nav>
 
 {% set fileInstance = file.getFileInstance() %}
-<div class="container-fluid">
-    {% if session('error') %}
-        <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
-    {% endif %}
-    {% if session('success') %}
-        <div class="alert alert-success" role="alert">{{ session('success') }}</div>
-    {% endif %}
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-3">
-                <div class="card-header">Upload {{ filename }}.{{ fileInstance.getExtension() }}</div>
-                <div class="card-body">
-                    <p class="alert alert-info">
-                        When an updated {{ filename }}.{{ fileInstance.getExtension() }} file is uploaded, the unchanged strings are kept in the database (along with their translations) and all new strings are added (with no translations yet, of course). Strings that aren't in the new {{ filename }}.{{ fileInstance.getExtension() }} anymore get removed (together with all their attached translations: just fixing a typo is then very costly, because the whole string has to be re-translated!).
-                    </p>
-                    <form action="{{ route('files.upload', [file.project, file]) }}" method="post" enctype="multipart/form-data">
-                        {{ csrf_field() }}
-                        {{ forms.file_input_with_btn('catkeys', '', 'Upload', errors) }}
-                    </form>
-                </div>
+{% if session('error') %}
+    <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+{% endif %}
+{% if session('success') %}
+    <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+{% endif %}
+<div class="row g-2">
+    <div class="col-md-6">
+        <div class="card mb-2">
+            <div class="card-header">Upload {{ filename }}.{{ fileInstance.getExtension() }}</div>
+            <div class="card-body">
+                <p class="alert alert-info">
+                    When an updated {{ filename }}.{{ fileInstance.getExtension() }} file is uploaded, the unchanged strings are kept in the database (along with their translations) and all new strings are added (with no translations yet, of course). Strings that aren't in the new {{ filename }}.{{ fileInstance.getExtension() }} anymore get removed (together with all their attached translations: just fixing a typo is then very costly, because the whole string has to be re-translated!).
+                </p>
+                <form action="{{ route('files.upload', [file.project, file]) }}" method="post" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+                    {{ forms.file_input_with_btn('catkeys', '', 'Upload', errors) }}
+                </form>
             </div>
         </div>
-        <div class="col-md-6">
-            <form action="{{ route('files.update', [file.project, file]) }}" method="post">
-            {{ method_field('PUT') }}
-            {{ csrf_field() }}
-            <div class="card mb-3">
-                <div class="card-header">{{ fileInstance.getTypeName() }} properties</div>
-                <div class="card-body">
-                    <div class="mb-3">{{ forms.input('name', 'Name', file.name, errors) }}</div>
-                    <div class="mb-3">
-                        {{ forms.input('path', 'Path', file.path, errors) }}
-                        <div class="form-text">Path to the file in the project, without extension; %lang% is replaced with language ISO code.</div>
-                    </div>
-                    {% for prop, data in file.metadata %}
-                    <div class="mb-3">
-                        {{ forms.input(prop, fileInstance.getLabelForMetaData(prop), data, errors, "", prop in fileInstance.editableMetaData()) }}
-                    </div>
-                    {% endfor %}
-                    <input type="submit" value="Save" class="btn btn-primary w-100">
+    </div>
+    <div class="col-md-6">
+        <form action="{{ route('files.update', [file.project, file]) }}" method="post">
+        {{ method_field('PUT') }}
+        {{ csrf_field() }}
+        <div class="card mb-2">
+            <div class="card-header">{{ fileInstance.getTypeName() }} properties</div>
+            <div class="card-body">
+                <div class="mb-2">{{ forms.input('name', 'Name', file.name, errors) }}</div>
+                <div class="mb-2">
+                    {{ forms.input('path', 'Path', file.path, errors) }}
+                    <div class="form-text">Path to the file in the project, without extension; %lang% is replaced with language ISO code.</div>
                 </div>
+                {% for prop, data in file.metadata %}
+                <div class="mb-2">
+                    {{ forms.input(prop, fileInstance.getLabelForMetaData(prop), data, errors, "", prop in fileInstance.editableMetaData()) }}
+                </div>
+                {% endfor %}
+                <input type="submit" value="Save" class="btn btn-primary w-100">
             </div>
-            </form>
         </div>
+        </form>
     </div>
 </div>
 <div class="row">
