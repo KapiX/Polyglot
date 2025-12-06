@@ -33,3 +33,33 @@
         {% endfor %}
     </select>
 {% endmacro %}
+
+{% macro choice_list(name, values, selected, columns = 1, extra_classes = "", extra_item_classes = "", multiple = false) %}
+    {% for chunk in values.chunk((values.count() / columns)|round(0, 'ceil')) %}
+        {% if columns > 1 %}<div class="col-xl-{{ 12 / columns}} col-lg-12">{% endif %}
+        <div class="list-group {{ extra_classes }}">
+            {% for key, val in chunk %}
+                <div class="list-group-item {{ extra_item_classes }}">
+                    <input class="form-check-input" type="{{ multiple ? "checkbox" : "radio" }}" value="{{ key }}" name="{{ name }}{{ multiple ? '[]' }}" id="{{ name }}-{{ key }}"
+                            {{ (multiple ? key in selected : key == selected) ? ' checked' }}>
+                    <label class="form-check-label" for="{{ name }}-{{ key }}">{{ val }}</label>
+                </div>
+            {% endfor %}
+        </div>
+        {% if columns > 1 %}</div>{% endif %}
+    {% endfor %}
+{% endmacro %}
+
+{% macro checkboxes(name, label, values, selected, columns = 1, extra_classes = "", extra_item_classes = "", height = "") %}
+    <label class="form-label">{{ label }}</label>
+    {% if columns > 1 %}<div class="form-control p-0 overflow-auto" {{ height ? "style=\"height: #{height}\""|raw }}><div class="row g-0">{% endif %}
+    {{ _self.choice_list(name,  values, selected, columns, extra_classes, extra_item_classes, true) }}
+    {% if columns > 1 %}</div></div>{% endif %}
+{% endmacro %}
+
+{% macro radiobox(name, label, values, selected, columns = 1, extra_classes = "", extra_item_classes = "", height = "") %}
+    <label class="form-label">{{ label }}</label>
+    {% if columns > 1 %}<div class="form-control p-0 overflow-auto" {{ height ? "style=\"height: #{height};\""|raw }}><div class="row g-0">{% endif %}
+    {{ _self.choice_list(name, values, selected, columns, extra_classes, extra_item_classes, false) }}
+    {% if columns > 1 %}</div></div>{% endif %}
+{% endmacro %}

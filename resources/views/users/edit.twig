@@ -12,16 +12,21 @@
         <li class="breadcrumb-item active" aria-current="page">Edit</li>
     </ol>
 </nav>
-
 <form action="{{ route('users.update', [user]) }}" method="post">
     {{ method_field('PUT') }}
     {{ csrf_field() }}
-    <div class="mb-2">{{ forms.input('name', 'Name', user.name, errors) }}</div>
-    <div class="mb-2">{{ forms.input('email', 'E-mail', user.email, errors) }}</div>
-    <div class="mb-2">{{ forms.select('role', 'Role', user.rolesNames(), user.role) }}</div>
-    <div class="mb-2">
-        {{ forms.select('languages', 'Language permissions', languages.mapWithKeys(l => {(l.id): "[#{l.iso_code}] #{l.name}"}), user.languages.pluck('id'), true) }}
+    <div class="row g-2">
+        <div class="col col-lg-6 col-sm-12">
+            <div class="mb-2">{{ forms.input('name', 'Name', user.name, errors) }}</div>
+            <div class="mb-2">{{ forms.input('email', 'E-mail', user.email, errors) }}</div>
+            <div class="mb-2">{{ forms.radiobox('role', 'Role', user.rolesNames(), user.role, 1, "list-group-horizontal", "flex-fill") }}</div>
+        </div>
+        <div class="col col-lg-6 col-sm-12 mh-100">
+            {{ forms.checkboxes('languages', 'Language permissions',
+                languages.mapWithKeys(l => {(l.id): "[#{l.iso_code}] #{l.name}"}),
+                user.languages.pluck('id'), 2, "list-group-flush rounded", height="23em") }}
+        </div>
+        <div class="col"><input type="submit" value="Save" class="btn btn-primary w-100"></div>
     </div>
-    <div class="mb-2"><input type="submit" value="Save" class="btn btn-primary"></div>
 </form>
 {% endblock %}

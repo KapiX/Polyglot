@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Collection;
 
 class User extends Authenticatable
 {
@@ -75,6 +76,6 @@ class User extends Authenticatable
     }
 
     static public function rolesNames() {
-        return self::ROLES_STRINGS;
+        return Collection::make(self::ROLES_STRINGS);
     }
 }
