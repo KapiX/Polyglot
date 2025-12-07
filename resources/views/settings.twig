@@ -1,0 +1,23 @@
+{% extends "layouts.master" %}
+
+{% block title %}Application settings{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            Server info
+        </div>
+        <div class="card-body">
+            <p>PHP version: {{ php }}</p>
+            <p>Extensions:</p>
+            <ul class="list-group">
+                {% for ext in used_exts %}
+                <li class="list-group-item text-{{ ext in available_exts ? 'success' : 'danger' }}">
+                    <span class="bi-{{ ext in available_exts ? 'check' : 'x' }}-circle"></span>
+                    {{ ext }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

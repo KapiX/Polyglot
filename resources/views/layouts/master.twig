@@ -43,6 +43,9 @@
                     </ul>
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         {% if auth_check() %}
+                            {% if auth_user().can('global-settings') %}
+                                <li class="nav-item"><a class="nav-link" href="{{ route('settings') }}">Settings</a></li>
+                            {% endif %}
                             <li class="nav-item"><p class="navbar-text mb-0">{{ auth_user().roleName() }}</p></li>
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">{{ auth_user().name }}</a>

@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\AppSettingsController;
 use App\Http\Controllers\FilesController;
 use Illuminate\Http\Request;
 use App\Models\Project;
@@ -25,6 +26,9 @@ Route::get('/profile', 'IndexController@profile')
 Route::put('/profile', 'IndexController@updateProfile')
     ->name('profile.update')
     ->middleware('auth');
+Route::get('/settings', AppSettingsController::class)
+    ->name('settings')
+    ->middleware('can:global-settings');
 
 Route::get('/projects', 'ProjectsController@index')
     ->name('projects.index');
