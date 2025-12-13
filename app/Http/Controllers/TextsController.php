@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Language;
 use App\Models\Text;
 use App\Models\Translation;
+use App\Notifications\TranslationCompletedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 
 class TextsController extends Controller
 {
@@ -43,8 +45,8 @@ class TextsController extends Controller
      */
     public function store(Request $request, Text $text, Language $language)
     {
-        $translation = $text->translations()->where('language_id', $language->id)->get();
-        if($translation->count() === 0) {
+        $existing = $text->translations()->where('language_id', $language->id)->get();
+        if($existing->count() === 0) {
             $translation = new Translation();
             $translation->text_id = $text->id;
             $translation->language_id = $language->id;
@@ -53,7 +55,7 @@ class TextsController extends Controller
             $translation->needs_work = $request->post('needswork') === 'true' ? 1 : 0;
             $translation->save();
         } else {
-            $translation = $translation->first();
+            $translation = $existing->first();
             $translation->author_id = Auth::id();
             $translation->translation = $request->post('translation') ?? '';
             $translation->needs_work = $request->post('needswork') === 'true' ? 1 : 0;
@@ -62,7 +64,8 @@ class TextsController extends Controller
 
         // remember a contributor
         $file = $text->file;
-        $users = $file->project->users();
+        $project = $file->project;
+        $users = $project->users();
         $isInDb = $users->where('user_id', Auth::id())
                         ->where(function($query) use ($language) {
             $query->where('project_user.role', 2)
@@ -76,6 +79,26 @@ class TextsController extends Controller
 
         $textsCount = $file->texts()->count();
         $translationCounts = $file->translationCounts($language)->get();
+
+        if ($translationCounts->count() > 0) {
+            $project_complete = ($translationCounts[0]->count == $textsCount);
+            $files = $project->files();
+            if($files->count() > 1) {
+                $files->each(function ($f) use ($language, &$project_complete) {
+                    $counts = $f->translationCounts($language)->get();
+                    $texts = $f->texts();
+                    if($texts->count() > 0 && ($counts->count() == 0 || $counts[0]->count < $texts->count())) {
+                        $project_complete = false;
+                        return false;
+                    }
+                    $project_complete = true;
+                });
+            }
+            if ($project_complete && $existing->count() === 0 && $project->administrators()->where('user_id', Auth::id())->count() == 0) {
+                Notification::send($file->project->administrators()->get(), new TranslationCompletedNotification($project, $language));
+            }
+        }
+
         return \Response::json([
             'status' => 'success',
             'translation' => $translation->translation,

@@ -2,8 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Notifications\ProjectFileUpdatedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 use App\Models\File;
@@ -79,5 +82,64 @@ class FilesControllerTest extends TestCase
         foreach($texts as $text) {
             $response->assertSee($text->text);
         }
+    }
+
+    public function testUpload()
+    {
+        Notification::fake();
+
+        $this->file->type = File::CATKEYS;
+        $this->file->save();
+        $language = Language::factory()->create();
+        $developer = User::factory()->developer()->hasAttached(
+            [$this->project],
+            ['role' => 2]
+        )->create();
+        $contributor = User::factory()->hasAttached(
+            [$this->project],
+            ['role' => 0]
+        )->create();
+        $user = User::factory()->hasAttached(
+            [$language]
+        )->create();
+
+        $content = <<<CATKEYS
+1	English	application/x-vnd.tipster	2518152396
+Quit	MainWindow	testcomment	Quit
+Tipster	System name		Tipster
+Tip	MainWindow		Tip
+CATKEYS;
+
+        $file = UploadedFile::fake()->createWithContent('en.catkeys', $content);
+        $this->assertDatabaseEmpty('texts');
+
+        $response = $this->actingAs($developer)->post(route('files.upload',
+            [$this->project, $this->file, $language]), ['catkeys' => $file]);
+
+        $response->assertRedirect(route('files.edit', [$this->project, $this->file]));
+        $this->assertDatabaseCount('texts', 3);
+        $this->assertDatabaseHas('texts', [
+            'file_id' => $this->file->id,
+            'text' => 'Quit',
+            'comment' => 'testcomment',
+            'context' => 'MainWindow'
+        ]);
+        $this->assertDatabaseHas('texts', [
+            'file_id' => $this->file->id,
+            'text' => 'Tipster',
+            'comment' => '',
+            'context' => 'System name'
+        ]);
+        $this->assertDatabaseHas('texts', [
+            'file_id' => $this->file->id,
+            'text' => 'Tip',
+            'comment' => '',
+            'context' => 'MainWindow'
+        ]);
+
+        Notification::assertCount(1);
+        Notification::assertSentTo($contributor, ProjectFileUpdatedNotification::class);
+        Notification::assertNothingSentTo($user);
+        Notification::assertNothingSentTo($developer);
     }
 }

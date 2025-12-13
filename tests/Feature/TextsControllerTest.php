@@ -2,8 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Notifications\ProjectFileUpdatedNotification;
+use App\Notifications\TranslationCompletedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
+use Mockery\Matcher\Not;
 use Tests\TestCase;
 
 use App\Models\User;
@@ -23,6 +27,32 @@ class TextsControllerTest extends TestCase
     private $text;
     private $language;
     private $translation;
+
+    protected function notificationTestRequest(?User $actingAs = null) : User {
+        $developer = User::factory()->developer()->hasAttached(
+            [$this->project],
+            ['role' => 2]
+        )->create();
+
+        $route = route('texts.store', [$this->text, $this->language]);
+        $response = $this->actingAs($actingAs ?: $developer)->postJson($route, [
+            'translation' => 'test'
+        ]);
+
+        $response->assertSuccessful();
+        $response->assertJson([
+            'status' => 'success',
+            'translation' => 'test'
+        ]);
+        $this->assertDatabaseHas('translations', [
+            'text_id' => $this->text->id,
+            'language_id' => $this->language->id,
+            'author_id' => $actingAs ? $actingAs->id : $developer->id,
+            'translation' => 'test'
+        ]);
+
+        return $developer;
+    }
 
     public function setUp() : void
     {
@@ -77,6 +107,9 @@ class TextsControllerTest extends TestCase
 
     public function testStoreTranslationDoesntAddContributorIfProjectAdmin()
     {
+        // avoid triggering translation completed notification
+        Text::factory()->for($this->file)->count(3)->create();
+
         $this->project->users()->attach([
             $this->user->id => ['role' => 2]
         ]);
@@ -121,6 +154,81 @@ class TextsControllerTest extends TestCase
             'author_id' => $this->user->id,
             'translation' => 'test'
         ]);
+    }
+
+    public function testStoreTranslationCompleteNotificationNotSentIfItWasComplete()
+    {
+        Notification::fake();
+
+        Translation::factory()->for($this->text)->for($this->language)->create([
+            'author_id' => $this->user->id
+        ]);
+
+        $this->notificationTestRequest($this->user);
+
+        Notification::assertNothingSent();
+    }
+
+    public function testStoreTranslationCompleteNotificationOnlyOneFileInProject()
+    {
+        Notification::fake();
+
+        $developer = $this->notificationTestRequest($this->user);
+
+        Notification::assertCount(1);
+        Notification::assertNotSentTo($this->user, TranslationCompletedNotification::class);
+        Notification::assertSentTo($developer, TranslationCompletedNotification::class);
+    }
+
+    public function testStoreTranslationCompleteNotificationMoreFilesInProjectOneCompletedNoTextsInOtherFile()
+    {
+        Notification::fake();
+
+        $file = File::factory()->for($this->project)->create();
+
+        $developer = $this->notificationTestRequest($this->user);
+
+        Notification::assertCount(1);
+        Notification::assertNotSentTo($this->user, TranslationCompletedNotification::class);
+        Notification::assertSentTo($developer, TranslationCompletedNotification::class);
+    }
+
+    public function testStoreTranslationCompleteNotificationMoreFilesInProjectOneCompletedNoTranslationsInOtherFile()
+    {
+        Notification::fake();
+
+        $file = File::factory()->for($this->project)->create();
+        Text::factory()->for($file)->create();
+
+        $this->notificationTestRequest($this->user);
+
+        Notification::assertNothingSent();
+    }
+
+    public function testStoreTranslationCompleteNotificationMoreFilesInProjectOneCompleteSecondCompleted()
+    {
+        Notification::fake();
+
+        $file = File::factory()->for($this->project)->create();
+        $text = Text::factory()->for($file)->create();
+        Translation::factory()->for($text)->for($this->language)->create([
+            'author_id' => $this->user->id,
+        ]);
+
+        $developer = $this->notificationTestRequest($this->user);
+
+        Notification::assertCount(1);
+        Notification::assertNotSentTo($this->user, TranslationCompletedNotification::class);
+        Notification::assertSentTo($developer, TranslationCompletedNotification::class);
+    }
+
+    public function testStoreTranslationCompleteNotificationProjectAdminCompletedTranslation()
+    {
+        Notification::fake();
+
+        $developer = $this->notificationTestRequest();
+
+        Notification::assertNothingSent();
     }
 
     public function testStoreTranslationUpdatingNeedsWork()

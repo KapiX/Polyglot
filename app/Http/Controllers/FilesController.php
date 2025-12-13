@@ -11,6 +11,7 @@ use App\Models\Language;
 use App\Models\Project;
 use App\Models\Text;
 use App\Models\Translation;
+use App\Notifications\ProjectFileUpdatedNotification;
 use App\Http\Requests\AddFile;
 use App\Http\Requests\EditFile;
 use App\Http\Requests\ImportTranslation;
@@ -19,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class FilesController extends Controller
@@ -201,7 +203,9 @@ class FilesController extends Controller
                 . count($translationIdsToUpdate)
                 . ' related translations marked as incomplete.';
 
-        return redirect()->route('files.edit', [$file])
+        Notification::send($project->contributors()->get(), new ProjectFileUpdatedNotification($project, $file));
+
+        return redirect()->route('files.edit', [$project, $file])
             ->with('success', $result);
     }
 
