@@ -14,7 +14,7 @@
         </div>
     </div>
 </div>
-<div class="row">
+<div class="row g-2">
 {% for chunk in projects.chunk((projects.count() / 3)|round(0, 'ceil')) %}
 <div class="col"><div class="list-group mb-2">
     {% for project in chunk %}
