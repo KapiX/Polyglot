@@ -125,6 +125,25 @@ Route::put('/users/{user}', 'UsersController@update')
     ->name('users.update')
     ->middleware('can:global-settings');
 
+Route::get('/notifications', 'NotificationsController@index')
+    ->name('notifications.index')
+    ->middleware('auth');
+Route::get('/notifications/{notification}', 'NotificationsController@show')
+    ->name('notifications.show')
+    ->middleware('auth');
+Route::put('/notifications/{notification}', 'NotificationsController@update')
+    ->name('notifications.update')
+    ->middleware('auth');
+Route::put('/notifications', 'NotificationsController@updateAll')
+    ->name('notifications.update.all')
+    ->middleware('auth');
+Route::delete('/notifications/{notification}', 'NotificationsController@destroy')
+    ->name('notifications.destroy')
+    ->middleware('auth');
+Route::delete('/notifications', 'NotificationsController@destroyAll')
+    ->name('notifications.destroy.all')
+    ->middleware('auth');
+
 Route::get('/auth/{provider}', 'Auth\LoginController@redirectToProvider')
     ->name('auth.provider');
 Route::get('/auth/{provider}/callback', 'Auth\LoginController@handleProviderCallback');

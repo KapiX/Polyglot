@@ -48,6 +48,30 @@
                             {% endif %}
                             <li class="nav-item"><p class="navbar-text mb-0">{{ auth_user().roleName() }}</p></li>
                             <li class="nav-item dropdown">
+                                {% set notifs = auth_user().unreadNotifications %}
+                                <a href="#" class="nav-link dropdown-center" data-bs-toggle="dropdown" role="button" aria-expanded="false">
+                                    <span class="bi bi-bell"></span>
+                                    <span class="visually-hidden">Notifications</span>
+                                    <span class="badge text-bg-{{ notifs.count() ? 'primary' : 'secondary' }}">{{ notifs.count() }} <span class="visually-hidden">unread</span></span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" style="z-index:10000;width:40rem;">
+                                    {% for notif in notifs %}
+                                    <li>
+                                        <a href="{{ route('notifications.show', [notif.id]) }}" class="dropdown-item">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <span>{{ notif.data['message'] }}</span>
+                                                <small class="text-body-secondary">{{ notif.created_at|date('d.m.Y H:m') }}</small>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                        <li class="dropdown-item-text text-body-secondary">No new notifications</li>
+                                    {% endfor %}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a href="{{ route('notifications.index') }}" class="dropdown-item">All notifications <span class="badge bg-secondary">{{ auth_user().notifications.count() }}</span></a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">{{ auth_user().name }}</a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li><a class="dropdown-item" href="{{ route('profile') }}">Edit profile</a></li>

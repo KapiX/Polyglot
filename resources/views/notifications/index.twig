@@ -1,0 +1,52 @@
+{% extends "layouts.master" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-2 p-2 bg-body-secondary rounded">
+        <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Notifications</li>
+    </ol>
+</nav>
+<table class="table table-striped">
+    <tbody>
+    <tr>
+        <td></td>
+        <td></td>
+        <td class="d-flex justify-content-end">
+            <form action="{{ route('notifications.update.all') }}" method="post">
+                {{ csrf_field() }}
+                {{ method_field('PUT') }}
+                <input type="submit" class="btn btn-sm btn-primary me-1" value="Mark all as read">
+            </form>
+            <form action="{{ route('notifications.destroy.all') }}" method="post">
+                {{ csrf_field() }}
+                {{ method_field('DELETE') }}
+                <input type="submit" class="btn btn-sm btn-primary me-1" value="Delete all">
+            </form>
+        </td>
+    </tr>
+    {% for notif in auth_user().notifications %}
+    <tr>
+        <td>{{ notif.created_at|date('d.m.Y H:m') }}</td>
+        <td class="{{ not notif.read_at ? 'fw-bold' }}"><a href="{{ route('notifications.show', notif.id) }}">{{ notif.data['message'] }}</a></td>
+        <td class="d-flex justify-content-end">
+            <form action="{{ route('notifications.update', notif.id) }}" method="post">
+                {{ csrf_field() }}
+                {{ method_field('PUT') }}
+                <input type="submit" class="btn btn-sm btn-primary me-1" value="Mark as read">
+            </form>
+            <form action="{{ route('notifications.destroy', notif.id) }}" method="post">
+                {{ csrf_field() }}
+                {{ method_field('DELETE') }}
+                <input type="submit" class="btn btn-sm btn-primary me-1" value="Delete">
+            </form>
+        </td>
+    </tr>
+    {% else %}
+        <tr><td colspan="3">Nothing to show.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
