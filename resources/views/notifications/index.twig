@@ -27,7 +27,7 @@
             </form>
         </td>
     </tr>
-    {% for notif in auth_user().notifications %}
+    {% for notif in notifications %}
     <tr>
         <td>{{ notif.created_at|date('d.m.Y H:m') }}</td>
         <td class="{{ not notif.read_at ? 'fw-bold' }}"><a href="{{ route('notifications.show', notif.id) }}">{{ notif.data['message'] }}</a></td>
@@ -49,4 +49,5 @@
     {% endfor %}
     </tbody>
 </table>
+{{ notifications.links() | raw }}
 {% endblock %}

@@ -48,11 +48,12 @@
                             {% endif %}
                             <li class="nav-item"><p class="navbar-text mb-0">{{ auth_user().roleName() }}</p></li>
                             <li class="nav-item dropdown">
-                                {% set notifs = auth_user().unreadNotifications %}
+                                {% set notifs = auth_user().unreadNotifications().get().take(10) %}
+                                {% set notif_count = auth_user().unreadNotifications().count() %}
                                 <a href="#" class="nav-link dropdown-center" data-bs-toggle="dropdown" role="button" aria-expanded="false">
                                     <span class="bi bi-bell"></span>
                                     <span class="visually-hidden">Notifications</span>
-                                    <span class="badge text-bg-{{ notifs.count() ? 'primary' : 'secondary' }}">{{ notifs.count() }} <span class="visually-hidden">unread</span></span>
+                                    <span class="badge text-bg-{{ notif_count ? 'primary' : 'secondary' }}">{{ notif_count }} <span class="visually-hidden">unread</span></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" style="z-index:10000;width:40rem;">
                                     {% for notif in notifs %}
@@ -67,6 +68,9 @@
                                     {% else %}
                                         <li class="dropdown-item-text text-body-secondary">No new notifications</li>
                                     {% endfor %}
+                                    {% if notif_count > 10 %}
+                                    <li><a href="{{ route('notifications.index') }}" class="dropdown-item">More...</a></li>
+                                    {% endif %}
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a href="{{ route('notifications.index') }}" class="dropdown-item">All notifications <span class="badge bg-secondary">{{ auth_user().notifications.count() }}</span></a></li>
                                 </ul>
