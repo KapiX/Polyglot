@@ -28,7 +28,7 @@ class TextsControllerTest extends TestCase
     private $language;
     private $translation;
 
-    protected function notificationTestRequest(?User $actingAs = null) : User {
+    protected function notificationTestRequest(?User $actingAs = null, string $needs_work = 'false') : User {
         $developer = User::factory()->developer()->hasAttached(
             [$this->project],
             ['role' => 2]
@@ -36,7 +36,8 @@ class TextsControllerTest extends TestCase
 
         $route = route('texts.store', [$this->text, $this->language]);
         $response = $this->actingAs($actingAs ?: $developer)->postJson($route, [
-            'translation' => 'test'
+            'translation' => 'test',
+            'needswork' => $needs_work,
         ]);
 
         $response->assertSuccessful();
@@ -178,6 +179,36 @@ class TextsControllerTest extends TestCase
         Notification::assertCount(1);
         Notification::assertNotSentTo($this->user, TranslationCompletedNotification::class);
         Notification::assertSentTo($developer, TranslationCompletedNotification::class);
+    }
+
+    public function testStoreTranslationCompleteNotificationOnlyOneFileInProjectExistingTranslationNeededWork()
+    {
+        Notification::fake();
+
+        Translation::factory()->for($this->text)->for($this->language)->create([
+            'author_id' => $this->user->id,
+            'needs_work' => 1
+        ]);
+
+        $developer = $this->notificationTestRequest($this->user);
+
+        Notification::assertCount(1);
+        Notification::assertNotSentTo($this->user, TranslationCompletedNotification::class);
+        Notification::assertSentTo($developer, TranslationCompletedNotification::class);
+    }
+
+    public function testStoreTranslationCompleteNotificationOnlyOneFileInProjectExistingTranslationNeededWorkReplacedWithTranslationThatNeedsWork()
+    {
+        Notification::fake();
+
+        Translation::factory()->for($this->text)->for($this->language)->create([
+            'author_id' => $this->user->id,
+            'needs_work' => 1
+        ]);
+
+        $developer = $this->notificationTestRequest($this->user, 'true');
+
+        Notification::assertNothingSent();
     }
 
     public function testStoreTranslationCompleteNotificationMoreFilesInProjectOneCompletedNoTextsInOtherFile()

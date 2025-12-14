@@ -46,6 +46,7 @@ class TextsController extends Controller
     public function store(Request $request, Text $text, Language $language)
     {
         $existing = $text->translations()->where('language_id', $language->id)->get();
+        $needed_work = false;
         if($existing->count() === 0) {
             $translation = new Translation();
             $translation->text_id = $text->id;
@@ -56,6 +57,7 @@ class TextsController extends Controller
             $translation->save();
         } else {
             $translation = $existing->first();
+            $needed_work = $translation->needs_work;
             $translation->author_id = Auth::id();
             $translation->translation = $request->post('translation') ?? '';
             $translation->needs_work = $request->post('needswork') === 'true' ? 1 : 0;
@@ -94,7 +96,9 @@ class TextsController extends Controller
                     $project_complete = true;
                 });
             }
-            if ($project_complete && $existing->count() === 0 && $project->administrators()->where('user_id', Auth::id())->count() == 0) {
+            if ($project_complete
+                    && ($existing->count() === 0 || ($needed_work === 1 && $translation->needs_work === 0))
+                    && $project->administrators()->where('user_id', Auth::id())->count() == 0) {
                 Notification::send($file->project->administrators()->get(), new TranslationCompletedNotification($project, $language));
             }
         }
