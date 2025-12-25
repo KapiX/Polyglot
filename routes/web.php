@@ -13,7 +13,7 @@
 
 use App\Http\Controllers\AppSettingsController;
 use App\Http\Controllers\FilesController;
-use Illuminate\Database\Query\Builder;
+use App\Http\Controllers\LanguagesController;
 use Illuminate\Http\Request;
 use App\Models\Project;
 
@@ -100,21 +100,7 @@ Route::post('/texts/{text}/{language}', 'TextsController@store')
 Route::put('/texts/{language}', 'TextsController@bulkTranslate')
     ->name('texts.bulkTranslate');
 
-Route::get('/languages', 'LanguagesController@index')
-    ->name('languages.index')
-    ->middleware('can:global-settings');
-Route::get('/languages/create', 'LanguagesController@create')
-    ->name('languages.create')
-    ->middleware('can:global-settings');
-Route::post('/languages', 'LanguagesController@store')
-    ->name('languages.store')
-    ->middleware('can:global-settings');
-Route::get('/languages/{language}/edit', 'LanguagesController@edit')
-    ->name('languages.edit')
-    ->middleware('can:global-settings');
-Route::put('/languages/{language}', 'LanguagesController@update')
-    ->name('languages.update')
-    ->middleware('can:global-settings');
+Route::resource('languages', LanguagesController::class)->except(['show', 'destroy']);
 
 Route::get('/users', 'UsersController@index')
     ->name('users.index')
