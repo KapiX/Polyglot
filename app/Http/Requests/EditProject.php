@@ -17,7 +17,7 @@ class EditProject extends FormRequest
     {
         $project = Project::find($this->route('project')['id']);
 
-        return $project && $this->user()->can('modify-project', $project);
+        return $project && $this->user()->can('update', $project);
     }
 
     /**

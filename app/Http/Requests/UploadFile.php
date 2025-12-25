@@ -16,7 +16,7 @@ class UploadFile extends FormRequest
     {
         $file = File::find($this->route('file')['id']);
 
-        return $file && $this->user()->can('modify-file', $file);
+        return $file && $this->user()->can('update', $file->project, $file);
     }
 
     /**

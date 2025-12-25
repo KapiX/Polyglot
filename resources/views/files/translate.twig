@@ -1,7 +1,7 @@
 {% extends "layouts.master" %}
 {% import "macros.forms" as forms %}
 
-{% set canTranslate = can('translate-file', [file, lang]) %}
+{% set canTranslate = can('translate', [file, lang]) %}
 {% block title %}{{ file.project.name }} - {{ file.name }} - {{ lang.name }}{% endblock %}
 
 {% block translationEditor %}

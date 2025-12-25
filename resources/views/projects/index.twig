@@ -23,7 +23,7 @@
         <p>Polyglot allows developers to upload the GUI strings ("catkeys", Java properties, or Line-separated files) of their applications and have their users translate them into their native language.</p>
     </div>
     <div class="col-md-6">
-        {% if auth_user().can('add-project') %}
+        {% if auth_user().can('create', 'App\\Models\\Project') %}
         <form action="{{ route('projects.store') }}" method="post">
         {{ csrf_field() }}
         <div class="input-group has-validation">
@@ -89,7 +89,7 @@
             <a href="{{ project.prerelease_url }}" class="btn btn-outline-secondary d-flex align-items-center" title="Download prerelease">
                 <i class="bi bi-download"></i></a>
         {% endif %}
-        {% if auth_user().can('modify-project', project) %}
+        {% if auth_user().can('update', project) %}
             <a href="{{ route('projects.edit', [project]) }}" class="btn btn-secondary d-flex align-items-center">Edit</a>
         {% endif %}
     </div>

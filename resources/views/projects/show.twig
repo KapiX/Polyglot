@@ -43,7 +43,7 @@
         <span title="{{ file.path }}.{{ file.getFileInstance().getExtension() }}" class="text-hover">
             {{ file.name }}
         </span>
-        {% if auth_user().can('modify-file', file) %}
+        {% if auth_user().can('update', file) %}
             <a href="{{ route('files.edit', [project, file]) }}">Edit</a>
         {% endif %}
         <br>
@@ -77,7 +77,7 @@
             {% endapply %}
         </div>
         <div class="btn-group">
-            {% set canTranslate = can('translate-file', [file, language]) %}
+            {% set canTranslate = can('translate', [file, language]) %}
             {% set continueLabel = canTranslate ? 'Continue' : 'View unfinished' %}
             {% set allLabel = canTranslate ? 'All blocks' : 'View all' %}
             {% set parameters = [project, file, language] %}
@@ -123,7 +123,7 @@
 {% endblock %}
 
 {% block panels %}
-{% if auth_user().can('modify-project', project) %}
+{% if auth_user().can('update', project) %}
 <div class="card mb-2">
     <div class="card-header">Add translation module</div>
     <div class="card-body">

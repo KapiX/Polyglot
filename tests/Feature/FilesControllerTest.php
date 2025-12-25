@@ -84,6 +84,27 @@ class FilesControllerTest extends TestCase
         }
     }
 
+    public function testTranslateDeveloperOfOtherProjectCanTranslateBasedOnLanguagePermission()
+    {
+        $language = Language::factory()->create();
+        $project = Project::factory()->create();
+        $developer = User::factory()->developer()
+            ->hasAttached([$language])
+            ->hasAttached([$project], ['role' => 2])->create();
+        $texts = Text::factory()->count(3)->for($this->file)->create();
+
+        $response = $this->actingAs($developer)
+            ->get(route('files.translate', [$this->project, $this->file, $language]));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('files.translate');
+
+        $response->assertSee($texts[1]->context);
+        foreach($texts as $text) {
+            $response->assertSee($text->text);
+        }
+    }
+
     public function testUpload()
     {
         Notification::fake();

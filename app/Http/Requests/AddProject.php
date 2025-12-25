@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Project;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AddProject extends FormRequest
@@ -13,7 +14,7 @@ class AddProject extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('add-project');
+        return $this->user()->can('create', Project::class);
     }
 
     /**

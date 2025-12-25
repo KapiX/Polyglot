@@ -183,7 +183,7 @@ class TextsController extends Controller
         $texts = $request->get('text-ids');
         $affected = 0;
         foreach($texts as $id) {
-            if(Auth::user()->can('translate-text', [Text::find($id), $language])) {
+            if(Auth::user()->can('translate', [Text::find($id), $language])) {
                 $translation = $request->get('translation-' . $id);
                 if($translation === '') {
                     continue;
