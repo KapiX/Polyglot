@@ -14,6 +14,7 @@
 use App\Http\Controllers\AppSettingsController;
 use App\Http\Controllers\FilesController;
 use App\Http\Controllers\LanguagesController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use App\Models\Project;
 
@@ -101,16 +102,7 @@ Route::put('/texts/{language}', 'TextsController@bulkTranslate')
     ->name('texts.bulkTranslate');
 
 Route::resource('languages', LanguagesController::class)->except(['show', 'destroy']);
-
-Route::get('/users', 'UsersController@index')
-    ->name('users.index')
-    ->middleware('can:global-settings');
-Route::get('/users/{user}/edit', 'UsersController@edit')
-    ->name('users.edit')
-    ->middleware('can:global-settings');
-Route::put('/users/{user}', 'UsersController@update')
-    ->name('users.update')
-    ->middleware('can:global-settings');
+Route::resource('users', UsersController::class)->only(['index', 'edit', 'update']);
 
 Route::get('/notifications', 'NotificationsController@index')
     ->name('notifications.index')
