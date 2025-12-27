@@ -324,6 +324,16 @@ class ProjectsControllerTest extends TestCase
         $response->assertSessionHasErrors('name');
     }
 
+    public function testProjectViewById()
+    {
+        $user = User::factory()->create();
+        $project = Project::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('projects.show', [$project->id]));
+
+        $response->assertRedirectToRoute('projects.show', [$project->getRouteKey()]);
+    }
+
     public function testProjectViewWithPreferredLanguage() {
         $project = Project::factory()->create();
         $language = Language::factory()->create();
