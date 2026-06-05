@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Translation;
 use App\Notifications\ProjectFileUpdatedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -162,5 +163,20 @@ CATKEYS;
         Notification::assertSentTo($contributor, ProjectFileUpdatedNotification::class);
         Notification::assertNothingSentTo($user);
         Notification::assertNothingSentTo($developer);
+    }
+
+    public function testExportAll() {
+        $this->file->type = File::CATKEYS;
+        $this->file->save();
+        $language = Language::factory()->create();
+        $user = User::factory()->create();
+        $texts = Text::factory()->count(3)->for($this->file)->create();
+        Translation::factory()->for($texts[0])->for($language)->create([
+            'author_id' => $user->id
+        ]);
+
+        $response = $this->actingAs($user)->get(route('files.exportAll', [$this->project, $this->file]));
+
+        $response->assertDownload($this->project->name . '_' . $this->file->name . '.zip');
     }
 }

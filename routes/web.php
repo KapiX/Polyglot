@@ -69,22 +69,22 @@ Route::post('/projects/{project}/files/{file}/upload', 'FilesController@upload')
     ->scopeBindings()
     ->name('files.upload')
     ->can('update', 'file');
-Route::get('/projects/{project}/files/{file}/{language}/{type?}', 'FilesController@translate')
+Route::get('/projects/{project}/files/{file}/language/{language}/{type?}', 'FilesController@translate')
     ->setBindingFields(['file' => 'slug', 'project' => 'slug'])
     ->where('type', 'all|continue')
     ->name('files.translate')
     ->can('translate', ['file', 'language']);
-Route::get('/projects/{project}/files/{file}/{language}/pretranslate', 'FilesController@pretranslate')
+Route::get('/projects/{project}/files/{file}/language/{language}/pretranslate', 'FilesController@pretranslate')
     ->setBindingFields(['file' => 'slug', 'project' => 'slug'])
     ->name('files.pretranslate')
     ->can('translate', ['file', 'language']);
-Route::get('/projects/{project}/files/{file}/{language}/export', 'FilesController@export')
+Route::get('/projects/{project}/files/{file}/language/{language}/export', 'FilesController@export')
     ->setBindingFields(['file' => 'slug', 'project' => 'slug'])
     ->name('files.export');
 Route::get('/projects/{project}/files/{file}/export', 'FilesController@exportAll')
     ->scopeBindings()
     ->name('files.exportAll');
-Route::post('/projects/{project}/files/{file}/{language}/import', 'FilesController@import')
+Route::post('/projects/{project}/files/{file}/language/{language}/import', 'FilesController@import')
     ->setBindingFields(['file' => 'slug', 'project' => 'slug'])
     ->name('files.import')
     ->can('translate', ['file', 'language']);
