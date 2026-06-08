@@ -217,12 +217,12 @@ class FilesController extends Controller
         try {
             $catkeys_processed = $instance->process($catkeys);
         } catch(Exception $e) {
-            return redirect()->route('files.translate', [$file, $language])
+            return redirect()->route('files.translate', [$project, $file, $language])
                 ->with('error', $e->getMessage());
         }
 
         if($instance->validateMetaData($oldMetadata) == false) {
-            return redirect()->route('files.translate', [$file, $language])
+            return redirect()->route('files.translate', [$project, $file, $language])
                 ->with('error', "Metadata does not match.");
         }
 
@@ -277,7 +277,7 @@ class FilesController extends Controller
             ]);
         }
 
-        return redirect()->route('files.translate', [$file, $language])
+        return redirect()->route('files.translate', [$project, $file, $language])
             ->with('success', 'Translations uploaded.');
     }
 

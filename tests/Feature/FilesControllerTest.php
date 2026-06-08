@@ -165,6 +165,53 @@ CATKEYS;
         Notification::assertNothingSentTo($developer);
     }
 
+    public function testImport() {
+        $this->file->type = File::CATKEYS;
+        $this->file->metadata = [
+            'mime_type' => 'application/x-vnd.tipster',
+            'checksum' => '2518152396'
+        ];
+        $this->file->save();
+        $language = Language::factory()->create();
+        $user = User::factory()->hasAttached(
+            [$language]
+        )->create();
+        $texts = Text::factory()->for($this->file)->count(3)->sequence(
+            ['text' => 'Quit', 'context' => 'MainWindow', 'comment' => 'testcomment'],
+            ['text' => 'Tipster', 'context' => 'System name'],
+            ['text' => 'Tip', 'context' => 'MainWindow'])->create();
+
+        $content = <<<CATKEYS
+1	Polish	application/x-vnd.tipster	2518152396
+Quit	MainWindow	testcomment	Wyjdź
+Tipster	System name		Tipster
+Tip	MainWindow		Porada
+CATKEYS;
+
+        $file = UploadedFile::fake()->createWithContent('pl.catkeys', $content);
+        $this->assertDatabaseCount('texts', 3);
+        $this->assertDatabaseEmpty('translations');
+
+        $response = $this->actingAs($user)->post(route('files.import',
+            [$this->project, $this->file, $language]), ['catkeys' => $file]);
+
+        $response->assertRedirect(route('files.translate', [$this->project, $this->file, $language]));
+        $this->assertDatabaseCount('translations', 2);
+        $this->assertDatabaseHas('translations', [
+            'text_id' => $texts[0]->id,
+            'language_id' => $language->id,
+            'author_id' => $user->id,
+            'translation' => 'Wyjdź'
+        ]);
+        // Tipster is not added as translation because it is the same as original
+        $this->assertDatabaseHas('translations', [
+            'text_id' => $texts[2]->id,
+            'language_id' => $language->id,
+            'author_id' => $user->id,
+            'translation' => 'Porada'
+        ]);
+    }
+
     public function testExportAll() {
         $this->file->type = File::CATKEYS;
         $this->file->save();
