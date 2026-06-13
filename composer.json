@@ -7,22 +7,22 @@
     "require": {
         "php": "^8.3",
         "ext-zip": "*",
-        "laravel/framework": "^12.0",
-        "laravel/socialite": "^5.23",
-        "laravel/tinker": "^2.10",
-        "laravel/ui": "^4.6",
-        "rcrowe/twigbridge": "^0.14.5",
-        "spatie/laravel-sluggable": "^3.7"
+        "laravel/framework": "^13.0",
+        "laravel/socialite": "^5.27",
+        "laravel/tinker": "^3.0",
+        "laravel/ui": "^4.6.3",
+        "rcrowe/twigbridge": "^0.14.7",
+        "spatie/laravel-sluggable": "^4.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.16",
-        "barryvdh/laravel-ide-helper": "^3.6.0",
+        "barryvdh/laravel-debugbar": "^4.3",
+        "barryvdh/laravel-ide-helper": "^3.7.0",
         "fakerphp/faker": "~1.24",
         "filp/whoops": "~2.0",
-        "laravel/boost": "^1.8",
+        "laravel/boost": "^2.0",
         "mockery/mockery": "~1.6",
         "nunomaduro/collision": "^8.0",
-        "phpunit/phpunit": "^11.0"
+        "phpunit/phpunit": "^12.0"
     },
     "autoload": {
         "classmap": [

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
@@ -18,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(255);
         // Use Bootstrap 5 pagination views
         Paginator::useBootstrapFive();
+
+        AuthenticationException::redirectUsing(function ($request) { return '/login'; });
     }
 
     /**
