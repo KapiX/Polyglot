@@ -66,6 +66,16 @@ class TextsControllerTest extends TestCase
         $this->language = Language::factory()->create();
     }
 
+    public function testShow()
+    {
+        $translation = Translation::factory()->for($this->text)->for($this->language)->create(['author_id' => $this->user->id]);
+        $route = route('texts.show', [$this->text, $this->language]);
+        $response = $this->actingAs($this->user)->getJson($route);
+
+        $response->assertSuccessful();
+        $response->assertJson(['translation' => $translation->translation, 'needswork' => 0]);
+    }
+
     public function testStoreTranslationCreating()
     {
         $route = route('texts.store', [$this->text, $this->language]); 

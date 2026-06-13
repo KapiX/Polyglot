@@ -91,7 +91,7 @@ Route::post('/projects/{project}/files/{file}/language/{language}/import', 'File
 
 Route::get('/texts/{text}/{language}', 'TextsController@show')
     ->name('texts.show')
-    ->middleware('can:translate-text,text,language');
+    ->can('translate', ['text', 'language']);
 Route::get('/texts/{text}/{language}/history', 'TextsController@history')
     ->name('texts.history')
     ->can('translate', ['text', 'language']);
