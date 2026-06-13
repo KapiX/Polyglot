@@ -63,7 +63,7 @@ class User extends Authenticatable
     }
 
     public function canMail(string $what) : bool {
-        return $this->email && in_array($what, $this->email_preferences);
+        return $this->email && in_array($what, $this->email_preferences ?? []);
     }
 
     public function isAdministrator()
