@@ -1,9 +1,10 @@
 {% extends "layouts.master" %}
+{% import "macros.forms" as forms %}
 
 {% block title %}Application settings{% endblock %}
 
 {% block content %}
-    <div class="card">
+    <div class="card mb-2">
         <div class="card-header">
             Server info
         </div>
@@ -18,6 +19,15 @@
                 </li>
                 {% endfor %}
             </ul>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">Send test e-mail</div>
+        <div class="card-body">
+            <form action="{{ route('settings.testMail') }}" method="post">
+                {{ csrf_field() }}
+                {{ forms.single_input('email', 'Test e-mail address', '', 'Send', errors) }}
+            </form>
         </div>
     </div>
 {% endblock %}

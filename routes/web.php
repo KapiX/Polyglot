@@ -28,8 +28,11 @@ Route::get('/profile', 'IndexController@profile')
 Route::put('/profile', 'IndexController@updateProfile')
     ->name('profile.update')
     ->middleware('auth');
-Route::get('/settings', AppSettingsController::class)
-    ->name('settings')
+Route::get('/settings', 'AppSettingsController@index')
+    ->name('settings.index')
+    ->middleware('can:global-settings');
+Route::post('/settings/testMail', 'AppSettingsController@testMail')
+    ->name('settings.testMail')
     ->middleware('can:global-settings');
 
 Route::get('/projects', 'ProjectsController@index')

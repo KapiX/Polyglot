@@ -6,6 +6,17 @@
     {% endfor %}
 {% endmacro %}
 
+{% macro single_input(name, label, value, submit_label, errors, class = "", enabled = true, type = "text") %}
+    <div class="input-group has-validation">
+        <div class="form-floating {{ errors.has(name) ? 'is-invalid' }}">
+            <input type="{{ type }}" name="{{ name }}" id="{{ name }}" placeholder="{{ label }}" value="{{ old(name, value|e) }}" class="form-control {{ errors.has(name) ? 'is-invalid' }} {{ class }}"{{ not enabled ? ' disabled' }}>
+            {% if label %}<label for="{{ name }}">{{ label }}</label>{% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
+        <div class="invalid-feedback">{% for error in errors.get(name) %}{{ error }}{% endfor %}</div>
+    </div>
+{% endmacro %}
+
 {% macro file_input(name, label, errors) %}
     {% if label %}<label for="{{ name }}" class="form-label">{{ label }}</label>{% endif %}
     <input type="file" name="{{ name }}" id="{{ name }}" class="form-control {{ errors.has(name) ? 'is-invalid' }}">
