@@ -20,8 +20,7 @@ class ProjectFileUpdatedNotification extends Notification
 
     public function via($notifiable): array
     {
-        // TODO: return $notifiable->email ? ['mail', 'database'] : ['database'];
-        return ['database'];
+        return $notifiable->canMail(self::class) ? ['mail', 'database'] : ['database'];
     }
 
     public function databaseType(object $notifiable): string

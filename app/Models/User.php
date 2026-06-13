@@ -32,7 +32,8 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'preferred_languages' => 'array'
+        'preferred_languages' => 'array',
+        'email_preferences' => 'array'
     ];
 
     /**
@@ -59,6 +60,10 @@ class User extends Authenticatable
     public static function search($query) {
         return self::where('name', 'LIKE', '%' . $query . '%')
             ->orWhere('email', 'LIKE', '%' . $query . '%');
+    }
+
+    public function canMail(string $what) : bool {
+        return $this->email && in_array($what, $this->email_preferences);
     }
 
     public function isAdministrator()

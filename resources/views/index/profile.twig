@@ -17,13 +17,17 @@
         <div class="col col-lg-6 col-sm-12">
             <div class="mb-2">{{ forms.input('name', 'Name', user.name, errors) }}</div>
             <div class="mb-2">{{ forms.input('email', 'E-mail', user.email, errors) }}</div>
+            <div class="mb-2">
+                {{ forms.checkboxes('email_preferences', 'E-mail notification preferences',
+                    email_types, user.email_preferences) }}
+            </div>
         </div>
-    <div class="col col-lg-6 col-sm-12 mh-100">
-        {{ forms.checkboxes('languages', 'Preferred languages',
-            languages.mapWithKeys(l => {(l.id): "[#{l.iso_code}] #{l.name}"}),
-            user.preferred_languages, 2, "list-group-flush rounded", height="23em") }}
-    </div>
-    <div class="col"><input type="submit" value="Save" class="btn btn-primary w-100"></div>
+        <div class="col col-lg-6 col-sm-12 mh-100">
+            {{ forms.checkboxes('languages', 'Preferred languages',
+                languages.mapWithKeys(l => {(l.id): "[#{l.iso_code}] #{l.name}"}),
+                user.preferred_languages, 2, "list-group-flush rounded", height="23em") }}
+        </div>
+        <div class="col"><input type="submit" value="Save" class="btn btn-primary w-100"></div>
     </div>
 </form>
 {% endblock %}
