@@ -48,7 +48,7 @@ class TextPolicy
      */
     public function create(User $user): bool
     {
-        return $this->text->file->project->administrators->contains($user);
+        return $user->can('translate', [$this->text->file, $this->language]);
     }
 
     /**
@@ -81,9 +81,5 @@ class TextPolicy
     public function forceDelete(User $user, Text $text): bool
     {
         return false;
-    }
-
-    public function translate(User $user, Text $text, Language $language) {
-        return $user->can('translate', [$text->file, $language]);
     }
 }

@@ -93,14 +93,11 @@ Route::post('/projects/{project}/files/{file}/language/{language}/import', 'File
     ->can('translate', ['file', 'language']);
 
 Route::get('/texts/{text}/{language}', 'TextsController@show')
-    ->name('texts.show')
-    ->can('translate', ['text', 'language']);
+    ->name('texts.show');
 Route::get('/texts/{text}/{language}/history', 'TextsController@history')
-    ->name('texts.history')
-    ->can('translate', ['text', 'language']);
+    ->name('texts.history');
 Route::post('/texts/{text}/{language}', 'TextsController@store')
-    ->name('texts.store')
-    ->can('translate', ['text', 'language']);
+    ->name('texts.store');
 Route::put('/texts/{language}', 'TextsController@bulkTranslate')
     ->name('texts.bulkTranslate');
 

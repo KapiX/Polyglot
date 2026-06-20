@@ -59,11 +59,12 @@ class TextsControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = User::factory()->admin()->create();
+        $this->user = User::factory()->create();
         $this->project = Project::factory()->create();
         $this->file = File::factory()->for($this->project)->create();
         $this->text = Text::factory()->for($this->file)->create();
         $this->language = Language::factory()->create();
+        $this->user->languages()->attach($this->language->id);
     }
 
     public function testShow()
