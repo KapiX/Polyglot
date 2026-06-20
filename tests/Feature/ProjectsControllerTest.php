@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Notifications\NewProjectAddedNotification;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 use App\Models\File;
 
@@ -215,6 +217,26 @@ class ProjectsControllerTest extends TestCase
         $response->assertViewIs('projects.index');
 
         $response->assertSeeInOrder([$project->name . '</span>', 'Incomplete</span>'], false);
+    }
+
+    public function testAddingProjectSendsNotification()
+    {
+        Notification::fake();
+
+        $admin = User::factory()->admin()->create();
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($admin)->post('/projects', [
+            'name' => 'test'
+        ]);
+
+        $project = Project::where('name', 'test')->first();
+
+        $response->assertRedirect(route('projects.edit', $project));
+
+        Notification::assertCount(1);
+        Notification::assertNotSentTo($admin, NewProjectAddedNotification::class);
+        Notification::assertSentTo($user, NewProjectAddedNotification::class);
     }
 
     public function testAddingProjectSetsProjectAdminAndRedirectsToEdit()

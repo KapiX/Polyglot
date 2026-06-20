@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Language;
 use App\Models\Project;
 use App\Http\Requests\EditProfile;
+use App\Notifications\NewProjectAddedNotification;
 use App\Notifications\ProjectFileUpdatedNotification;
 use App\Notifications\TranslationCompletedNotification;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +38,7 @@ class IndexController extends Controller
     function profile() {
         $languages = Language::orderBy('iso_code')->get();
         $email_types = collect([
+            NewProjectAddedNotification::class => 'New project added',
             ProjectFileUpdatedNotification::class => 'Project file updated',
             TranslationCompletedNotification::class => 'Translation completed',
         ]);

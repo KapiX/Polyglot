@@ -7,8 +7,9 @@ use App\Models\File;
 use App\Models\Language;
 use App\Models\Project;
 use App\Models\ProjectUser;
-use App\Models\Text;
 use App\Models\Translation;
+use App\Models\User;
+use App\Notifications\NewProjectAddedNotification;
 use App\Http\Requests\AddProject;
 use App\Http\Requests\EditProject;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class ProjectsController extends Controller
@@ -64,6 +66,9 @@ class ProjectsController extends Controller
         $project->save();
 
         $project->users()->attach(Auth::id(), ['role' => 2]);
+
+        Notification::send(User::whereNot('id', '=', Auth::id())->get(),
+            new NewProjectAddedNotification($project));
 
         if($project->save()) {
             return redirect()->route('projects.edit', [$project]);
