@@ -50,7 +50,7 @@ class FilesController extends Controller
         $file->project_id = $project->id;
 
         if($file->save()) {
-            return redirect()->route('files.edit', [$file]);
+            return redirect()->route('files.edit', [$project, $file]);
         } else {
             return redirect()->route('projects.show', [$project]);
         }

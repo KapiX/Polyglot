@@ -31,6 +31,27 @@ class FilesControllerTest extends TestCase
         $this->file = File::factory()->for($this->project)->create();
     }
 
+    public function testStore(): void
+    {
+        $user = User::factory()->admin()->create();
+
+        $this->file->delete();
+        $this->assertDatabaseCount('files', 0);
+
+        $response = $this->actingAs($user)->post(route('files.store', [$this->project]), [
+            'name' => 'Application',
+            'type' => [1]
+        ]);
+
+        $response->assertRedirect(route('files.edit', [$this->project, File::latest()->first()]));
+
+        $this->assertDatabaseCount('files', 1);
+        $this->assertDatabaseHas('files', [
+            'name' => 'Application',
+            'type' => 1
+        ]);
+    }
+
     public function testEdit()
     {
         $user = User::factory()->developer()->hasAttached(
