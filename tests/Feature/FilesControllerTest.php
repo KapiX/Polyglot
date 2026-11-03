@@ -85,6 +85,18 @@ class FilesControllerTest extends TestCase
         }
     }
 
+    public function testTranslateContinueEmptyFile()
+    {
+        $language = Language::factory()->create();
+        $user = User::factory()->hasAttached(
+            [$language]
+        )->create();
+
+        $response = $this->actingAs($user)->get(route('files.translate', [$this->project, $this->file, $language, 'continue']));
+
+        $response->assertRedirect(route('projects.show', [$this->project]));
+    }
+
     public function testTranslateDeveloperOfOtherProjectCanTranslateBasedOnLanguagePermission()
     {
         $language = Language::factory()->create();

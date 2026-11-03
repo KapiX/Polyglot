@@ -464,6 +464,25 @@ class ProjectsControllerTest extends TestCase
             $languages[0]->name, $languages[1]->name, $languages[2]->name], false);
     }
 
+    public function testProjectViewWithEmptyFileShowsEmpty()
+    {
+        $project = Project::factory()->create();
+        $languages = Language::factory()->count(3)
+            ->sequence(['iso_code' => 'a'], ['iso_code' => 'b'], ['iso_code' => 'c'])->create();
+        $user = User::factory()->admin()->create();
+        $languages = Language::factory()->count(3)->create();
+        File::factory()->for($project)->create();
+
+        $response = $this->actingAs($user)->get(route('projects.show', [$project, 'all']));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('projects.show');
+
+        $response->assertSeeInOrder([$languages[0]->name, '<i>empty</i>']);
+        $response->assertDontSeeHtml('Continue</a>');
+        $response->assertDontSeeHtml('View unfinished</a>');
+    }
+
     public function testProjectEdit() {
         $project = Project::factory()->create();
         Language::factory()->count(3)->create();

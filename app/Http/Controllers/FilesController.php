@@ -296,6 +296,9 @@ class FilesController extends Controller
             })
             ->where('file_id', $file->id);
         $textsCount = $file->texts()->count();
+        if($textsCount == 0) {
+            return redirect()->route('projects.show', [$project]);
+        }
         $translationCounts = $file->translationCounts($language)->get();
         $instance = $file->getFileInstance();
         if($instance->indexColumn() !== null) {
