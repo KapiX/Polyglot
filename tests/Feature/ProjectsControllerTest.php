@@ -476,4 +476,26 @@ class ProjectsControllerTest extends TestCase
 
         $response->assertSeeInOrder(['<form', 'enctype="multipart/form-data"', 'value="PUT"', $project->name], false);
     }
+
+    public function testProjectDestroy() {
+        $project = Project::factory()->create();
+        $user = User::factory()->admin()->create();
+
+        $response = $this->actingAs($user)->delete(route('projects.destroy', [$project]));
+
+        $response->assertSessionHas('success');
+        $response->assertRedirect(route('projects.index'));
+    }
+
+    public function testProjectCannotDestroyNonEmptyProject() {
+        $project = Project::factory()->create();
+        $user = User::factory()->admin()->create();
+        File::factory()->for($project)->count(3)->create();
+
+        $response = $this->actingAs($user)->delete(route('projects.destroy', [$project]));
+
+        $response->assertSessionHas('error');
+
+        $response->assertRedirect(route('projects.edit', [$project]));
+    }
 }

@@ -56,6 +56,9 @@ Route::get('/projects/{project}/edit', 'ProjectsController@edit')
 Route::put('/projects/{project}', 'ProjectsController@update')
     ->name('projects.update')
     ->can('update', 'project');
+Route::delete('/projects/{project}', 'ProjectsController@destroy')
+    ->name('projects.destroy')
+    ->can('update', 'project');
 
 Route::post('/projects/{project}/file', 'FilesController@store')
     ->name('files.store')

@@ -26,6 +26,15 @@
         </div>
         <div class="col">{{ forms.file_input('icon', 'Icon (32x32, PNG, optional)', errors) }}</div>
     </div>
-    <div class="mb-2"><input type="submit" value="Save" class="btn btn-primary"></div>
+    <div class="mb-2">
+        <input type="submit" value="Save" class="btn btn-primary">
+    </div>
+</form>
+<form action="{{ route('projects.destroy', [project]) }}" method="post">
+    {{ method_field('DELETE') }}
+    {{ csrf_field() }}
+    {% if auth_user().can('update', project) and can_delete %}
+        <input type="submit" value="Delete" class="btn btn-danger">
+    {% endif %}
 </form>
 {% endblock %}

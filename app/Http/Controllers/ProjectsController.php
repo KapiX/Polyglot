@@ -124,7 +124,8 @@ class ProjectsController extends Controller
     public function edit(Project $project)
     {
         return view('projects.edit')
-            ->with('project', $project);
+            ->with('project', $project)
+            ->with('can_delete', $project->files()->count() === 0);
     }
 
     /**
@@ -161,7 +162,13 @@ class ProjectsController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        if($project->files()->count() > 0) {
+            return redirect()->route('projects.edit', [$project])
+                ->with('error', 'Only empty projects can be deleted.');
+        }
+        $project->delete();
+        return redirect()->route('projects.index')
+            ->with('success', 'Project deleted.');
     }
     
     public function export(Project $project, $status = 'all')

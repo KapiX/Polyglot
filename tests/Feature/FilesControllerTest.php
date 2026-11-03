@@ -186,6 +186,7 @@ CATKEYS;
 Quit	MainWindow	testcomment	Wyjdź
 Tipster	System name		Tipster
 Tip	MainWindow		Porada
+
 CATKEYS;
 
         $file = UploadedFile::fake()->createWithContent('pl.catkeys', $content);
